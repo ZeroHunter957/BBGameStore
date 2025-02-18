@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="card-body">
-                        <form action="{{ route('account.verifyOPTRegister') }}" method="POST">
+                        <form action="{{ route('account.verifyOTPRegister') }}" method="POST">
                             @csrf
                             <div class="form-group">
                                 <label for="otp">Enter the OTP sent to your email</label>
@@ -27,6 +27,7 @@
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-block">Verify OTP</button>
+                            <p>Didn't receive an OTP? <a href="{{ route('account.resendOTP') }}">Resend OTP</a></p>
                         </form>
                     </div>
                 </div>

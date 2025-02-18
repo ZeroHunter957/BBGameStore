@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
@@ -32,8 +33,8 @@ class AccountController extends Controller
         $account = Account::where("email", $request->email)->first();
 
         if ($account && Hash::check($request->password, $account->password)) {
-            $request->session()->put('accountLogin', $account);
-
+            // Store user data in session manually
+            $request->session()->put('accountLogin', $account->id); // Store only the user ID
             return $account->role === "ADMIN" ? redirect('/dashboard') : redirect('/');
         }
 
@@ -74,7 +75,6 @@ class AccountController extends Controller
 
         Session::put('s_email', $request->email);
 
-        // Redirect with success message
         return redirect()->route('account.OTPregister')->with('success', 'Account created successfully. Check your email for the OTP.');
     }
 
@@ -98,15 +98,51 @@ class AccountController extends Controller
         $account = Account::where('otp', $request->otp)->first();
 
         if (!$account) {
-            return redirect()->route("account.OTPregister")->with("message", "Invalid OTP.");
+            return redirect()->route("account.OTPregister")->with("message", "Invalid OTP");
         }
 
         if ($account->expireotp < Carbon::now()) {
-            return redirect()->route("account.OTPregister")->with("message", "OTP has expired.");
+            return redirect()->route("account.OTPregister")->with("message", "OTP expired");
         }
 
         $account->update(["isverify" => true]);
 
         return redirect('/login')->with('success', 'OTP verified. You can now log in.');
+    }
+
+    /**
+     * Resend OTP if expired
+     */
+    public function resendOTP(Request $request)
+    {
+        $email = Session::get('s_email');
+        if (!$email) {
+            return redirect()->route("account.register")->with("message", "Session expired. Please register again.");
+        }
+
+        $account = Account::where("email", $email)->first();
+        if (!$account) {
+            return redirect()->route("account.register")->with("message", "Account not found.");
+        }
+
+        $newOtp = Str::upper(Str::random(6));
+
+        $account->update([
+            'otp' => $newOtp,
+            'expireotp' => Carbon::now()->addMinutes(5),
+        ]);
+
+        return redirect()->route("account.OTPregister")->with("success", "A new OTP has been sent to your email.");
+    }
+
+    /**
+     * Logout and destroy session
+     */
+    public function logout(Request $request)
+    {
+        Session::forget('accountLogin'); // Remove the session key
+        Session::flush(); // Clear all session data
+
+        return redirect('/login')->with('message', 'You have been logged out.');
     }
 }

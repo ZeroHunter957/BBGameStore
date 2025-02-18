@@ -8,6 +8,9 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Route;
 
+// admin
+Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
+
 // login & register
 Route::get('/login', [AccountController::class, 'login'])->name('account.login');
 Route::post('/login', [AccountController::class, 'checkLogin'])->name('account.checkLogin');
@@ -17,6 +20,7 @@ Route::post('/register', [AccountController::class, 'registerPost'])->name('acco
 // otp register
 Route::get('/otp-register', [AccountController::class, 'viewOTPRegister'])->name('account.OTPregister');
 Route::post('/otp-register', [AccountController::class, 'verifyOTPRegister'])->name('account.verifyOTPRegister');
+Route::get('/resend-otp', [AccountController::class, 'resendOTP'])->name('account.resendOTP');
 
 // game routes
 Route::get('/game', [GameController::class, 'index'])->name('game.index');
@@ -54,6 +58,6 @@ Route::get('/gameshop', [MenuController::class, 'gameshop'])->name('menu.gamesho
 Route::get('/accessoryshop', [MenuController::class, 'accessoryshop'])->name('menu.accessoryshop');
 Route::get('/gamedetails/{id}', [MenuController::class, 'gamedetails'])->name('menu.gamedetails');
 Route::get('/accessorydetails/{id}', [MenuController::class, 'accessorydetails'])->name('menu.accessorydetails');
-Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
+
 Route::get('/search-results', [MenuController::class, 'search-results'])->name('menu.search-results');
 Route::get('/search', [MenuController::class, 'search'])->name('menu.search');
