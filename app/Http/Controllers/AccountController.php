@@ -140,9 +140,7 @@ class AccountController extends Controller
      */
     public function logout(Request $request)
     {
-        Session::forget('accountLogin'); // Remove the session key
-        Session::flush(); // Clear all session data
-
+        session()->forget('accountLogin');
         return redirect('/login')->with('message', 'You have been logged out.');
     }
 }

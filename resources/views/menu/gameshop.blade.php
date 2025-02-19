@@ -6,21 +6,21 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>Accessory Shop</h3>
+                    <h3>Game Shop</h3>
                     <span class="breadcrumb"><a href="#">Home</a> > Games</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Price Sorting Buttons -->
-    <ul class="trending-filter sorting-options">
-        <li><a href="#" data-sort="default" class="is_active">Sort By</a></li>
-        <li><a href="#" data-sort="price:asc">Price: Low to High</a></li>
-        <li><a href="#" data-sort="price:desc">Price: High to Low</a></li>
-    </ul>
-
     <div class="section trending">
+        <!-- Price Sorting Buttons -->
+        <ul class="trending-filter sorting-options">
+            <li><a href="#" data-sort="default" class="is_active">Sort By Order</a></li>
+            <li><a href="#" data-sort="price:asc">Price: Low to High</a></li>
+            <li><a href="#" data-sort="price:desc">Price: High to Low</a></li>
+        </ul>
+
         <div class="container">
             <!-- Category Filter Buttons -->
             <ul class="trending-filter">
@@ -109,7 +109,6 @@
                 });
             });
         </script>
-
 
     </div>
 @endsection

@@ -61,8 +61,20 @@ https://templatemo.com/tm-589-lugx-gaming
                                 <li><a href="/gameshop">Games</a></li>
                                 <li><a href="/accessoryshop">Accessories</a></li>
                                 <li><a href="/contact">Contact Us</a></li>
-                                <li><a href="/login" class="login">Sign in</a></li>
-                                <li><a href="/register" class="register">Register</a></li>
+
+                                @if (session()->has('accountLogin'))
+                                    <li>
+                                        <form action="{{ route('account.logout') }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            <a href="/logout"><button type="submit" class="logout"
+                                                    style="background:none; border:none; color:white; cursor:pointer;">Logout</button>
+                                        </form>
+                                    </li>
+                                @else
+                                    <li><a href="/login" class="login">Sign in</a></li>
+                                    <li><a href="/register" class="register">Register</a></li>
+                                @endif
                             </ul>
                             <a class='menu-trigger'>
                                 <span>Menu</span>

@@ -14,6 +14,13 @@
     </div>
 
     <div class="section trending">
+        <!-- Price Sorting Buttons -->
+        <ul class="trending-filter sorting-options">
+            <li><a href="#" data-sort="default" class="is_active">Sort By Order</a></li>
+            <li><a href="#" data-sort="price:asc">Price: Low to High</a></li>
+            <li><a href="#" data-sort="price:desc">Price: High to Low</a></li>
+        </ul>
+
         <div class="container">
             <!-- Category Filter Buttons -->
             <ul class="trending-filter">
@@ -30,7 +37,8 @@
             <div id="accessory-container">
                 <div class="row">
                     @foreach ($accessories as $item)
-                        <div class="col-lg-3 col-md-6 mix {{ Str::slug($item->category->name) }}">
+                        <div class="col-lg-3 col-md-6 mix {{ Str::slug($item->category->name) }}"
+                            data-price="{{ $item->price }}">
                             <div class="item">
                                 <div class="thumb">
                                     <a href="{{ route('menu.accessorydetails', $item->id) }}">
@@ -56,23 +64,48 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/3.3.1/mixitup.min.js"></script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                var mixer = mixitup("#accessory-container .row"); // Target the correct container
+                var mixer = mixitup("#accessory-container .row", {
+                    selectors: {
+                        target: ".mix"
+                    },
+                    animation: {
+                        duration: 300
+                    }
+                });
 
-                // Handle active button state
-                document.querySelectorAll(".trending-filter a").forEach(button => {
+                // Handle category filtering
+                document.querySelectorAll(".trending-filter:not(.sorting-options) a").forEach(button => {
                     button.addEventListener("click", function(event) {
-                        event.preventDefault(); // Prevent jumping to top
+                        event.preventDefault();
 
-                        // Remove previous active class
-                        document.querySelector(".trending-filter .is_active").classList.remove(
-                            "is_active");
-
-                        // Add active class to clicked filter
+                        // Remove 'is_active' from category buttons only
+                        document.querySelector(".trending-filter:not(.sorting-options) .is_active")
+                            ?.classList.remove("is_active");
                         this.classList.add("is_active");
 
-                        // Apply filtering
                         let filterValue = this.getAttribute("data-filter");
                         mixer.filter(filterValue === "all" ? "all" : filterValue);
+                    });
+                });
+
+                // Handle sorting buttons separately
+                document.querySelectorAll(".sorting-options a").forEach(button => {
+                    button.addEventListener("click", function(event) {
+                        event.preventDefault();
+
+                        // Remove 'is_active' from sorting buttons only
+                        document.querySelector(".sorting-options .is_active")?.classList.remove(
+                            "is_active");
+                        this.classList.add("is_active");
+
+                        let sortValue = this.getAttribute("data-sort");
+                        if (sortValue === "price:asc") {
+                            mixer.sort("price:asc");
+                        } else if (sortValue === "price:desc") {
+                            mixer.sort("price:desc");
+                        } else {
+                            mixer.sort("default");
+                        }
                     });
                 });
             });

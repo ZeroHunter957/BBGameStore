@@ -16,6 +16,7 @@ Route::get('/login', [AccountController::class, 'login'])->name('account.login')
 Route::post('/login', [AccountController::class, 'checkLogin'])->name('account.checkLogin');
 Route::get('/register', [AccountController::class, 'register'])->name('account.register');
 Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
+Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
 
 // otp register
 Route::get('/otp-register', [AccountController::class, 'viewOTPRegister'])->name('account.OTPregister');
