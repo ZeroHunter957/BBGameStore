@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccessoryCategoryController;
 use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AddToCartController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MenuController;
@@ -62,3 +63,14 @@ Route::get('/accessorydetails/{id}', [MenuController::class, 'accessorydetails']
 
 Route::get('/search-results', [MenuController::class, 'search-results'])->name('menu.search-results');
 Route::get('/search', [MenuController::class, 'search'])->name('menu.search');
+
+
+// cart
+Route::get('/cart', [AddToCartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [AddToCartController::class, 'addToCart'])->name('cart.add');
+Route::put('/cart/update', [AddToCartController::class, 'updateCart'])->name('cart.update');
+Route::delete('/cart/remove', [AddToCartController::class, 'removeCart'])->name('cart.remove');
+Route::delete('/cart/clear', [AddToCartController::class, 'clearCart'])->name('cart.clear');
+
+
+

@@ -25,9 +25,10 @@
                 <div class="col-lg-6 align-self-center">
                     <h4>{{ $accessory->name }}</h4>
                     <span class="price">${{ $accessory->price }}</span>
-                    <form id="qty" action="#">
-                        <input type="qty" class="form-control" id="1" aria-describedby="quantity"
-                            placeholder="1">
+                    <form id="qty" action="{{route('cart.add')}}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" value="{{$accessory->id}}">
+                        <input type="hidden" name="quantity" id="qty" value="1">
                         <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
                     </form>
                     <ul>

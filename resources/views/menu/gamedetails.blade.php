@@ -25,9 +25,11 @@
                 <div class="col-lg-6 align-self-center">
                     <h4>{{ $game->title }}</h4>
                     <span class="price">${{ $game->price }}</span>
-                    <form id="qty" action="#">
-                        <input type="qty" class="form-control" id="1" aria-describedby="quantity"
-                            placeholder="1">
+                    <form id="qty" action="{{route('cart.add')}}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" value="{{$game->id}}">
+                        <input type="hidden" name="developer" value="{{ $game->developer }}">
+                        <input type="hidden" name="quantity" id="qty" value="1">
                         <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
                     </form>
                     <ul>
@@ -63,7 +65,7 @@
                                             aria-selected="false">Reviews</button>
                                     </li>
                                 </ul>
-                            </div>
+                        </div>
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="description" role="tabpanel"
                                     aria-labelledby="description-tab">

@@ -1,6 +1,5 @@
 @extends('layouts.user')
 @section('title', 'list page')
-
 @section('content')
     <div class="main-banner">
         <div class="container">

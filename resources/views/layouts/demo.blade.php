@@ -14,21 +14,22 @@
 
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="{{asset('assets/css/fontawesome.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/templatemo-lugx-gaming.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/owl.css') }}">
-    <link rel="stylesheet" href="{{asset('assets/css/animate.css')}}">
-    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/bootstrap.css')}}">
-    <link rel="stylesheet" href="{{asset('../css_cart/css/vendors/ion.rangeSlider.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/font-awesome.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/feather-icon.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/animate.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/slick/slick.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/slick/slick-theme.css')}}">
-    <link id="color-link" rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/demo4.css')}}">
-    @stack('styles')
-<style>
-    .wislist-dropdown {
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/templatemo-lugx-gaming.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/owl.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/vendors/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{  asset('../css_cart/css/vendors/ion.rangeSlider.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/vendors/font-awesome.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/vendors/feather-icon.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/vendors/animate.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/vendors/slick/slick.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/vendors/slick/slick-theme.css')}}">
+    <link id="color-link" rel="stylesheet" type="text/css" href="{{  asset('../css_cart/css/demo4.css')}}">
+    <!--
+
+TemplateMo 589 lugx gaming
+.wislist-dropdown {
     position: relative;
     display: flex;
     align-items: center;
@@ -37,6 +38,8 @@
 .cart-media {
     position: relative;
     display: inline-block;
+    width: 36px; /* Giảm kích thước tổng thể */
+    height: 36px;
 }
 
 .cart-media a {
@@ -45,23 +48,23 @@
     align-items: center;
     text-decoration: none;
     color: black;
-    font-size: 24px;
+    font-size: 20px; /* Giảm kích thước icon */
 }
 
 .cart-media a i {
-    font-size: 28px;
+    font-size: 22px; /* Nhỏ hơn */
     position: relative;
 }
 
 #cart-count {
     position: absolute;
-    top: 0px;
-    right: 5px;
-    background: #FFFFFF;
-    color: #000000;
-    font-size: 12px;
+    top: -5px; /* Đưa số lên trên icon */
+    right: -5px; /* Đưa số lệch phải */
+    background: #DC3545; /* Đỏ nổi bật */
+    color: white;
+    font-size: 10px;
     font-weight: bold;
-    padding: 3px 6px;
+    padding: 2px 5px;
     border-radius: 50%;
     min-width: 16px;
     height: 16px;
@@ -70,8 +73,65 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3); /* Đổ bóng nhẹ */
 }
-</style>
+
+https://templatemo.com/tm-589-lugx-gaming
+
+--> <style>
+        header .profile-dropdown ul li {
+            display: block;
+            padding: 5px 20px;
+            border-bottom: 1px solid #ddd;
+            line-height: 35px;
+        }
+
+        header .profile-dropdown ul li:last-child {
+            border-color: #fff;
+        }
+
+        header .profile-dropdown ul {
+            padding: 10px 0;
+            min-width: 250px;
+        }
+
+        .name-usr {
+            background: #e87316;
+            padding: 8px 12px;
+            color: #fff;
+            font-weight: bold;
+            text-transform: uppercase;
+            line-height: 24px;
+        }
+
+        .name-usr span {
+            margin-right: 10px;
+        }
+
+        @media (max-width:600px) {
+            .h-logo {
+                max-width: 150px !important;
+            }
+
+            i.sidebar-bar {
+                font-size: 22px;
+            }
+
+            .mobile-menu ul li a svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .mobile-menu ul li a span {
+                margin-top: 0px;
+                font-size: 12px;
+            }
+
+            .name-usr {
+                padding: 5px 12px;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -90,64 +150,137 @@
 
     <div class="flex-wrapper">
         <!-- ***** Header Area Start ***** -->
-        <header class="header-area header-sticky">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <nav class="main-nav">
-                            <!-- ***** Logo Start ***** -->
-                            <a href="/" class="logo">
-                                <h1>BBGameStore</h1>
-                            </a>
-                            <!-- ***** Logo End ***** -->
-                            <!-- ***** Menu Start ***** -->
-                            <ul class="nav">
-                                <li><a href="/" class="active">Home</a></li>
-                                <li><a href="/gameshop">Games</a></li>
-                                <li><a href="/accessoryshop">Accessories</a></li>
-                                <li><a href="/contact">Contact Us</a></li>
-                                <li class="onhover-dropdown wislist-dropdown">
-                                    <div class="cart-media">
-                                        <a href="{{ route('cart.index') }}">
-                                            <i data-feather="shopping-cart"></i>
-                                            <span id="cart-count" class="label label-theme rounded-pill">
-                                                {{ Cart::instance('cart')->content()->count() }}
-                                            </span>
+        <header class="header-style-2" id="home">
+            <div class="main-header navbar-searchbar">
+                <div class="container-fluid-lg">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="main-menu">
+                                <div class="menu-left">
+                                    <div class="brand-logo">
+                                        <a href="/home">
+                                            <img src="assets/images/logo.png" class="h-logo img-fluid blur-up lazyload"
+                                                alt="logo">
                                         </a>
                                     </div>
-                                </li>
-                                @if (session()->has('accountLogin'))
-                                    <li>
-                                        <form action="{{ route('account.logout') }}" method="POST"
-                                            style="display:inline;">
-                                            @csrf
-                                            <a href="/logout"><button type="submit" class="logout"
-                                                    style="background:none; border:none; color:white; cursor:pointer;">Logout</button>
-                                        </form>
-                                    </li>
-                                @else
-                                    <li><a href="/login" class="login">Sign in</a></li>
-                                    <li><a href="/register" class="register">Register</a></li>
-                                @endif
-                            </ul>
-                            <a class='menu-trigger'>
-                                <span>Menu</span>
-                            </a>
-                            <!-- ***** Menu End ***** -->
-                        </nav>
-                        
+    
+                                </div>
+                                <nav>
+                                    <div class="main-navbar">
+                                        <div id="mainnav">
+                                            <div class="toggle-nav">
+                                                <i class="fa fa-bars sidebar-bar"></i>
+                                            </div>
+                                            <ul class="nav-menu">
+                                                <li class="back-btn d-xl-none">
+                                                    <div class="close-btn">
+                                                        Menu
+                                                        <span class="mobile-back"><i class="fa fa-angle-left"></i>
+                                                        </span>
+                                                    </div>
+                                                </li>
+                                                <li><a href="/home" class="nav-link menu-title">Home</a></li>
+                                                <li><a href="/shop" class="nav-link menu-title">Shop</a></li>
+                                                <li><a href="{{ route('cart.index') }}" class="nav-link menu-title">Cart</a></li>
+                                                <li><a href="about-us.html" class="nav-link menu-title">About Us</a></li>
+                                                <li><a href="contact-us.html" class="nav-link menu-title">Contact Us</a>
+                                                </li>
+                                                <li><a href="blog.html" class="nav-link menu-title">Blog</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </nav>
+                                <div class="menu-right">
+                                    <ul>
+                                        <li>
+                                            <div class="search-box theme-bg-color">
+                                                <i data-feather="search"></i>
+                                            </div>
+                                        </li>
+                                            <li class="onhover-dropdown wislist-dropdown">
+                                                <div class="cart-media">
+                                                    <a href="wishlist/list.html">
+                                                        <i data-feather="heart"></i>
+                                                        <span id="wishlist-count" class="label label-theme rounded-pill">
+                                                            0
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                            <li class="onhover-dropdown wislist-dropdown">
+                                                <div class="cart-media">
+                                                    <a href="{{ route('cart.index') }}">
+                                                        <i data-feather="shopping-cart"></i>
+                                                        <span id="cart-count" class="label label-theme rounded-pill">
+                                                            {{ Cart::instance('cart')->content()->count() }}
+                                                        </span>
+                                                    </a>
+                                                </div>
+                                            </li>
+                                        <li class="onhover-dropdown">
+                                            <div class="cart-media name-usr">
+                                                @auth <span>{{ Auth::user()->name }}</span>@endauth
+                                                <i data-feather="user"></i>
+                                            </div>
+                                            <div class="onhover-div profile-dropdown">
+                                                <ul>
+                                                    @if (Route::has('login'))
+                                                        @auth
+                                                            @if (Auth::user()->utype === 'ADM')
+                                                                <li>
+                                                                    <a href="{{ route('admin.index') }}"
+                                                                        class="d-block">Dashboard</a>
+                                                                </li>
+                                                            @else
+                                                                <li>
+                                                                    <a href="{{ route('user.index') }}" class="d-block">My
+                                                                        Account</a>
+                                                                </li>
+                                                            @endif
+                                                            <li>
+                                                                <a href="{{ route('logout') }}" class="d-block"
+                                                                    onclick="event.preventDefault();document.getElementById('frmlogout').submit();">Logout</a>
+                                                                <form action="{{ route('logout') }}" id="frmlogout"
+                                                                    method="post">@csrf</form>
+                                                            </li>
+                                                        @else
+                                                            <li>
+                                                                <a href="{{ route('login') }}" class="d-block">Login</a>
+                                                            </li>
+                                                            <li>
+                                                                <a href="{{ route('register') }}"
+                                                                    class="d-block">Register</a>
+                                                            </li>
+                                                        @endauth
+                                                    @endif
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="search-full">
+                                    <form method="GET" class="search-full" action="http://localhost:8000/search">
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i data-feather="search" class="font-light"></i>
+                                            </span>
+                                            <input type="text" name="q" class="form-control search-type"
+                                                placeholder="Search here..">
+                                            <span class="input-group-text close-search">
+                                                <i data-feather="x" class="font-light"></i>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </header>
-        <!-- ***** Header Area End ***** -->
-
-        {{-- body --}}
-        <div>
-            @yield('content')
-        </div>
-
-
+        @yield('content');
+        <div id="qvmodal"></div>
+    
         <footer class="footer-sm-space mt-5">
             <div class="main-footer">
                 <div class="container">
