@@ -19,6 +19,8 @@ Route::get('/register', [AccountController::class, 'register'])->name('account.r
 Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
 Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
 
+Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+
 // otp register
 Route::get('/otp-register', [AccountController::class, 'viewOTPRegister'])->name('account.OTPregister');
 Route::post('/otp-register', [AccountController::class, 'verifyOTPRegister'])->name('account.verifyOTPRegister');
@@ -71,6 +73,3 @@ Route::post('/cart/add', [AddToCartController::class, 'addToCart'])->name('cart.
 Route::put('/cart/update', [AddToCartController::class, 'updateCart'])->name('cart.update');
 Route::delete('/cart/remove', [AddToCartController::class, 'removeCart'])->name('cart.remove');
 Route::delete('/cart/clear', [AddToCartController::class, 'clearCart'])->name('cart.clear');
-
-
-

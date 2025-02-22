@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Mail;
 
 class AccountController extends Controller
 {
@@ -62,7 +63,7 @@ class AccountController extends Controller
 
         $otpCode = Str::upper(Str::random(6));
 
-        Account::create([
+        $account = Account::create([
             'fullname' => $request->fullname,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -72,6 +73,12 @@ class AccountController extends Controller
             'isverify' => false,
             'role' => "USER",
         ]);
+
+        // Send a simple email
+        Mail::raw("Hello {$account->fullname},\n\nYour OTP is: {$otpCode}\n\nIt expires in 5 minutes.", function ($message) use ($account) {
+            $message->to($account->email)
+                ->subject('Your Registration OTP');
+        });
 
         Session::put('s_email', $request->email);
 
@@ -132,6 +139,12 @@ class AccountController extends Controller
             'expireotp' => Carbon::now()->addMinutes(5),
         ]);
 
+        // Send the new OTP via email
+        Mail::raw("Hello {$account->fullname},\n\nYour new OTP is: {$newOtp}\n\nIt expires in 5 minutes.", function ($message) use ($account) {
+            $message->to($account->email)
+                ->subject('Your New OTP');
+        });
+
         return redirect()->route("account.OTPregister")->with("success", "A new OTP has been sent to your email.");
     }
 
@@ -142,5 +155,12 @@ class AccountController extends Controller
     {
         session()->forget('accountLogin');
         return redirect('/login')->with('message', 'You have been logged out.');
+    }
+
+    // index
+    public function index()
+    {
+        $accounts = Account::all();
+        return view("account.index", compact("accounts"));
     }
 }

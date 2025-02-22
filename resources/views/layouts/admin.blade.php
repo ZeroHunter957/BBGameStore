@@ -86,6 +86,40 @@ https://templatemo.com/tm-589-lugx-gaming
                             <span class="align-middle">Accessory</span>
                         </a>
                     </li>
+
+                    <li class="sidebar-header">
+                        Users
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route(name: 'account.index') }}">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Accounts</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="#">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Reviews</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="#">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Orders</span>
+                        </a>
+                    </li>
+
+                    <li class="sidebar-header">
+                        Shop
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="#">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Promotions</span>
+                        </a>
+                    </li>
+
                     {{-- <li class="sidebar-item">
                         <a class="sidebar-link" href="{{ route('blogs.index') }}">
                             <i class="align-middle" data-feather="check-square"></i>
