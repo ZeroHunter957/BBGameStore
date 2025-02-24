@@ -10,62 +10,64 @@ use Illuminate\Support\Facades\Session;
 
 class GameController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $games = Game::all();
         $cates = GameCategory::all();
-        return view("game.index",compact("games"));
+        return view("game.index", compact("games"));
     }
 
-    public function create(){
+    public function create()
+    {
         $cates = GameCategory::all();
-        return view("game.create",compact("cates"));
+        return view("game.create", compact("cates"));
     }
 
     public function store(Request $request)
-{
-    // Validate input fields
-    $request->validate([
-        "title" => "required",
-        "price" => "required|numeric",
-        "description" => "required",
-        "developer" => "required",
-        "platform" => "required|array", // Ensure platform is an array
-        "release_date" => "required|date",
-        "image" => "nullable|image|mimes:jpg,jpeg,png,gif|max:2048",
-        "file" => "required|mimes:zip,rar,exe|max:10240"
-    ]);
+    {
+        // Validate input fields
+        $request->validate([
+            "title" => "required",
+            "price" => "required|numeric",
+            "description" => "required",
+            "developer" => "required",
+            "platform" => "required|array", // Ensure platform is an array
+            "release_date" => "required|date",
+            "image" => "nullable|image|mimes:jpg,jpeg,png,gif|max:2048",
+            "file" => "required|mimes:zip,rar,exe|max:10240"
+        ]);
 
-    try {
-        $games = new Game();
-        $games->title = $request->title;
-        $games->cat_id = $request->cat_id;
-        $games->price = $request->price;
-        $games->description = $request->description;
-        $games->developer = $request->developer;
-        $games->platform = implode(", ", $request->platform); // Convert array to string
-        $games->release_date = $request->release_date;
+        try {
+            $games = new Game();
+            $games->title = $request->title;
+            $games->cat_id = $request->cat_id;
+            $games->price = $request->price;
+            $games->description = $request->description;
+            $games->developer = $request->developer;
+            $games->platform = implode(", ", $request->platform); // Convert array to string
+            $games->release_date = $request->release_date;
 
-        // Handle Image Upload (if present)
-        if ($request->hasFile("image")) {
-            $imageName = time() . '.' . $request->image->getClientOriginalExtension();
-            $request->image->move(public_path("gameimages"), $imageName);
-            $games->image = "/gameimages/" . $imageName;
+            // Handle Image Upload (if present)
+            if ($request->hasFile("image")) {
+                $imageName = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path("gameimages"), $imageName);
+                $games->image = "/gameimages/" . $imageName;
+            }
+
+            // Handle File Upload
+            if ($request->hasFile("file")) {
+                $fileName = time() . '_' . $request->file("file")->getClientOriginalName();
+                $request->file->move(public_path("gamefiles"), $fileName);
+                $games->file = "/gamefiles/" . $fileName;
+            }
+
+            $games->save();
+
+            return redirect()->route("game.index")->with("message", "Game created successfully!");
+        } catch (\Exception $e) {
+            return redirect()->back()->with("message", "An error occurred: " . $e->getMessage());
         }
-
-        // Handle File Upload
-        if ($request->hasFile("file")) {
-            $fileName = time() . '_' . $request->file("file")->getClientOriginalName();
-            $request->file->move(public_path("gamefiles"), $fileName);
-            $games->file = "/gamefiles/" . $fileName;
-        }
-
-        $games->save();
-
-        return redirect()->route("game.index")->with("message", "Game created successfully!");
-    } catch (\Exception $e) {
-        return redirect()->back()->with("message", "An error occurred: " . $e->getMessage());
     }
-}
 
     public function edit($id)
     {
@@ -150,15 +152,15 @@ class GameController extends Controller
     }
 
     public function setTodaysPick($id)
-{
-    // Reset all games' todays_pick to 0
-    Game::query()->update(['todays_pick' => 0]);
+    {
+        // Reset all games' todays_pick to 0
+        Game::query()->update(['todays_pick' => 0]);
 
-    // Set the selected game as today's pick
-    $game = Game::findOrFail($id);
-    $game->todays_pick = 1;
-    $game->save();
+        // Set the selected game as today's pick
+        $game = Game::findOrFail($id);
+        $game->todays_pick = 1;
+        $game->save();
 
-    return redirect()->back()->with('message', "Today's Pick set to: {$game->title}");
-}
+        return redirect()->back()->with('message', "Today's Pick set to: {$game->title}");
+    }
 }

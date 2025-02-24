@@ -6,7 +6,10 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AddToCartController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\VNPayController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -43,7 +46,6 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     Route::get('/accessorycate', [AccessoryCategoryController::class, 'index'])->name('accessorycategory.index');
     Route::get('/accessorycate/create', [AccessoryCategoryController::class, 'create'])->name('accessorycategory.create');
     Route::post('/accessorycate/create', [AccessoryCategoryController::class, 'store'])->name('accessorycategory.store');
-
 });
 
 // the same is true for user | user tương tự yêu cầu login
@@ -58,6 +60,14 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::put('/cart/update', [AddToCartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/remove', [AddToCartController::class, 'removeCart'])->name('cart.remove');
     Route::delete('/cart/clear', [AddToCartController::class, 'clearCart'])->name('cart.clear');
+
+    //payment
+    Route::post('/user/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
+    Route::get('/user/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
+    Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
+
+
+
 });
 
 // login & register

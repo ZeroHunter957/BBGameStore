@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -35,7 +36,9 @@ class AccountController extends Controller
 
         if ($account && Hash::check($request->password, $account->password)) {
             // Store user data in session manually
-            $request->session()->put('accountLogin', $account->id); // Store only the user ID
+            $user = User::where("email", $account->email)->first();
+            session()->forget('accountLogin');
+            $request->session()->put('accountLogin', $user->id); // Store only the user ID
             return $account->role === "ADMIN" ? redirect('/dashboard') : redirect('/');
         }
 

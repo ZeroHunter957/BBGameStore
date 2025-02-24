@@ -51,7 +51,6 @@
             </div>
         </div>
     </div>
-
     @if ($cartItems->Count() > 0)
         <section class="cart-section section-b-space">
             <div class="container">
@@ -72,13 +71,13 @@
                                 @foreach ($cartItems as $item)
                                     <tr>
                                         <td>
-                                            <a href="../product/details.html">
-                                                <img src="{{ $item->model->image }}" class="blur-up lazyloaded"
+                                            <a href="{{$item->product_type == 'game' ? '/gamedetails' : '/accessorydetails'}}/{{$item->product_id}}">
+                                                <img src="{{$item -> image}}" class="blur-up lazyloaded"
                                                     alt="">
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="../product/details.html">{{ $item->model->title?$item->model->title:$item->model->name }}</a>
+                                            <a href="{{ $item->product_type == 'game' ? '/gamedetails' : '/accessorydetails'}}/{{$item->product_id}}"  > {{$item->name}}</a>
                                             <div class="mobile-cart-content row">
                                                 <div class="col">
                                                     <div class="qty-box">
@@ -89,7 +88,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <h2>{{ $item->price }}</h2>
+                                                    <h2>{{$item->name}}</h2>
                                                 </div>
                                                 <div class="col">
                                                     <h2 class="td-color">
@@ -101,22 +100,22 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h2>{{ $item->price }}$</h2>
+                                            <h2>{{$item->price}}$</h2>
                                         </td>
                                         <td>
                                             <div class="qty-box">
                                                 <div class="input-group">
-                                                    <input type="number" name="quantity" data-rowid="{{ $item->rowId }}"
+                                                    <input type="number" name="quantity" data-rowid="{{ $item->id }}"
                                                         onchange="updateQuantity(this)" class="form-control input-number"
-                                                        value="{{ $item->qty }}">
+                                                        value="{{ $item->quantity }}">
                                                 </div>
                                             </div>
                                         </td>
                                         <td>
-                                            <h2 class="td-color">{{ $item->subtotal() }}$</h2>
+                                            <h2 class="td-color">{{ $item->quantity * $item->price }}$</h2>
                                         </td>
                                         <td>
-                                            <a href="javascript:void(0)" onclick="removeItem('{{ $item->rowId }}')">
+                                            <a href="javascript:void(0)" onclick="removeItem({{ $item->id }})">
                                                 <i class="fas fa-times"></i>
                                             </a>
                                         </td>
@@ -137,7 +136,7 @@
                             </div>
                             <div class="col-sm-5 col-7">
                                 <div class="left-side-button float-start">
-                                    <a href="../shop.html" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
+                                    <a href="{{ route('menu.gameshop') }}" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
                                         <i class="fas fa-arrow-left"></i> Continue Shopping</a>
                                 </div>
                             </div>
@@ -161,10 +160,7 @@
                             </div>
 
                             <div class="col-lg-4 col-sm-6 ">
-                                <div class="checkout-button">
-                                    <a href="checkout" class="btn btn-solid-default btn fw-bold">
-                                        Check Out <i class="fas fa-arrow-right ms-1"></i></a>
-                                </div>
+                        
                             </div>
 
                             <div class="col-lg-4">
@@ -173,13 +169,17 @@
                                         <div class="total-details">
                                             <div class="top-details">
                                                 <h3>Cart Totals</h3>
-                                                <h6>Sub Total <span>{{ Cart::instance('cart')->subtotal() }}</span></h6>
-                                                <h6>Tax <span>{{ Cart::instance('cart')->tax() }}</span></h6>
+                                                <h6>Sub Total <span>{{$subtotal}}$</span></h6>
+                                                <h6>Tax <span>{{$tax}}$</span></h6>
 
-                                                <h6>Total <span>{{ Cart::instance('cart')->total() }}</span></h6>
+                                                <h6>Total <span>{{$total}}$</span></h6>
                                             </div>
                                             <div class="bottom-details">
-                                                <a href="checkout">Process Checkout</a>
+                                                <form action="{{route('momo-payment')}}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="total_momo" value="{{$total*25000}}">
+                                                    <button type="submit" class="btn btn-primary" name="payUrl">Process Checkout</button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -214,6 +214,7 @@
         @csrf
         @method('delete')
     </form>
+    
 @endsection
 @push('scripts')
     <script>

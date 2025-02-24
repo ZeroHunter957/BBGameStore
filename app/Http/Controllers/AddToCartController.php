@@ -3,17 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Models\Accessory;
+use App\Models\Cart;
 use App\Models\Game;
-use Gloudemans\Shoppingcart\Facades\Cart;
+use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 
 class AddToCartController extends Controller
 {
     //
-    function index()
+
+    public function index()
     {
-        $cartItems = Cart::instance('cart')->content();
-        return view('cart.cart', ['cartItems' => $cartItems]);
+        $cartItems = Cart::where('user_id', session('accountLogin'))->get();
+
+        foreach ($cartItems as $cartItem) {
+            $cartItem->image = ($cartItem->product_type == 'game')
+                ? Game::where('id', $cartItem->product_id)->value('image')
+                : Accessory::where('id', $cartItem->product_id)->value('image');
+        }
+        $subtotal = $cartItems->sum(function ($item) {
+            return $item->quantity * $item->price;
+        });
+
+        $tax = $subtotal * 0.1;
+        $total = $subtotal + $tax;
+        return view('cart.cart', compact('cartItems', 'subtotal', 'tax', 'total'));
     }
 
     function addToCart(Request $request)
@@ -23,41 +38,61 @@ class AddToCartController extends Controller
             : Accessory::find($request->id);
 
         $name = $product->name ? $product->name : $product->title;
-        if ($request->developer) {
-            Cart::instance('cart')->add(
-                $product->id,
-                $name,
-                $request->quantity,
-                $product->price
-            )->associate('App\Models\Game');
+
+        if (session('accountLogin')) {
+            $cartItem = Cart::where('user_id', session()->get('accountLogin'))
+                ->where('product_id', $product->id)
+                ->where('product_type', $request->developer ? 'game' : 'accessory')
+                ->first();
+
+            if ($cartItem) {
+                $cartItem->quantity += $request->quantity;
+                $cartItem->save();
+            } else {
+                Cart::create([
+                    'user_id' => session()->get('accountLogin'),
+                    'product_id' => $product->id,
+                    'product_type' => $request->developer ? 'game' : 'accessory',
+                    'name' => $name,
+                    'quantity' => $request->quantity,
+                    'price' => $product->price,
+                ]);
+            }
         } else {
-            Cart::instance('cart')->add(
-                $product->id,
-                $name,
-                $request->quantity,
-                $product->price
-            )->associate('App\Models\Accessory');
+            return redirect()->back()->with('message', 'Please log in to add items to your cart.');
         }
 
         return redirect()->back()->with('message', 'Success! Item has been added successfully.');
     }
 
-
     public function updateCart(Request $request)
     {
-        Cart::instance('cart')->update($request->rowId, $request->quantity);
-        return redirect()->route('cart.index');
+        if ($request->quantity <= 0) {
+            Cart::where('id', $request->rowId)
+                ->where('user_id', session()->get('accountLogin'))
+                ->delete();
+            return redirect()->route('cart.index');
+        } else {
+            Cart::where('user_id', session()->get('accountLogin'))
+                ->where('id', $request->rowId)
+                ->update(['quantity' => $request->quantity]);
+
+            return redirect()->route('cart.index');
+        }
     }
 
     public function removeCart(Request $request)
     {
-        $rowId = $request->rowId;
-        Cart::instance('cart')->remove($rowId);
+        Cart::where('id', $request->rowId)
+            ->where('user_id', session()->get('accountLogin'))
+            ->delete();
+
         return redirect()->route('cart.index');
     }
+
     public function clearCart()
     {
-        Cart::instance('cart')->destroy();
+        Cart::where('user_id', session()->get('accountLogin'))->delete();
         return redirect()->route('cart.index');
     }
 }
