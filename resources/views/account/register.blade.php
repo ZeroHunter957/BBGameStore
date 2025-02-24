@@ -16,6 +16,7 @@
                         <p class="text-danger">{{ $message }}</p>
                     @enderror
                 </div>
+
                 <div class="mb-3 mt-3">
                     <label for="fullname">Fullname:</label>
                     <input type="text" class="form-control" id="fullname" value="{{ old('fullname') }}"
@@ -24,6 +25,7 @@
                         <p class="text-danger">{{ $message }}</p>
                     @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="password">Password:</label>
                     <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
@@ -31,6 +33,7 @@
                         <p class="text-danger">{{ $message }}</p>
                     @enderror
                 </div>
+
                 <div class="mb-3">
                     <label for="confirmPassword">Confirm Password:</label>
                     <input type="password" name="password_confirmation" class="form-control">
@@ -38,6 +41,15 @@
                         <p class="text-danger">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="mb-3">
+                    <label for="profile_image">Profile Image</label>
+                    <input type="file" name="profile_image" class="form-control" accept="image/*">
+                    @error('profile_image')
+                        <p class="text-danger">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
         </div>

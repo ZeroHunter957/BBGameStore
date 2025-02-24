@@ -187,6 +187,32 @@ img {
 
 /* 
 ---------------------------------------------
+Profile Menu Styles
+--------------------------------------------- 
+*/
+.profile-menu {
+    display: flex;
+    align-items: center;
+}
+
+.profile-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+}
+
+.profile-img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 8px;
+    border: 2px solid white;
+}
+
+/* 
+---------------------------------------------
 Related Games Styles
 --------------------------------------------- 
 */

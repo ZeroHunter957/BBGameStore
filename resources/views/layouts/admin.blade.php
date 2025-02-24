@@ -16,11 +16,13 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="assets/css/fontawesome.css">
-    <link rel="stylesheet" href="assets/css/templatemo-lugx-gaming.css">
-    <link rel="stylesheet" href="assets/css/owl.css">
-    <link rel="stylesheet" href="assets/css/animate.css">
-    <link rel="stylesheet"href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/templatemo-lugx-gaming.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/owl.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/bootstrap.css') }}">
+    <link rel="stylesheet"href="{{ asset('https://unpkg.com/swiper@7/swiper-bundle.min.css') }}" />
     <!--
 TemplateMo 589 lugx gaming
 https://templatemo.com/tm-589-lugx-gaming
@@ -35,15 +37,16 @@ https://templatemo.com/tm-589-lugx-gaming
     <meta name="keywords"
         content="adminkit, bootstrap, bootstrap 5, admin, dashboard, template, responsive, css, sass, html, theme, front-end, ui kit, web">
 
-    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="preconnect" href="{{ asset('https://fonts.gstatic.com') }}">
     <link rel="shortcut icon" href="img/icons/icon-48x48.png" />
 
-    <link rel="canonical" href="https://demo-basic.adminkit.io/" />
+    <link rel="canonical" href="{{ asset('https://demo-basic.adminkit.io/') }}" />
 
     <title>AdminKit Demo - Bootstrap 5 Admin Template</title>
 
-    <link href="adminkit/app.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="{{ asset('adminkit/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap') }}"
+        rel="stylesheet">
 
 </head>
 

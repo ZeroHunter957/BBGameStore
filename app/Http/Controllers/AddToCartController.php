@@ -30,8 +30,7 @@ class AddToCartController extends Controller
                 $request->quantity,
                 $product->price
             )->associate('App\Models\Game');
-        }
-        else{
+        } else {
             Cart::instance('cart')->add(
                 $product->id,
                 $name,
@@ -44,18 +43,21 @@ class AddToCartController extends Controller
     }
 
 
-    public function updateCart(Request $request){
+    public function updateCart(Request $request)
+    {
         Cart::instance('cart')->update($request->rowId, $request->quantity);
         return redirect()->route('cart.index');
     }
-    
-    public function removeCart(Request $request){
-        $rowId = $request -> rowId;
+
+    public function removeCart(Request $request)
+    {
+        $rowId = $request->rowId;
         Cart::instance('cart')->remove($rowId);
         return redirect()->route('cart.index');
     }
-    public function clearCart(){
-       Cart::instance('cart')->destroy();
-       return redirect()->route('cart.index');
+    public function clearCart()
+    {
+        Cart::instance('cart')->destroy();
+        return redirect()->route('cart.index');
     }
 }

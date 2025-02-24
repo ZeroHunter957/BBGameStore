@@ -59,9 +59,18 @@ class AccountController extends Controller
             'fullname' => 'required|string|max:255',
             'email' => 'required|email|unique:accounts',
             'password' => 'required|min:6|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
         ]);
 
         $otpCode = Str::upper(Str::random(6));
+
+        // Handle profile image upload
+        if ($request->hasFile('profile_image')) {
+            $imageName = time() . '.' . $request->profile_image->extension();
+            $request->profile_image->move(public_path('profile_images'), $imageName);
+        } else {
+            $imageName = 'default.jpg'; // Default profile image
+        }
 
         $account = Account::create([
             'fullname' => $request->fullname,
@@ -72,9 +81,10 @@ class AccountController extends Controller
             'status' => true,
             'isverify' => false,
             'role' => "USER",
+            'profile_image' => $imageName, // Store uploaded/default image
         ]);
 
-        // Send a simple email
+        // Send email with OTP
         Mail::raw("Hello {$account->fullname},\n\nYour OTP is: {$otpCode}\n\nIt expires in 5 minutes.", function ($message) use ($account) {
             $message->to($account->email)
                 ->subject('Your Registration OTP');
@@ -84,6 +94,7 @@ class AccountController extends Controller
 
         return redirect()->route('account.OTPregister')->with('success', 'Account created successfully. Check your email for the OTP.');
     }
+
 
     /**
      * Show OTP verification form
@@ -162,5 +173,54 @@ class AccountController extends Controller
     {
         $accounts = Account::all();
         return view("account.index", compact("accounts"));
+    }
+
+    // Profile
+    public function profile()
+    {
+        $userId = session('accountLogin');
+
+        if (!$userId) {
+            return redirect('/login')->with('message', 'Please log in to access your profile');
+        }
+
+        $user = Account::find($userId);
+
+        if (!$user) {
+            return redirect('/login')->with('message', 'User not found');
+        }
+
+        return view('account.profile', compact('user'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Account::find($request->user_id);
+
+        if (!$user) {
+            return response()->json(['success' => false, 'message' => 'User not found'], 404);
+        }
+
+        $user->fullname = $request->fullname;
+
+        if ($request->hasFile('profile_image')) {
+            $file = $request->file('profile_image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('profile_images'), $filename);
+
+            // Delete old image if necessary
+            if ($user->profile_image) {
+                @unlink(public_path('profile_images/' . $user->profile_image));
+            }
+
+            $user->profile_image = $filename;
+        }
+
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'newImagePath' => asset('profile_images/' . $user->profile_image)
+        ]);
     }
 }

@@ -14,64 +14,64 @@
 
 
     <!-- Additional CSS Files -->
-    <link rel="stylesheet" href="{{asset('assets/css/fontawesome.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/templatemo-lugx-gaming.css')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/owl.css') }}">
-    <link rel="stylesheet" href="{{asset('assets/css/animate.css')}}">
-    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/bootstrap.css')}}">
-    <link rel="stylesheet" href="{{asset('../css_cart/css/vendors/ion.rangeSlider.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/font-awesome.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/feather-icon.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/animate.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/slick/slick.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/vendors/slick/slick-theme.css')}}">
-    <link id="color-link" rel="stylesheet" type="text/css" href="{{asset('../css_cart/css/demo4.css')}}">
+    <link rel="stylesheet" href="{{ asset('assets/css/fontawesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/templatemo-lugx-gaming.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/owl.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
+    <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('../css_cart/css/vendors/ion.rangeSlider.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/font-awesome.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/feather-icon.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/animate.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/slick/slick.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/slick/slick-theme.css') }}">
+    <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/demo4.css') }}">
     @stack('styles')
-<style>
-    .wislist-dropdown {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
+    <style>
+        .wislist-dropdown {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
 
-.cart-media {
-    position: relative;
-    display: inline-block;
-}
+        .cart-media {
+            position: relative;
+            display: inline-block;
+        }
 
-.cart-media a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: black;
-    font-size: 24px;
-}
+        .cart-media a {
+            position: relative;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: black;
+            font-size: 24px;
+        }
 
-.cart-media a i {
-    font-size: 28px;
-    position: relative;
-}
+        .cart-media a i {
+            font-size: 28px;
+            position: relative;
+        }
 
-#cart-count {
-    position: absolute;
-    top: 0px;
-    right: 5px;
-    background: #FFFFFF;
-    color: #000000;
-    font-size: 12px;
-    font-weight: bold;
-    padding: 3px 6px;
-    border-radius: 50%;
-    min-width: 16px;
-    height: 16px;
-    line-height: 14px;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-</style>
+        #cart-count {
+            position: absolute;
+            top: 0px;
+            right: 5px;
+            background: #FFFFFF;
+            color: #000000;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 50%;
+            min-width: 16px;
+            height: 16px;
+            line-height: 14px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -106,23 +106,37 @@
                                 <li><a href="/gameshop">Games</a></li>
                                 <li><a href="/accessoryshop">Accessories</a></li>
                                 <li><a href="/contact">Contact Us</a></li>
-                                <li class="onhover-dropdown wislist-dropdown">
-                                    <div class="cart-media">
-                                        <a href="{{ route('cart.index') }}">
-                                            <i data-feather="shopping-cart"></i>
-                                            <span id="cart-count" class="label label-theme rounded-pill">
-                                                {{ Cart::instance('cart')->content()->count() }}
-                                            </span>
-                                        </a>
-                                    </div>
-                                </li>
+
                                 @if (session()->has('accountLogin'))
+                                    <li class="onhover-dropdown wislist-dropdown">
+                                        <div class="cart-media">
+                                            <a href="{{ route('cart.index') }}">
+                                                <i data-feather="shopping-cart"></i>
+                                                <span id="cart-count" class="label label-theme rounded-pill">
+                                                    {{ Cart::instance('cart')->content()->count() }}
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li class="profile-menu">
+                                        <a href="{{ route('account.profile') }}" class="profile-link">
+                                            @php
+                                                $user = \App\Models\Account::find(session('accountLogin'));
+                                                $profileImage = $user->profile_image ?? 'default.jpg';
+                                            @endphp
+                                            <img src="{{ asset('profile_images/' . $profileImage) }}" alt="Profile"
+                                                class="profile-img">
+                                            Profile
+                                        </a>
+                                    </li>
                                     <li>
                                         <form action="{{ route('account.logout') }}" method="POST"
                                             style="display:inline;">
                                             @csrf
-                                            <a href="/logout"><button type="submit" class="logout"
-                                                    style="background:none; border:none; color:white; cursor:pointer;">Logout</button>
+                                            <button type="submit" class="logout"
+                                                style="background:none; border:none; color:white; cursor:pointer;">
+                                                Logout
+                                            </button>
                                         </form>
                                     </li>
                                 @else
@@ -135,7 +149,7 @@
                             </a>
                             <!-- ***** Menu End ***** -->
                         </nav>
-                        
+
                     </div>
                 </div>
             </div>
@@ -169,7 +183,8 @@
                                                 India</span></span>
                                     </li>
                                     <li>
-                                        <span><b>Email:</b><span class="font-light"> contact@surfsidemedia.in</span></span>
+                                        <span><b>Email:</b><span class="font-light">
+                                                contact@surfsidemedia.in</span></span>
                                     </li>
                                 </ul>
                             </div>
