@@ -460,7 +460,7 @@
                                             @endif
                                         </button>
                                     </form>
-                                    <span>{{ $feedback->likeFeedbacks_count }} Likes</span>
+                                    <span>{{ $feedback->likeFeedbacks->count()}} Likes</span>
 
                                     <button class="btn btn-link" onclick="showReplyForm({{ $feedback->id }})">Reply</button>
 
@@ -615,7 +615,6 @@
         </div>
     </div>
 </div>
-@endsection
 
 <script>
     function showReplyForm(commentId) {

@@ -28,6 +28,6 @@ class ReplyFeedback extends Model
 
     public function getLikeCountAttribute()
     {
-        return $this->likes()->count();
+        return $this->likeFeedbacks()->count();
     }
 }
