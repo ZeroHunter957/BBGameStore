@@ -2,334 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Account;
-use Cache;
-use DB;
+use App\Models\Cart;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Str;
-use Carbon\Carbon;
-use Mail;
 
-class AccountController extends Controller
+class PaymentController extends Controller
 {
-    /**
-     * Show login form
-     */
-    public function login()
+
+    function execPostRequest($url, $data)
     {
-        return view("account.login");
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+    //close connection
+        curl_close($ch);
+        return $result;
+    }
+    public function momoPayment(Request $request)
+    {
+
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
+
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua ATM MoMo";
+        $amount = $_POST['total_momo'];
+        $orderId = time() . "";
+        $redirectUrl = "http://127.0.0.1:8000/payment/result";
+        $ipnUrl = "http://127.0.0.1:8000/payment/result";
+        $extraData = "";
+        $requestId = time() . "";
+        $requestType = "payWithATM";
+        //before sign HMAC SHA256 signature
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+        $data = array(
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            "storeId" => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $amount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature
+        );
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        $jsonResult = json_decode($result, true);  // decode json
+
+        //Just a example, please check more in thereA
+        dump($jsonResult);
+        return redirect()->to($jsonResult['payUrl']);
     }
 
-    /**
-     * Handle login attempt
-     */
-    public function checkLogin(Request $request)
+    public function handlePaymentResult(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:6',
-        ]);
+        $orderId = $request->query('orderId');
+        $amount = $request->query('amount');
+        $message = $request->query('message');
+        $errorCode = $request->query('errorCode');
+        $transId = $request->query('transId');
+        $payType = $request->query('payType');
 
-        $account = Account::where("email", $request->email)->first();
+        // Kiểm tra nếu thanh toán thành công
+        if ($errorCode == 0) {
+            // Xóa giỏ hàng của user sau khi thanh toán thành công
+            Cart::where('account_id', session()->get('accountLogin'))->delete();
 
-        if ($account && Hash::check($request->password, $account->password)) {
-            // Store user data in session manually
-            $request->session()->put('accountLogin', $account->id); // Store only the user ID
-            return $account->role === "ADMIN" ? redirect('/admin/dashboard') : redirect('/');
+            return view('invoice.payment-result', [
+                'status' => 'success',
+                'message' => 'Thanh toán thành công!',
+                'payType' => $payType,
+                'order_id' => $orderId,
+                'amount' => $amount,
+            ]);
+        } else {
+            return view('invoice.payment-result', [
+                'status' => 'error',
+                'message' => 'Thanh toán thất bại. Vui lòng thử lại!',
+                'order_id' => $orderId,
+                'amount' => $amount,
+            ]);
         }
-
-        return back()->with('message', 'Invalid email or password.');
-    }
-
-    /**
-     * Show registration form
-     */
-    public function register()
-    {
-        return view("account.register");
-    }
-
-    /**
-     * Handle new user registration
-     */
-    public function registerPost(Request $request)
-    {
-        $request->validate([
-            'fullname' => 'required|string|max:255',
-            'email' => 'required|email|unique:accounts',
-            'password' => 'required|min:6|confirmed',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $otpCode = Str::upper(Str::random(6));
-        $profileImage = 'default.jpg'; // Default image if no upload
-
-        // Handle profile image upload
-        if ($request->hasFile('profile_image')) {
-            $image = $request->file('profile_image');
-            $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('profile_images'), $imageName);
-            $profileImage = $imageName; // Assign uploaded image
-        }
-
-        // Create user account with profile image assigned
-        $account = Account::create([
-            'fullname' => $request->fullname,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'otp' => $otpCode,
-            'expireotp' => Carbon::now()->addMinutes(5),
-            'status' => true,
-            'isverify' => false,
-            'role' => "USER",
-            'profile_image' => $profileImage, // Ensure it's saved properly
-        ]);
-
-        // Debugging Log
-        \Log::info('New user registered', ['profile_image' => $account->profile_image]);
-
-        // Send OTP email
-        Mail::raw("Hello {$account->fullname},\n\nYour OTP is: {$otpCode}\n\nIt expires in 5 minutes.", function ($message) use ($account) {
-            $message->to($account->email)->subject('Your Registration OTP');
-        });
-
-        Session::put('s_email', $request->email);
-
-        return redirect()->route('account.OTPregister')->with('success', 'Account created successfully. Check your email for the OTP.');
-    }
-
-
-    /**
-     * Show OTP verification form
-     */
-    public function viewOTPRegister()
-    {
-        return view("account.otp_register");
-    }
-
-    /**
-     * Handle OTP verification
-     */
-    public function verifyOTPRegister(Request $request)
-    {
-        $request->validate([
-            'otp' => 'required|string|size:6',
-        ]);
-
-        $account = Account::where('otp', $request->otp)->first();
-
-        if (!$account) {
-            return redirect()->route("account.OTPregister")->with("message", "Invalid OTP");
-        }
-
-        if ($account->expireotp < Carbon::now()) {
-            return redirect()->route("account.OTPregister")->with("message", "OTP expired");
-        }
-
-        // Log debugging info
-        \Log::info('Before OTP Verification:', ['profile_image' => $account->profile_image]);
-
-        // Ensure profile image is not reset
-        $account->update([
-            "isverify" => true,
-        ]);
-
-        \Log::info('After OTP Verification:', ['profile_image' => $account->profile_image]);
-
-        return redirect('/login')->with('success', 'OTP verified. You can now log in.');
-    }
-
-
-    /**
-     * Resend OTP if expired
-     */
-    public function resendOTP(Request $request)
-    {
-        $email = Session::get('s_email');
-        if (!$email) {
-            return redirect()->route("account.register")->with("message", "Session expired. Please register again.");
-        }
-
-        $account = Account::where("email", $email)->first();
-        if (!$account) {
-            return redirect()->route("account.register")->with("message", "Account not found.");
-        }
-
-        $newOtp = Str::upper(Str::random(6));
-
-        $account->update([
-            'otp' => $newOtp,
-            'expireotp' => Carbon::now()->addMinutes(5),
-        ]);
-
-        // Send the new OTP via email
-        Mail::raw("Hello {$account->fullname},\n\nYour new OTP is: {$newOtp}\n\nIt expires in 5 minutes.", function ($message) use ($account) {
-            $message->to($account->email)
-                ->subject('Your New OTP');
-        });
-
-        return redirect()->route("account.OTPregister")->with("success", "A new OTP has been sent to your email.");
-    }
-
-    /**
-     * Logout and destroy session
-     */
-    public function logout(Request $request)
-    {
-        session()->forget('accountLogin');
-        return redirect('/login')->with('message', 'You have been logged out.');
-    }
-
-    // index
-    public function index()
-    {
-        $accounts = Account::all();
-        return view("account.index", compact("accounts"));
-    }
-
-    // Profile
-    public function profile()
-    {
-        $userId = session('accountLogin');
-
-        if (!$userId) {
-            return redirect('/login')->with('message', 'Please log in to access your profile');
-        }
-
-        $user = Account::find($userId);
-
-        if (!$user) {
-            return redirect('/login')->with('message', 'User not found');
-        }
-
-        return view('account.profile', compact('user'));
-    }
-
-    public function updateProfile(Request $request)
-    {
-        $request->validate([
-            'fullname' => 'required|string|max:255',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $user = Account::find(session('accountLogin'));
-
-        if (!$user) {
-            return response()->json(['success' => false]);
-        }
-
-        $user->fullname = $request->fullname;
-
-        if ($request->hasFile('profile_image')) {
-            $imageName = time() . '.' . $request->profile_image->extension();
-            $request->profile_image->move(public_path('profile_images'), $imageName);
-            $user->profile_image = $imageName;
-        }
-
-        $user->save();
-
-        return response()->json(['success' => true, 'profile_image' => $user->profile_image]);
-    }
-
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
-        ]);
-
-        $user = Account::find(session('accountLogin'));
-
-        if (!$user || !Hash::check($request->current_password, $user->password)) {
-            return response()->json(['success' => false, 'message' => 'Current password is incorrect.']);
-        }
-
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return response()->json(['success' => true, 'message' => 'Password updated successfully.']);
-    }
-
-    // forgot password
-    /**
-     * Show the password reset request form
-     */
-    public function showForgotPasswordForm()
-    {
-        return view('account.forgot_password');
-    }
-
-    /**
-     * Handle password reset request and send email with a token
-     */
-    public function sendResetLink(Request $request)
-    {
-        $request->validate(['email' => 'required|email']);
-
-        $account = Account::where('email', $request->email)->first();
-
-        if (!$account) {
-            return back()->with('message', 'No account found with that email.');
-        }
-
-        // Generate a temporary token
-        $token = Str::random(60);
-        Cache::put("password_reset_{$token}", $account->email, now()->addMinutes(30));
-
-        // Send email
-        $resetLink = url("/reset-password/$token");
-        Mail::raw("Click this link to reset your password: $resetLink", function ($message) use ($account) {
-            $message->to($account->email)->subject('Password Reset Request');
-        });
-
-        return back()->with('success', 'Password reset link has been sent to your email.');
-    }
-
-    /**
-     * Show password reset form
-     */
-    public function showResetForm($token)
-    {
-        if (!Cache::has("password_reset_{$token}")) {
-            return redirect('/forgot-password')->with('message', 'Invalid or expired reset token.');
-        }
-
-        return view('account.reset_password', compact('token'));
-    }
-
-    /**
-     * Handle password reset
-     */
-    public function resetPassword(Request $request)
-    {
-        $request->validate([
-            'token' => 'required',
-            'password' => 'required|min:6|confirmed',
-        ]);
-
-        $email = Cache::get("password_reset_{$request->token}");
-
-        if (!$email) {
-            return redirect('/forgot-password')->with('message', 'Invalid or expired reset token.');
-        }
-
-        $account = Account::where('email', $email)->first();
-
-        if (!$account) {
-            return redirect('/forgot-password')->with('message', 'Account not found.');
-        }
-
-        // Update password
-        $account->update([
-            'password' => Hash::make($request->password),
-        ]);
-
-        // Clear the reset token
-        Cache::forget("password_reset_{$request->token}");
-
-        return redirect('/login')->with('success', 'Password reset successful. You can now log in.');
     }
 }
+

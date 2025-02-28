@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->boolean("status");
             $table->boolean("isverify");
             $table->string("role");
+            $table->string("profile_image");
             $table->timestamps();
         });
     }

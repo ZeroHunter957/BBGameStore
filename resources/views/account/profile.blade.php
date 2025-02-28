@@ -27,7 +27,7 @@
                     style="width: 130px; height: 130px; object-fit: cover; border: 4px solid white;">
 
                 <!-- User Name -->
-                <h3 id="user_fullname" class="mt-2 text-white">{{ $user->fullname }}</h3>
+                <h3 id="user_fullname" class="mt-2 text-black">{{ $user->fullname }}</h3>
 
                 <!-- Profile Edit Container (Ensures Position Consistency) -->
                 <div style="width: 220px; margin: auto; position: relative;">

@@ -77,8 +77,8 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::delete('/cart/clear', [AddToCartController::class, 'clearCart'])->name('cart.clear');
 
     //payment
-    Route::post('/user/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
-    Route::get('/user/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
+    Route::post('/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
+    Route::get('/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
 });
 

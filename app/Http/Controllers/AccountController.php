@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
-use App\Models\User;
+use Cache;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,6 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Mail;
-use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -61,19 +61,21 @@ class AccountController extends Controller
             'fullname' => 'required|string|max:255',
             'email' => 'required|email|unique:accounts',
             'password' => 'required|min:6|confirmed',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Validate image upload
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $otpCode = Str::upper(Str::random(6));
+        $profileImage = 'default.jpg'; // Default image if no upload
 
         // Handle profile image upload
         if ($request->hasFile('profile_image')) {
-            $imageName = time() . '.' . $request->profile_image->extension();
-            $request->profile_image->move(public_path('profile_images'), $imageName);
-        } else {
-            $imageName = 'default.jpg'; // Default profile image
+            $image = $request->file('profile_image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('profile_images'), $imageName);
+            $profileImage = $imageName; // Assign uploaded image
         }
 
+        // Create user account with profile image assigned
         $account = Account::create([
             'fullname' => $request->fullname,
             'email' => $request->email,
@@ -83,13 +85,15 @@ class AccountController extends Controller
             'status' => true,
             'isverify' => false,
             'role' => "USER",
-            'profile_image' => $imageName, // Store uploaded/default image
+            'profile_image' => $profileImage, // Ensure it's saved properly
         ]);
 
-        // Send email with OTP
+        // Debugging Log
+        \Log::info('New user registered', ['profile_image' => $account->profile_image]);
+
+        // Send OTP email
         Mail::raw("Hello {$account->fullname},\n\nYour OTP is: {$otpCode}\n\nIt expires in 5 minutes.", function ($message) use ($account) {
-            $message->to($account->email)
-                ->subject('Your Registration OTP');
+            $message->to($account->email)->subject('Your Registration OTP');
         });
 
         Session::put('s_email', $request->email);
@@ -125,10 +129,19 @@ class AccountController extends Controller
             return redirect()->route("account.OTPregister")->with("message", "OTP expired");
         }
 
-        $account->update(["isverify" => true]);
+        // Log debugging info
+        \Log::info('Before OTP Verification:', ['profile_image' => $account->profile_image]);
+
+        // Ensure profile image is not reset
+        $account->update([
+            "isverify" => true,
+        ]);
+
+        \Log::info('After OTP Verification:', ['profile_image' => $account->profile_image]);
 
         return redirect('/login')->with('success', 'OTP verified. You can now log in.');
     }
+
 
     /**
      * Resend OTP if expired
@@ -167,9 +180,6 @@ class AccountController extends Controller
     public function logout(Request $request)
     {
         session()->forget('accountLogin');
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
         return redirect('/login')->with('message', 'You have been logged out.');
     }
 
@@ -200,32 +210,126 @@ class AccountController extends Controller
 
     public function updateProfile(Request $request)
     {
-        $user = Account::find($request->user_id);
+        $request->validate([
+            'fullname' => 'required|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $user = Account::find(session('accountLogin'));
 
         if (!$user) {
-            return response()->json(['success' => false, 'message' => 'User not found'], 404);
+            return response()->json(['success' => false]);
         }
 
         $user->fullname = $request->fullname;
 
         if ($request->hasFile('profile_image')) {
-            $file = $request->file('profile_image');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('profile_images'), $filename);
-
-            // Delete old image if necessary
-            if ($user->profile_image) {
-                @unlink(public_path('profile_images/' . $user->profile_image));
-            }
-
-            $user->profile_image = $filename;
+            $imageName = time() . '.' . $request->profile_image->extension();
+            $request->profile_image->move(public_path('profile_images'), $imageName);
+            $user->profile_image = $imageName;
         }
 
         $user->save();
 
-        return response()->json([
-            'success' => true,
-            'newImagePath' => asset('profile_images/' . $user->profile_image)
+        return response()->json(['success' => true, 'profile_image' => $user->profile_image]);
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => 'required|min:6|confirmed',
         ]);
+
+        $user = Account::find(session('accountLogin'));
+
+        if (!$user || !Hash::check($request->current_password, $user->password)) {
+            return response()->json(['success' => false, 'message' => 'Current password is incorrect.']);
+        }
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+
+        return response()->json(['success' => true, 'message' => 'Password updated successfully.']);
+    }
+
+    // forgot password
+    /**
+     * Show the password reset request form
+     */
+    public function showForgotPasswordForm()
+    {
+        return view('account.forgot_password');
+    }
+
+    /**
+     * Handle password reset request and send email with a token
+     */
+    public function sendResetLink(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $account = Account::where('email', $request->email)->first();
+
+        if (!$account) {
+            return back()->with('message', 'No account found with that email.');
+        }
+
+        // Generate a temporary token
+        $token = Str::random(60);
+        Cache::put("password_reset_{$token}", $account->email, now()->addMinutes(30));
+
+        // Send email
+        $resetLink = url("/reset-password/$token");
+        Mail::raw("Click this link to reset your password: $resetLink", function ($message) use ($account) {
+            $message->to($account->email)->subject('Password Reset Request');
+        });
+
+        return back()->with('success', 'Password reset link has been sent to your email.');
+    }
+
+    /**
+     * Show password reset form
+     */
+    public function showResetForm($token)
+    {
+        if (!Cache::has("password_reset_{$token}")) {
+            return redirect('/forgot-password')->with('message', 'Invalid or expired reset token.');
+        }
+
+        return view('account.reset_password', compact('token'));
+    }
+
+    /**
+     * Handle password reset
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        $email = Cache::get("password_reset_{$request->token}");
+
+        if (!$email) {
+            return redirect('/forgot-password')->with('message', 'Invalid or expired reset token.');
+        }
+
+        $account = Account::where('email', $email)->first();
+
+        if (!$account) {
+            return redirect('/forgot-password')->with('message', 'Account not found.');
+        }
+
+        // Update password
+        $account->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Clear the reset token
+        Cache::forget("password_reset_{$request->token}");
+
+        return redirect('/login')->with('success', 'Password reset successful. You can now log in.');
     }
 }
