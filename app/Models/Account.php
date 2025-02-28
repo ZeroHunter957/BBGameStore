@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class Account extends Model
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+class Account extends Authenticatable
 {
-    protected $fillable = ["email","fullname","password","otp","expireotp","status","isverify","role"];
+    use Notifiable;
+    protected $fillable = ["email", "fullname", "password", "otp", "expireotp", "status", "isverify", "role", "profile_image"];
 }
