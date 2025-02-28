@@ -112,10 +112,6 @@ class BlogUserController extends Controller
             $imagePath = $blog->image;
 
             if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                if ($imagePath) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-
                 $imagePath = $request->file('image')->store('img', 'public');
             }
 

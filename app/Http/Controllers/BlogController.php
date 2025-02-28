@@ -45,12 +45,20 @@ class BlogController extends Controller
             'status' => 'required|in:0,1,2',
         ]);
 
-        if ($request->status == 0 && $blog->status == 2) {
+        if ($request->status == 3 && $blog->status == 0) {
+            $rejectMessage = "Admin reject add blog: " . $blog->title;
+
+            Mail::to($blog->user->email)->send(new BlogUpdateRejected($rejectMessage, 'add', $blog));
+        }
+
+
+        if ($request->status == 3 && $blog->status == 2) {
             $rejectMessage = "Admin reject update blog: " . $blog->title;
 
             Mail::to($blog->user->email)->send(new BlogUpdateRejected($rejectMessage, 'update', $blog));
         }
-        if ($request->status == 2) {
+        
+        if ($blog->status == 2 && $request->status == 1) {
             $blog->title = $blog->title_cache;
             $blog->content = $blog->content_cache;
             $blog->image = $blog->image_cache;

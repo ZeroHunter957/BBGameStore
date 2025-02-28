@@ -23,6 +23,32 @@
     <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
     <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('https://unpkg.com/swiper@7/swiper-bundle.min.css') }}" />
+    <style>
+        .flex-wrapper {
+            width: 100%;
+            margin: 0;
+            /* Ensure no margin is applied */
+        }
+
+        .container-fluid {
+            padding: 0;
+            /* Remove padding if it's causing unwanted space */
+        }
+
+        .main {
+            width: 100%;
+            padding: 0;
+            /* Ensure no padding is added */
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
     <!--
 TemplateMo 589 lugx gaming
 https://templatemo.com/tm-589-lugx-gaming
@@ -170,6 +196,7 @@ https://templatemo.com/tm-589-lugx-gaming
                 </div>
             </div>
         </div>
+
 
         <!-- Scripts -->
         <!-- Bootstrap core JavaScript -->

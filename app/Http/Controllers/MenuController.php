@@ -83,14 +83,27 @@ class MenuController extends Controller
 
         $bannedWords = BannedWord::pluck('word')->toArray();
 
-        $feedbacks = $game->feedbacks()->orderBy('created_at', 'desc')->get();
+        $feedbacks = $game->feedbacks()
+            ->with('user')
+            ->withCount('likeFeedbacks')
+            ->orderBy('star', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
 
         foreach ($feedbacks as $feedback) {
-            $feedback->replyFeedbacks = $feedback->replyFeedbacks()->orderBy('created_at', 'desc')->get();
+            $feedback->replyFeedbacks = $feedback->replyFeedbacks()
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
 
-        return view('menu.gamedetails', compact('game', 'relatedGames', 'feedbacks', 'bannedWords'));
+        $averageRating = $game->feedbacks()->avg('star');
+
+        $totalFeedbacks = $game->feedbacks()->count();
+
+        return view('menu.gamedetails', compact('game', 'relatedGames', 'feedbacks', 'bannedWords', 'averageRating', 'totalFeedbacks'));
     }
+
 
     public function accessorydetails($id)
     {

@@ -286,6 +286,57 @@
         color: #FFD700;
     }
 </style>
+
+
+<style>
+    .custom-pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        padding: 10px;
+    }
+
+    .custom-pagination .prev,
+    .custom-pagination .next,
+    .custom-pagination .page,
+    .custom-pagination .current {
+        padding: 10px 15px;
+        margin: 0 5px;
+        font-size: 14px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .custom-pagination .prev:hover,
+    .custom-pagination .next:hover,
+    .custom-pagination .page:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    .custom-pagination .disabled {
+        color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .custom-pagination .current {
+        background-color: #007bff;
+        color: #fff;
+        font-weight: bold;
+    }
+
+    .custom-pagination .page {
+        text-decoration: none;
+    }
+
+    .custom-pagination .prev,
+    .custom-pagination .next {
+        font-weight: bold;
+    }
+</style>
 @section('content')
 <div class="page-heading header-text">
     <div class="container">
@@ -359,12 +410,19 @@
                             </div>
                             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                 <h3>Feedbacks</h3>
+
+                                <!-- Display average rating and total feedbacks -->
+                                <div class="rating-summary">
+                                    <strong>Average Rating: </strong> {{ number_format($averageRating, 1) }}/5 ({{ $totalFeedbacks }} feedbacks)
+                                </div>
+
                                 @if ($errors->has('feedback'))
                                 <div class="alert alert-danger">
                                     {{ $errors->first('feedback') }}
                                 </div>
                                 @endif
 
+                                <!-- Loop through feedbacks -->
                                 @foreach ($feedbacks as $feedback)
                                 <div class="comment">
                                     <div class="user-info">
@@ -374,13 +432,14 @@
                                     <p>{!! $feedback->content !!}</p>
                                     <small>{{ $feedback->created_at->format('Y-m-d H:i') }}</small>
 
+                                    <!-- Rating stars -->
                                     <div class="star-rating">
                                         @for ($i = 1; $i <= 5; $i++)
                                             <i class="fa fa-star{{ $feedback->star >= $i ? '' : '-o' }}" style="color: #f39c12;"></i>
                                             @endfor
                                     </div>
 
-
+                                    <!-- Feedback like button -->
                                     <form action="{{ route('feedback.likeFeedback', $feedback->id) }}" method="POST" style="display:inline;">
                                         @csrf
                                         <button type="submit" class="btn btn-link">
@@ -391,7 +450,7 @@
                                             @endif
                                         </button>
                                     </form>
-                                    <span>{{ $feedback->likeFeedbacks->count() }} Likes</span>
+                                    <span>{{ $feedback->likeFeedbacks_count }} Likes</span>
 
                                     <button class="btn btn-link" onclick="showReplyForm({{ $feedback->id }})">Reply</button>
 
@@ -414,6 +473,7 @@
                                         </form>
                                     </div>
 
+                                    <!-- Replies -->
                                     @foreach ($feedback->replyFeedbacks as $reply)
                                     <div class="comment ml-4">
                                         <div class="user-info">
@@ -452,6 +512,29 @@
                                 </div>
                                 @endforeach
 
+                                <div class="custom-pagination">
+                                    @if ($feedbacks->onFirstPage())
+                                    <span class="disabled prev">Prev</span>
+                                    @else
+                                    <a href="{{ $feedbacks->previousPageUrl() }}" class="prev">Prev</a>
+                                    @endif
+
+                                    @foreach ($feedbacks->getUrlRange(1, $feedbacks->lastPage()) as $page => $url)
+                                    @if ($page == $feedbacks->currentPage())
+                                    <span class="current">{{ $page }}</span>
+                                    @else
+                                    <a href="{{ $url }}" class="page">{{ $page }}</a>
+                                    @endif
+                                    @endforeach
+
+                                    @if ($feedbacks->hasMorePages())
+                                    <a href="{{ $feedbacks->nextPageUrl() }}" class="next">Next</a>
+                                    @else
+                                    <span class="disabled next">Next</span>
+                                    @endif
+                                </div>
+
+
                                 @if (Auth::check())
                                 <form action="{{ route('feedback.storeFeedback', $game->id) }}" method="POST">
                                     @csrf
@@ -460,7 +543,6 @@
                                         <textarea name="content" class="form-control" placeholder="Your Feedback" rows="5" required></textarea>
                                     </div>
 
-                                    <!-- Star Rating System -->
                                     <div class="form-group">
                                         <label for="star-rating">Rating:</label>
                                         <div class="star-rating">
@@ -478,6 +560,7 @@
                                 <a href="{{ route('account.login') }}" class="btn btn-primary">Login to Feedback</a>
                                 @endif
                             </div>
+
                         </div>
                     </div>
                 </div>

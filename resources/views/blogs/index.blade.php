@@ -54,6 +54,7 @@
                                             <option value="0" {{ $blog->status == 0 ? 'selected' : '' }}>Chờ xác nhận</option>
                                             <option value="1" {{ $blog->status == 1 ? 'selected' : '' }}>Đã xác nhận</option>
                                             <option value="2" {{ $blog->status == 2 ? 'selected' : '' }}>Chờ cập nhật</option>
+                                            <option value="3" {{ $blog->status == 3 ? 'selected' : '' }}>Từ chối</option>
                                         </select>
                                     </form>
                                 </td>
