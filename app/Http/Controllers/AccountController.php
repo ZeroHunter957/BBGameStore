@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use Mail;
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -35,11 +36,17 @@ class AccountController extends Controller
         $account = Account::where("email", $request->email)->first();
 
         if ($account && Hash::check($request->password, $account->password)) {
-            // Store user data in session manually
             $user = User::where("email", $account->email)->first();
             session()->forget('accountLogin');
-            $request->session()->put('accountLogin', $user->id); // Store only the user ID
-            return $account->role === "ADMIN" ? redirect('/dashboard') : redirect('/');
+            $request->session()->put('accountLogin', $user->id);
+            Auth::login($user);
+            $request->session()->put('user_id', $user->id);
+            $request->session()->put('role', $user->role);
+            $previousUrl = $request->session()->get('previous_url', url('/'));
+
+            Log::info('Redirecting to previous URL:', ['previous_url' => $previousUrl]);
+
+            return $account->role === "ADMIN" ? redirect('/admin/dashboard') : redirect('/');
         }
 
         return back()->with('message', 'Invalid email or password.');

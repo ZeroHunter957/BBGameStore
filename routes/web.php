@@ -9,6 +9,11 @@ use App\Http\Controllers\GameController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\BlogUserController;
+use App\Http\Controllers\BannedWordController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\VNPayController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -41,11 +46,19 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     Route::get('/accessory/delete/{id}', [AccessoryController::class, 'delete'])->name('accessory.delete');
     Route::get('/accessory/edit/{id}', [AccessoryController::class, 'edit'])->name('accessory.edit');
     Route::post('/accessory/edit/{accessories}', [AccessoryController::class, "update"])->name("accessory.update");
+    Route::resource('blogs', BlogController::class);
+    Route::put('blogs/{id}/updateStatus', [BlogController::class, 'updateStatus'])->name('blogs.updateStatus');
+
+    Route::resource('words', BannedWordController::class);
+    Route::resource('comments', CommentController::class);
 
     // accessory category routes
     Route::get('/accessorycate', [AccessoryCategoryController::class, 'index'])->name('accessorycategory.index');
     Route::get('/accessorycate/create', [AccessoryCategoryController::class, 'create'])->name('accessorycategory.create');
     Route::post('/accessorycate/create', [AccessoryCategoryController::class, 'store'])->name('accessorycategory.store');
+
+    Route::get('/feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::delete('/feedbacks/{feedbackId}/deleteByAdmin', [FeedbackController::class, 'deleteByAdmin'])->name('feedbacks.deleteByAdmin');
 });
 
 // the same is true for user | user tương tự yêu cầu login
@@ -65,9 +78,6 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::post('/user/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
     Route::get('/user/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
-
-
-
 });
 
 // login & register
@@ -75,7 +85,7 @@ Route::get('/login', [AccountController::class, 'login'])->name('account.login')
 Route::post('/login', [AccountController::class, 'checkLogin'])->name('account.checkLogin');
 Route::get('/register', [AccountController::class, 'register'])->name('account.register');
 Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
-Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
+Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
 
 Route::get('/account', [AccountController::class, 'index'])->name('account.index');
 
@@ -94,3 +104,35 @@ Route::get('/accessorydetails/{id}', [MenuController::class, 'accessorydetails']
 
 Route::get('/search-results', [MenuController::class, 'search-results'])->name('menu.search-results');
 Route::get('/search', [MenuController::class, 'search'])->name('menu.search');
+
+Route::get('/blogusers/blogdetails/{id}', [BlogUserController::class, 'show'])->name('blogusers.show');
+Route::resource('blogusers', BlogUserController::class);
+
+
+/// COMMENTS
+Route::post('/blogs/{blog_id}/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::post('comment/{comment}/like', [CommentController::class, 'like'])->name('comment.like');
+Route::post('comment/{comment}/reply', [CommentController::class, 'reply'])->name('comment.reply');
+
+Route::delete('/comment/{commentId}', [CommentController::class, 'delete'])->name('comment.delete');
+Route::delete('/comment/reply/{replyId}', [CommentController::class, 'deleteReply'])->name('comment.deleteReply');
+
+Route::post('/comment/reply/{replyId}/like', [CommentController::class, 'likeReply'])->name('comment.likeReply');
+
+Route::post('/comment/{commentId}/like', [CommentController::class, 'like'])->name('comment.like');
+Route::post('/reply/{replyId}/like', [CommentController::class, 'likeReply'])->name('comment.likeReply');
+
+Route::get('/blog/{id}', [BlogController::class, 'show']);
+Route::delete('/comments/{commentId}/deleteByAdmin', [CommentController::class, 'deleteByAdmin'])->name('comments.deleteByAdmin');
+
+///////GAME
+Route::post('/games/{game_id}/feedbacks', [FeedbackController::class, 'storeFeedback'])->name('feedback.storeFeedback');
+Route::post('feedback/{feedback}/likeFeedback', [FeedbackController::class, 'likeFeedback'])->name('feedback.likeFeedback');
+Route::post('feedback/{feedback}/replyFeedback', [FeedbackController::class, 'replyFeedback'])->name('feedback.replyFeedback');
+
+Route::delete('/feedback/{feedbackId}', [FeedbackController::class, 'deleteFeedback'])->name('feedback.deleteFeedback');
+Route::delete('/feedback/replyFeedback/{replyFeedbackId}', [FeedbackController::class, 'deleteReplyFeedback'])->name('feedback.deleteReplyFeedback');
+
+Route::post('/feedback/replyFeedback/{replyFeedbackId}/likeFeedback', [FeedbackController::class, 'likeReplyFeedback'])->name('feedback.likeReplyFeedback');
+
+Route::post('/feedback/{feedbackId}/likeFeedback', [FeedbackController::class, 'likeFeedback'])->name('feedback.likeFeedback');

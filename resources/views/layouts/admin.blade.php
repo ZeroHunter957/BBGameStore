@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/owl.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/animate.css') }}">
     <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/bootstrap.css') }}">
-    <link rel="stylesheet"href="{{ asset('https://unpkg.com/swiper@7/swiper-bundle.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('https://unpkg.com/swiper@7/swiper-bundle.min.css') }}" />
     <!--
 TemplateMo 589 lugx gaming
 https://templatemo.com/tm-589-lugx-gaming
@@ -113,6 +113,37 @@ https://templatemo.com/tm-589-lugx-gaming
                         </a>
                     </li>
 
+
+                    <li class="sidebar-header">
+                        Blogs
+                    </li>
+
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route(name: 'blogs.index') }}">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Blogs</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route(name: 'words.index') }}">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Banned Words</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route(name: 'comments.index') }}">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Comments</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route(name: 'feedbacks.index') }}">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Feedbacks</span>
+                        </a>
+                    </li>
+
+
                     <li class="sidebar-header">
                         Shop
                     </li>
@@ -123,12 +154,10 @@ https://templatemo.com/tm-589-lugx-gaming
                         </a>
                     </li>
 
-                    {{-- <li class="sidebar-item">
-                        <a class="sidebar-link" href="{{ route('blogs.index') }}">
-                            <i class="align-middle" data-feather="check-square"></i>
-                            <span class="align-middle">Blogs</span>
-                        </a>
-                    </li> --}}
+                    <a class="sidebar-link" href="{{ route('account.logout') }}">
+                        <i class="align-middle" data-feather="check-square"></i>
+                        <span class="align-middle">Logout</span>
+                    </a>
                 </ul>
             </div>
         </nav>

@@ -9,48 +9,50 @@ use Illuminate\Http\Request;
 
 class AccessoryController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $accessories = Accessory::all();
         $cates = AccessoryCategory::all();
-        return view("accessory.index",compact("accessories"));
+        return view("accessory.index", compact("accessories"));
     }
 
-    public function create(){
+    public function create()
+    {
         $cates = AccessoryCategory::all();
-        return view("accessory.create",compact("cates"));
+        return view("accessory.create", compact("cates"));
     }
 
     public function store(Request $request)
-{
-    // Validate input fields
-    $request->validate([
-        "name" => "required",
-        "price" => "required|numeric",
-        "description" => "required",
-        "image" => "nullable|image|mimes:jpg,jpeg,png,gif|max:2048",
-    ]);
+    {
+        // Validate input fields
+        $request->validate([
+            "name" => "required",
+            "price" => "required|numeric",
+            "description" => "required",
+            "image" => "nullable|image|mimes:jpg,jpeg,png,gif|max:2048",
+        ]);
 
-    try {
-        $accessories = new Accessory();
-        $accessories->name = $request->name;
-        $accessories->cat_id = $request->cat_id;
-        $accessories->price = $request->price;
-        $accessories->description = $request->description;
+        try {
+            $accessories = new Accessory();
+            $accessories->name = $request->name;
+            $accessories->cat_id = $request->cat_id;
+            $accessories->price = $request->price;
+            $accessories->description = $request->description;
 
-        // Handle Image Upload (if present)
-        if ($request->hasFile("image")) {
-            $imageName = time() . '.' . $request->image->getClientOriginalExtension();
-            $request->image->move(public_path("accessoryimages"), $imageName);
-            $accessories->image = "/accessoryimages/" . $imageName;
+            // Handle Image Upload (if present)
+            if ($request->hasFile("image")) {
+                $imageName = time() . '.' . $request->image->getClientOriginalExtension();
+                $request->image->move(public_path("accessoryimages"), $imageName);
+                $accessories->image = "/accessoryimages/" . $imageName;
+            }
+
+            $accessories->save();
+
+            return redirect()->route("accessory.index")->with("message", "Accessory created successfully!");
+        } catch (\Exception $e) {
+            return redirect()->back()->with("message", "An error occurred: " . $e->getMessage());
         }
-
-        $accessories->save();
-
-        return redirect()->route("accessory.index")->with("message", "Accessory created successfully!");
-    } catch (\Exception $e) {
-        return redirect()->back()->with("message", "An error occurred: " . $e->getMessage());
     }
-}
 
     public function edit($id)
     {

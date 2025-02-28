@@ -104,6 +104,7 @@
                             <ul class="nav">
                                 <li><a href="/" class="active">Home</a></li>
                                 <li><a href="/gameshop">Games</a></li>
+                                <li><a href="/blogusers">Blogs</a></li>
                                 <li><a href="/accessoryshop">Accessories</a></li>
                                 <li><a href="/contact">Contact Us</a></li>
 
@@ -130,7 +131,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <form action="{{ route('account.logout') }}" method="POST"
+                                        <form action="{{ route('account.logout') }}" method="GET"
                                             style="display:inline;">
                                             @csrf
                                             <button type="submit" class="logout"

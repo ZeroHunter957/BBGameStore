@@ -6,6 +6,7 @@ use App\Models\Accessory;
 use App\Models\AccessoryCategory;
 use App\Models\Account;
 use App\Models\Game;
+use App\Models\BannedWord;
 use App\Models\GameCategory;
 use App\Models\Menu;
 use Illuminate\Http\Request;
@@ -38,11 +39,9 @@ class MenuController extends Controller
     {
         $query = $request->input('searchKeyword');
 
-        // Search both games and accessories
         $games = Game::where('title', 'LIKE', "%{$query}%")->get();
         $accessories = Accessory::where('name', 'LIKE', "%{$query}%")->get();
 
-        // If request is AJAX (for autocomplete), return JSON
         if ($request->ajax()) {
             return response()->json([
                 'games' => $games,
@@ -50,7 +49,6 @@ class MenuController extends Controller
             ]);
         }
 
-        // Otherwise, return a full search results page
         return view('menu.search-results', compact('games', 'accessories', 'query'));
     }
 
@@ -76,20 +74,29 @@ class MenuController extends Controller
 
     public function gamedetails($id)
     {
-        $game = Game::findOrFail($id); // Find the game by ID or return 404
+        $game = Game::findOrFail($id);
+
         $relatedGames = Game::where('cat_id', $game->cat_id)
-            ->where('id', '!=', $game->id) // Exclude the current game
+            ->where('id', '!=', $game->id)
             ->take(6)
             ->get();
 
-        return view("menu.gamedetails", compact("game", "relatedGames"));
+        $bannedWords = BannedWord::pluck('word')->toArray();
+
+        $feedbacks = $game->feedbacks()->orderBy('created_at', 'desc')->get();
+
+        foreach ($feedbacks as $feedback) {
+            $feedback->replyFeedbacks = $feedback->replyFeedbacks()->orderBy('created_at', 'desc')->get();
+        }
+
+        return view('menu.gamedetails', compact('game', 'relatedGames', 'feedbacks', 'bannedWords'));
     }
 
     public function accessorydetails($id)
     {
-        $accessory = Accessory::findOrFail($id); // Find the game by ID or return 404
+        $accessory = Accessory::findOrFail($id);
         $relatedAccessories = Accessory::where('cat_id', $accessory->cat_id)
-            ->where('id', '!=', $accessory->id) // Exclude the current accessory
+            ->where('id', '!=', $accessory->id)
             ->take(6)
             ->get();
         return view("menu.accessorydetails", compact("accessory", "relatedAccessories"));
