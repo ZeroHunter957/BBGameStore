@@ -66,6 +66,8 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     // user
     Route::get('/profile', [AccountController::class, 'profile'])->name('account.profile');
     Route::post('/profile/update', [AccountController::class, 'updateProfile'])->name('profile.update');
+    Route::post('/profile/update/password', [AccountController::class, 'updatePassword'])->name('password.update-password');
+
 
     // cart
     Route::get('/cart', [AddToCartController::class, 'index'])->name('cart.index');
