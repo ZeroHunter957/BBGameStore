@@ -410,6 +410,16 @@
                             </div>
                             <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                 <h3>Feedbacks</h3>
+                                <form method="GET" action="{{ route('menu.gamedetails', $game->id) }}" class="mb-3">
+                                    <label for="sort">Sort by:</label>
+                                    <select name="sort" id="sort" class="form-control" onchange="this.form.submit()">
+                                        <option value="star_desc" {{ request('sort') == 'star_desc' ? 'selected' : '' }}>Highest Rating (Star) to Lowest</option>
+                                        <option value="star_asc" {{ request('sort') == 'star_asc' ? 'selected' : '' }}>Lowest Rating (Star) to Highest</option>
+                                        <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+                                        <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest</option>
+                                    </select>
+                                </form>
+
 
                                 <!-- Display average rating and total feedbacks -->
                                 <div class="rating-summary">
