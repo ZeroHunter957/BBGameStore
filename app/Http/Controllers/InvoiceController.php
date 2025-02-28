@@ -9,7 +9,7 @@ class InvoiceController extends Controller
 {
     public function index()
     {
-        $invoices = Invoice::where('user_id', session()->get('accountLogin'));
+        $invoices = Invoice::where('account_id', session()->get('accountLogin'));
         return view('user.invoice', compact('invoices'));
     }
 }

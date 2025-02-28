@@ -15,7 +15,7 @@ class AddToCartController extends Controller
 
     public function index()
     {
-        $cartItems = Cart::where('user_id', session('accountLogin'))->get();
+        $cartItems = Cart::where('account_id', session('accountLogin'))->get();
 
         foreach ($cartItems as $cartItem) {
             $cartItem->image = ($cartItem->product_type == 'game')
@@ -40,7 +40,7 @@ class AddToCartController extends Controller
         $name = $product->name ? $product->name : $product->title;
 
         if (session('accountLogin')) {
-            $cartItem = Cart::where('user_id', session()->get('accountLogin'))
+            $cartItem = Cart::where('account_id', session()->get('accountLogin'))
                 ->where('product_id', $product->id)
                 ->where('product_type', $request->developer ? 'game' : 'accessory')
                 ->first();
@@ -50,7 +50,7 @@ class AddToCartController extends Controller
                 $cartItem->save();
             } else {
                 Cart::create([
-                    'user_id' => session()->get('accountLogin'),
+                    'account_id' => session()->get('accountLogin'),
                     'product_id' => $product->id,
                     'product_type' => $request->developer ? 'game' : 'accessory',
                     'name' => $name,
@@ -68,12 +68,12 @@ class AddToCartController extends Controller
     public function updateCart(Request $request)
     {
         if ($request->quantity <= 0) {
-            Cart::where('id', $request->rowId)
-                ->where('user_id', session()->get('accountLogin'))
+            Cart::where('account_id', session()->get('accountLogin'))
+                ->where('id', $request->rowId)
                 ->delete();
             return redirect()->route('cart.index');
         } else {
-            Cart::where('user_id', session()->get('accountLogin'))
+            Cart::where('account_id', session()->get('accountLogin'))
                 ->where('id', $request->rowId)
                 ->update(['quantity' => $request->quantity]);
 
@@ -83,8 +83,8 @@ class AddToCartController extends Controller
 
     public function removeCart(Request $request)
     {
-        Cart::where('id', $request->rowId)
-            ->where('user_id', session()->get('accountLogin'))
+        Cart::where('account_id', session()->get('accountLogin'))
+            ->where('id', $request->rowId)
             ->delete();
 
         return redirect()->route('cart.index');
@@ -92,7 +92,7 @@ class AddToCartController extends Controller
 
     public function clearCart()
     {
-        Cart::where('user_id', session()->get('accountLogin'))->delete();
+        Cart::where('account_id', session()->get('accountLogin'))->delete();
         return redirect()->route('cart.index');
     }
 }

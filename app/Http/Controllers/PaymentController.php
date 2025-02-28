@@ -27,53 +27,50 @@ class PaymentController extends Controller
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
         //execute post
         $result = curl_exec($ch);
-        //close connection
+    //close connection
         curl_close($ch);
         return $result;
     }
     public function momoPayment(Request $request)
     {
-        $endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor";
-        $partnerCode = "MOMOBKUN20180529";
-        $accessKey = "klm05TvNBzhg7h7j";
-        $requestId = time() . "";
-        $bankCode = "SML";
+
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
+
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua ATM MoMo";
         $amount = $_POST['total_momo'];
         $orderId = time() . "";
-        $orderInfo = "Thanh toán qua MoMo";
-        $returnUrl = "http://localhost:8000/user/payment/result";
-        $notifyurl = "http://localhost:8000/atm/ipn_momo.php";
+        $redirectUrl = "http://127.0.0.1:8000/payment/result";
+        $ipnUrl = "http://127.0.0.1:8000/payment/result";
         $extraData = "";
-        $requestType = "payWithMoMoATM";
-        $secretKey = "at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa";
-        // Lưu ý: link notifyUrl không phải là dạng localhost
+        $requestId = time() . "";
+        $requestType = "payWithATM";
         //before sign HMAC SHA256 signature
-
-        // echo $serectkey;die;
-        $rawHash = "partnerCode=" . $partnerCode . "&accessKey=" . $accessKey . "&requestId=" . $requestId . "&bankCode=" . $bankCode . "&amount=" . $amount . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&returnUrl=" . $returnUrl . "&notifyUrl=" . $notifyurl . "&extraData=" . $extraData . "&requestType=" . $requestType;
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
         $signature = hash_hmac("sha256", $rawHash, $secretKey);
-        // dd($signature);
-
-        $data =  array(
+        $data = array(
             'partnerCode' => $partnerCode,
-            'accessKey' => $accessKey,
+            'partnerName' => "Test",
+            "storeId" => "MomoTestStore",
             'requestId' => $requestId,
             'amount' => $amount,
             'orderId' => $orderId,
             'orderInfo' => $orderInfo,
-            'returnUrl' => $returnUrl,
-            'bankCode' => $bankCode,
-            'notifyUrl' => $notifyurl,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
             'extraData' => $extraData,
             'requestType' => $requestType,
             'signature' => $signature
         );
         $result = $this->execPostRequest($endpoint, json_encode($data));
         $jsonResult = json_decode($result, true);  // decode json
-        // dd($result);
 
-        error_log(print_r($jsonResult, true));
-        dump($request->input('total_momo'));
+        //Just a example, please check more in thereA
+        dump($jsonResult);
         return redirect()->to($jsonResult['payUrl']);
     }
 
@@ -87,9 +84,9 @@ class PaymentController extends Controller
         $payType = $request->query('payType');
 
         // Kiểm tra nếu thanh toán thành công
-        if ($errorCode == 0) {      
+        if ($errorCode == 0) {
             // Xóa giỏ hàng của user sau khi thanh toán thành công
-            Cart::where('user_id', session()->get('accountLogin'))->delete();
+            Cart::where('account_id', session()->get('accountLogin'))->delete();
 
             return view('invoice.payment-result', [
                 'status' => 'success',

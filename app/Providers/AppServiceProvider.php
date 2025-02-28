@@ -26,7 +26,7 @@ class AppServiceProvider extends ServiceProvider
             $cartCount = 0;
     
             if (session('accountLogin')) {
-                $cartCount = Cart::where('user_id', session('accountLogin'))->count();
+                $cartCount = Cart::where('account_id', session('accountLogin'))->count();
             }
     
             $view->with('cartCount', $cartCount);

@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'product_id', 'product_type', 'name', 'quantity', 'price'];
+    protected $fillable = ['account_id', 'product_id', 'product_type', 'name', 'quantity', 'price'];
 
-    public function product()
+    public function account()
     {
-        return $this->morphTo();
+        return $this->belongsTo(Account::class);
     }
 }

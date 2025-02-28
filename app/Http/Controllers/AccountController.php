@@ -36,16 +36,8 @@ class AccountController extends Controller
         $account = Account::where("email", $request->email)->first();
 
         if ($account && Hash::check($request->password, $account->password)) {
-            $user = User::where("email", $account->email)->first();
-            session()->forget('accountLogin');
-            $request->session()->put('accountLogin', $user->id);
-            Auth::login($user);
-            $request->session()->put('user_id', $user->id);
-            $request->session()->put('role', $user->role);
-            $previousUrl = $request->session()->get('previous_url', url('/'));
-
-            Log::info('Redirecting to previous URL:', ['previous_url' => $previousUrl]);
-
+            // Store user data in session manually
+            $request->session()->put('accountLogin', $account->id); // Store only the user ID
             return $account->role === "ADMIN" ? redirect('/admin/dashboard') : redirect('/');
         }
 
