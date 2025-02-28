@@ -1,8 +1,7 @@
 @extends('layouts.user')
-@section('title', 'list page')
+@section('title', 'Login')
 
 @section('content')
-
     {{-- ADMIN ACCOUNT --}}
     {{-- admin@gmail.com & Admin123 --}}
 
@@ -11,24 +10,34 @@
         <div class="container">
             @if (session('message'))
                 <div class="alert alert-info">
-                    <strong>Info!</strong>{{ session('message') }}
+                    <strong>Info!</strong> {{ session('message') }}
                 </div>
             @endif
+
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <h2>Login form</h2>
+                <h2>Login Form</h2>
             </div>
+
             <form action="{{ route('account.checkLogin') }}" method="post">
                 @csrf
-                <div class="mb-3 mt-3">
+                <div class="mb-3">
                     <label for="email">Email:</label>
-                    <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" name="email"
+                        required>
                 </div>
                 <div class="mb-3">
                     <label for="password">Password:</label>
-                    <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+                    <input type="password" class="form-control" id="password" placeholder="Enter password" name="password"
+                        required>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary">Login</button>
             </form>
+
+            <div class="mt-3">
+                <a href="{{ route('account.forgot-password') }}" class="btn btn-link">Forgot Password?</a>
+            </div>
+
         </div>
     </div>
+
 @endsection

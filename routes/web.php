@@ -90,6 +90,11 @@ Route::post('/register', [AccountController::class, 'registerPost'])->name('acco
 Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
 
 Route::get('/account', [AccountController::class, 'index'])->name('account.index');
+//fogot password
+Route::get('/forgot-password', [AccountController::class, 'showForgotPasswordForm'])->name('account.forgot-password');
+Route::post('/forgot-password', [AccountController::class, 'sendResetLink'])->name('account.send-reset-link');
+Route::get('/reset-password/{token}', [AccountController::class, 'showResetForm'])->name('account.reset-password');
+Route::post('/reset-password', [AccountController::class, 'resetPassword'])->name('account.update-password');
 
 // otp register
 Route::get('/otp-register', [AccountController::class, 'viewOTPRegister'])->name('account.OTPregister');

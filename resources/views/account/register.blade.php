@@ -6,7 +6,7 @@
     <div class="section trending">
         <div class="container">
             <h2>Register form</h2>
-            <form method="post" action="{{ route('account.registerPost') }}">
+            <form method="post" action="{{ route('account.registerPost') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3 mt-3">
                     <label for="email">Email:</label>
