@@ -38,7 +38,7 @@
 					<!-- Blog creation form -->
 					<div class="card shadow-sm">
 						<div class="card-body">
-							<form id="createArticleForm" action="{{ route('blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data">
+							<form id="editArticleForm" action="{{ route('blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data">
 								@csrf
 								@method('PUT')
 
@@ -125,7 +125,7 @@
 								console.error('Validation errors:', jsonResponse.errors);
 							} else {
 								console.log('Blog updated successfully:', jsonResponse);
-								window.location.href = '/blogs';
+								window.location.href = '/admin/blogs';
 							}
 						} catch (error) {
 							console.error('Error: Received non-JSON response', data);

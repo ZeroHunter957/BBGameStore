@@ -175,6 +175,9 @@ class AccountController extends Controller
     public function logout(Request $request)
     {
         session()->forget('accountLogin');
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/login')->with('message', 'You have been logged out.');
     }
 

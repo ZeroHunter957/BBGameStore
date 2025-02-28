@@ -2,6 +2,8 @@
 @section('title', 'list page')
 
 @section('content')
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
 <br>
 <br>
 <br>
@@ -55,13 +57,10 @@
 <script src="{{ asset('assets/js/custom.js') }}"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 
-<!-- jQuery CDN (optional, if you need it for other purposes) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!-- Bootstrap 5 JavaScript (optional, for Bootstrap components like modals, tooltips) -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Optional: Fetch Polyfill (If needed for older browsers, but most modern browsers support Fetch) -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/whatwg-fetch/3.6.2/fetch.min.js"></script>
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
@@ -88,6 +87,7 @@
 			};
 
 			const formData = new FormData();
+			formData.append('_method', 'PUT');
 			formData.append('title', articleData.title);
 			formData.append('content', articleData.content);
 			formData.append('image', articleData.image);
@@ -104,17 +104,24 @@
 					try {
 						const jsonResponse = JSON.parse(data);
 						if (jsonResponse.errors) {
+							console.error('Validation errors:', jsonResponse.errors);
+							window.location.href = '/blogusers';
 
 						} else {
+							console.log('Blog updated successfully:', jsonResponse);
 							window.location.href = '/blogusers';
+
 						}
 					} catch (error) {
-
+						console.error('Error: Received non-JSON response', data);
 						window.location.href = '/blogusers';
+
 					}
 				})
 				.catch(error => {
 					console.error('Error updating blog:', error);
+					window.location.href = '/blogusers';
+
 				});
 
 		});

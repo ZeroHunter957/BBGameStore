@@ -2,7 +2,69 @@
 @section('title', 'list page')
 
 @section('content')
+<style>
+	.custom-pagination {
+		list-style: none;
+		padding: 0;
+		margin: 20px 0;
+		display: flex;
+		align-items: center;
+	}
 
+	.page-item {
+		display: inline-block;
+		margin: 0 5px;
+		padding: 10px 15px;
+		font-size: 14px;
+		font-weight: 500;
+		text-align: center;
+		color: #007bff;
+		background-color: #f8f9fa;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		transition: background-color 0.3s ease, color 0.3s ease;
+		cursor: pointer;
+	}
+
+	.page-item:hover {
+		background-color: #007bff;
+		color: #fff;
+	}
+
+	.page-item.active {
+		background-color: #007bff;
+		color: #fff;
+		border-color: #007bff;
+	}
+
+	.page-item.disabled {
+		color: #6c757d;
+		background-color: #e9ecef;
+		border-color: #ddd;
+		cursor: not-allowed;
+	}
+
+	.page-item:first-child {
+		border-radius: 5px 0 0 5px;
+	}
+
+	.page-item:last-child {
+		border-radius: 0 5px 5px 0;
+	}
+
+	/* Additional Style for Spacing */
+	.page-item+.page-item {
+		margin-left: 5px;
+	}
+
+	/* Responsive Styles for Mobile */
+	@media (max-width: 767px) {
+		.page-item {
+			font-size: 12px;
+			padding: 8px 12px;
+		}
+	}
+</style>
 <div class="page-heading header-text">
 	<div class="container">
 		<div class="row">
@@ -108,6 +170,7 @@
 			<span class="page-item disabled">Next</span>
 			@endif
 		</div>
+
 	</div>
 </div>
 @endsection

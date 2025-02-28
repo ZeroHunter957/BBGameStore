@@ -419,75 +419,67 @@
 <script src="{{ asset('assets/js/owl-carousel.js') }}"></script>
 <script src="{{ asset('assets/js/counter.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
-
 <script>
-  document.querySelector('form').addEventListener('submit', function(event) {
-    const bannedWords = @json($bannedWords);
-    const commentContent = document.querySelector('textarea[name="content"]').value;
+    document.querySelector('form').addEventListener('submit', function(event) {
+        const bannedWords = @json($bannedWords).map(word => word.toLowerCase()); // Convert all banned words to lowercase
+        const commentContent = document.querySelector('textarea[name="content"]').value.toLowerCase(); // Convert content to lowercase
 
-    let foundBannedWords = [];
-    let highlightedContent = commentContent;
+        let foundBannedWords = [];
+        let highlightedContent = commentContent;
 
-    bannedWords.forEach(function(word) {
-      if (commentContent.includes(word)) {
-        foundBannedWords.push(word);
-        const regex = new RegExp(`(${word})`, 'gi');
-        highlightedContent = highlightedContent.replace(regex, '<span class="highlight">$1</span>');
-      }
+        bannedWords.forEach(function(word) {
+            if (commentContent.includes(word)) {
+                foundBannedWords.push(word);
+                const regex = new RegExp(`(${word})`, 'gi');
+                highlightedContent = highlightedContent.replace(regex, '<span class="highlight">$1</span>');
+            }
+        });
+
+        if (foundBannedWords.length > 0) {
+            document.querySelector('.comment-preview').innerHTML = highlightedContent;
+            event.preventDefault();
+        }
     });
 
-    if (foundBannedWords.length > 0) {
-      document.querySelector('.comment-preview').innerHTML = highlightedContent;
-      alert('Your comment contains banned words: ' + foundBannedWords.join(', '));
-      event.preventDefault();
+    function checkBannedWordsForReply(event, commentId) {
+        const bannedWords = @json($bannedWords).map(word => word.toLowerCase()); // Convert all banned words to lowercase
+        const replyContent = document.getElementById(`reply-textarea-${commentId}`).value.toLowerCase(); // Convert reply content to lowercase
+
+        let foundBannedWords = [];
+        let highlightedContent = replyContent;
+
+        bannedWords.forEach(function(word) {
+            if (replyContent.includes(word)) {
+                foundBannedWords.push(word);
+                const regex = new RegExp(`(${word})`, 'gi');
+                highlightedContent = highlightedContent.replace(regex, '<span class="highlight">Your reply contains a banned word: $1</span>');
+            }
+        });
+
+        if (foundBannedWords.length > 0) {
+            document.querySelector('.comment-preview').innerHTML = highlightedContent;
+            event.preventDefault();
+        }
     }
-  });
 
-  function checkBannedWordsForReply(event, commentId) {
-    const bannedWords = @json($bannedWords);
-    const replyContent = document.getElementById(`reply-textarea-${commentId}`).value;
-
-    let foundBannedWords = [];
-    let highlightedContent = replyContent;
-
-    bannedWords.forEach(function(word) {
-      if (replyContent.includes(word)) {
-        foundBannedWords.push(word);
-        const regex = new RegExp(`(${word})`, 'gi');
-        highlightedContent = highlightedContent.replace(regex, '<span class="highlight">$1</span>');
-      }
-    });
-
-    if (foundBannedWords.length > 0) {
-      document.getElementById(`reply-preview-${commentId}`).innerHTML = highlightedContent;
-      alert('Your reply contains banned words: ' + foundBannedWords.join(', '));
-      event.preventDefault();
+    function handleReplySubmit(event, commentId) {
+        checkBannedWordsForReply(event, commentId);
     }
-  }
-
-  function handleReplySubmit(event, commentId) {
-    checkBannedWordsForReply(event, commentId);
-  }
 </script>
 
-
-
-<div class="comment-preview"></div>
-
-
 <script>
-  function showReplyForm(commentId) {
-    const replyForm = document.getElementById(`reply-form-${commentId}`);
+    function showReplyForm(commentId) {
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
 
-    if (replyForm.style.display === "none" || replyForm.style.display === "") {
-      replyForm.style.display = "block";
+        if (replyForm.style.display === "none" || replyForm.style.display === "") {
+            replyForm.style.display = "block";
+        }
     }
-  }
 
-  function closeReplyForm(commentId) {
-    const replyForm = document.getElementById(`reply-form-${commentId}`);
-    replyForm.style.display = "none";
-  }
+    function closeReplyForm(commentId) {
+        const replyForm = document.getElementById(`reply-form-${commentId}`);
+        replyForm.style.display = "none";
+    }
 </script>
 
 @endsection

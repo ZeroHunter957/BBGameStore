@@ -2,6 +2,14 @@
 @section('title', 'list page')
 
 @section('content')
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <main class="content py-5">
 	<div class="container">
@@ -10,22 +18,27 @@
 				<h2 class="text-center mb-4">Create New Blog Post</h2>
 				<form id="createArticleForm" action="{{ route('blogusers.store') }}" method="POST" enctype="multipart/form-data">
 					@csrf
+
+					<!-- Title Field -->
 					<div class="mb-3">
-						<label for="title" class="form-label">Title</label>
-						<input type="text" class="form-control" name="title" id="title" required>
+						<label for="title" class="form-label">Blog Title</label>
+						<input type="text" class="form-control" name="title" id="title" placeholder="Enter the title" required>
 					</div>
 
+					<!-- Content Field (CKEditor) -->
 					<div class="mb-3">
 						<label for="content" class="form-label">Content</label>
-						<div id="content" class="form-control" required></div>
+						<div id="content" class="form-control" style="min-height: 200px;" required></div>
 					</div>
 
+					<!-- Image Upload Field -->
 					<div class="mb-3">
-						<label for="image" class="form-label">Image</label>
+						<label for="image" class="form-label">Blog Image</label>
 						<input type="file" class="form-control" name="image" id="image" accept="image/*">
 					</div>
 
-					<button type="submit" class="btn btn-primary w-100">Create Blog</button>
+					<!-- Submit Button -->
+					<button type="submit" class="btn btn-primary btn-lg w-100">Create Blog</button>
 				</form>
 			</div>
 		</div>
@@ -48,14 +61,11 @@
 <script src="{{ asset('assets/js/custom.js') }}"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 
-	<!-- jQuery CDN (optional, if you need it for other purposes) -->
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-	<!-- Bootstrap 5 JavaScript (optional, for Bootstrap components like modals, tooltips) -->
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-	<!-- Optional: Fetch Polyfill (If needed for older browsers, but most modern browsers support Fetch) -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/whatwg-fetch/3.6.2/fetch.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/whatwg-fetch/3.6.2/fetch.min.js"></script>
 <script>
 	document.addEventListener("DOMContentLoaded", function() {
 		let editor;
@@ -97,13 +107,15 @@
 					if (data.errors) {
 						console.error('Validation errors:', data.errors);
 					} else {
+						console.log('Blog created successfully:', data);
 						window.location.href = '/blogusers';
 					}
 				})
 				.catch(error => {
 					console.error('Error creating blog:', error);
-				});
+					window.location.href = '/blogusers';
 
+				});
 		});
 	});
 </script>
