@@ -388,6 +388,7 @@
 
   <!-- Comment Form -->
   @if (Auth::check())
+  
   <form action="{{ route('comments.store', $blog->id) }}" method="POST">
     @csrf
     <div class="form-group">

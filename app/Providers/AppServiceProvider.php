@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Cart;
+use App\Models\Game;
+use App\Models\GameCategory;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -29,7 +31,11 @@ class AppServiceProvider extends ServiceProvider
                 $cartCount = Cart::where('account_id', session('accountLogin'))->count();
             }
     
-            $view->with('cartCount', $cartCount);
+            $newCategories = GameCategory::orderBy('updated_at', 'DESC')->take(5)->get();
+
+            $view->with(['cartCount' => $cartCount, 'newCategories' => $newCategories]);
         });
+
+
     }
 }

@@ -71,6 +71,12 @@
             justify-content: center;
             align-items: center;
         }
+
+        .container {
+            a {
+                color: #FFFFFF;
+            }
+        }
     </style>
 </head>
 
@@ -114,7 +120,7 @@
                                             <a href="{{ route('cart.index') }}">
                                                 <i data-feather="shopping-cart"></i>
                                                 <span id="cart-count" class="label label-theme rounded-pill">
-                                                   {{ $cartCount }}
+                                                    {{ $cartCount }}
                                                 </span>
                                             </a>
                                         </div>
@@ -164,24 +170,23 @@
 
 
         <footer class="footer-sm-space mt-5">
-            <div class="main-footer">
+            <div class="main-footer" style="color: #FFFFFF">
                 <div class="container">
                     <div class="row gy-4">
                         <div class="col-xl-3 col-lg-4 col-md-6">
                             <div class="footer-contact">
                                 <div class="brand-logo">
                                     <a href="index.htm" class="footer-logo float-start">
-                                        <img src="assets/images/logo.png" class="f-logo img-fluid blur-up lazyload"
-                                            alt="logo">
+                                        <h2 style="color: #FFFFFF">BBGameStore</h2>
                                     </a>
                                 </div>
                                 <ul class="contact-lists" style="clear:both;">
                                     <li>
-                                        <span><b>phone:</b> <span class="font-light"> +1 0000000000</span></span>
+                                        <span><b>phone:</b> <span> +1 0000000000</span></span>
                                     </li>
                                     <li>
                                         <span><b>Address:</b><span class="font-light"> NIT, Faridabad, Haryana,
-                                                India</span></span>
+                                                VietNam</span></span>
                                     </li>
                                     <li>
                                         <span><b>Email:</b><span class="font-light">
@@ -198,19 +203,19 @@
                                 <div class="footer-content">
                                     <ul>
                                         <li>
-                                            <a href="index.htm" class="font-dark">Home</a>
+                                            <a href="{{ route('menu.index') }}">Home</a>
                                         </li>
                                         <li>
-                                            <a href="shop.html" class="font-dark">Shop</a>
+                                            <a href="{{ route('menu.gameshop') }}">Shop</a>
                                         </li>
                                         <li>
-                                            <a href="about-us.html" class="font-dark">About Us</a>
+                                            <a href="/">About Us</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="font-dark">Blog</a>
+                                            <a href="{{ url('/blogusers') }}">Blog</a>
                                         </li>
                                         <li>
-                                            <a href="contact-us.html" class="font-dark">Contact</a>
+                                            <a href="{{ route('menu.contact') }}">Contact</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -223,21 +228,11 @@
                                 </div>
                                 <div class="footer-content">
                                     <ul>
-                                        <li>
-                                            <a href="shop.html" class="font-dark">Latest Shoes</a>
-                                        </li>
-                                        <li>
-                                            <a href="shop.html" class="font-dark">Branded Jeans</a>
-                                        </li>
-                                        <li>
-                                            <a href="shop.html" class="font-dark">New Jackets</a>
-                                        </li>
-                                        <li>
-                                            <a href="shop.html" class="font-dark">Colorfull Hoodies</a>
-                                        </li>
-                                        <li>
-                                            <a href="shop.html" class="font-dark">Shiner Goggles</a>
-                                        </li>
+                                        @foreach ($newCategories as $category)
+                                            <li>
+                                                <a href="shop.html">{{ $category->name }}</a>
+                                            </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
@@ -247,22 +242,24 @@
                                 <div class="footer-title">
                                     <h3>Get Help</h3>
                                 </div>
-                                <div class="footer-content">
+                                <div class="footer-content font-white">
                                     <ul>
                                         <li>
-                                            <a href="#" class="font-dark">Your Orders</a>
+                                            <a href="{{ route('cart.index') }}">Your Orders</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="font-dark">Your Account</a>
+                                            @if(session('accountLogin'))
+                                            <a href="{{ route('account.profile') }}">Your Account</a>
+                                            @else
+                                            <a href="{{ route('account.login') }}">Your Account</a>
+                                            @endif
+
                                         </li>
                                         <li>
-                                            <a href="#" class="font-dark">Track Orders</a>
+                                            <a href="#">Your Wishlist</a>
                                         </li>
                                         <li>
-                                            <a href="#" class="font-dark">Your Wishlist</a>
-                                        </li>
-                                        <li>
-                                            <a href="#" class="font-dark">Shopping FAQs</a>
+                                            <a href="{{ route('menu.gameshop') }}">Shopping FAQs</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -278,7 +275,7 @@
                                         <span class="input-group-text" id="basic-addon4"><i
                                                 class="fas fa-arrow-right"></i></span>
                                     </div>
-                                    <p class="font-dark mb-0">Keep up to date with our latest news and special offers.
+                                    <p class="font-white mb-0">Keep up to date with our latest news and special offers.
                                     </p>
                                 </div>
                             </div>
@@ -287,39 +284,24 @@
                 </div>
             </div>
             <div class="sub-footer">
-                <div class="container">
+                <div class="container" style="color: #FFFFFF;">
                     <div class="row gy-3">
                         <div class="col-md-6">
                             <ul>
-                                <li class="font-dark">We accept:</li>
+                                <li class="font-white">We accept:</li>
                                 <li>
                                     <a href="javascript:void(0)">
-                                        <img src="assets/images/payment-icon/1.jpg" class="img-fluid blur-up lazyload"
-                                            alt="payment icon">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0)">
-                                        <img src="assets/images/payment-icon/2.jpg" class="img-fluid blur-up lazyload"
-                                            alt="payment icon">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0)">
-                                        <img src="assets/images/payment-icon/3.jpg" class="img-fluid blur-up lazyload"
-                                            alt="payment icon">
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="javascript:void(0)">
-                                        <img src="assets/images/payment-icon/4.jpg" class="img-fluid blur-up lazyload"
+                                        <img src="{{ asset('assets/images/Logo-MoMo-Circle.webp') }}"
+                                            class="img-fluid blur-up lazyload"
+                                            style="height: 
+                                        30px"
                                             alt="payment icon">
                                     </a>
                                 </li>
                             </ul>
                         </div>
                         <div class="col-md-6">
-                            <p class="mb-0 font-dark">© 2023, Surfside Media.</p>
+                            <p class="mb-0 font-dark">© 2025, BBGameStore.</p>
                         </div>
                     </div>
                 </div>
