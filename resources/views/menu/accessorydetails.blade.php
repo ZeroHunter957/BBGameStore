@@ -6,9 +6,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>Modern Warfare® II</h3>
+                    <h3>{{ $accessory->name }}</h3>
                     <span class="breadcrumb"><a href="/">Home</a> > <a href="/accessoryshop">Accessories</a> >
-                        {{ $accessory->title }}</span>
+                        {{ $accessory->name }}</span>
                 </div>
             </div>
         </div>
@@ -25,12 +25,23 @@
                 <div class="col-lg-6 align-self-center">
                     <h4>{{ $accessory->name }}</h4>
                     <span class="price">${{ $accessory->price }}</span>
+
+                    {{-- add to cart & wishlist --}}
                     <form id="qty" action="{{ route('cart.add') }}" method="post">
                         @csrf
                         <input type="hidden" name="id" value="{{ $accessory->id }}">
                         <input type="hidden" name="quantity" id="qty" value="1">
                         <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
                     </form>
+
+                    <form id="wishlist-form">
+                        <button type="submit" class="btn btn-outline-primary" data-id="{{ $accessory->id }}"
+                            data-type="accessory">
+                            <i class="fa fa-heart"></i>Add to
+                            Wishlist
+                        </button>
+                    </form>
+
                     <ul>
                         <li><span>Type:</span>{{ $accessory->category->name }}</li>
                     </ul>
@@ -121,4 +132,30 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // add to wishlist
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector("#wishlist-form button").addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                let wishlistable_id = this.dataset.id;
+                let wishlistable_type = this.dataset.type;
+
+                fetch("{{ route('wishlist.add') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content'),
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: wishlistable_id,
+                            type: wishlistable_type
+                        })
+                    }).then(response => response.json())
+                    .then(data => alert(data.message));
+            });
+        });
+    </script>
 @endsection

@@ -7,6 +7,7 @@ use App\Http\Controllers\AddToCartController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -62,6 +63,12 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::put('/cart/update', [AddToCartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/remove', [AddToCartController::class, 'removeCart'])->name('cart.remove');
     Route::delete('/cart/clear', [AddToCartController::class, 'clearCart'])->name('cart.clear');
+
+    // wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::post('/wishlist/remove', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
+    Route::post('/wishlist/clear', [WishlistController::class, 'clearWishlist'])->name('wishlist.clear');
 });
 
 // login & register

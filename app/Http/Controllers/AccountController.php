@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Wishlist;
 use Cache;
 use DB;
 use Illuminate\Http\Request;
@@ -125,6 +126,10 @@ class AccountController extends Controller
             return redirect()->route("account.OTPregister")->with("message", "Invalid OTP");
         }
 
+        if (empty($request->otp) || $request->otp === '') {
+            return response()->json(['error' => 'Invalid OTP'], 400);
+        }
+
         if ($account->expireotp < Carbon::now()) {
             return redirect()->route("account.OTPregister")->with("message", "OTP expired");
         }
@@ -135,6 +140,8 @@ class AccountController extends Controller
         // Ensure profile image is not reset
         $account->update([
             "isverify" => true,
+            "otp" => '', // Store an empty string instead of null
+            "expireotp" => now(), // Clear expiry timestamp
         ]);
 
         \Log::info('After OTP Verification:', ['profile_image' => $account->profile_image]);
@@ -200,12 +207,13 @@ class AccountController extends Controller
         }
 
         $user = Account::find($userId);
+        $wishlistItems = Wishlist::where('user_id', $userId)->with('wishable')->get();
 
         if (!$user) {
             return redirect('/login')->with('message', 'User not found');
         }
 
-        return view('account.profile', compact('user'));
+        return view('account.profile', compact('user', 'wishlistItems'));
     }
 
     public function updateProfile(Request $request)
@@ -269,15 +277,27 @@ class AccountController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
+        $email = $request->email;
         $account = Account::where('email', $request->email)->first();
 
         if (!$account) {
             return back()->with('message', 'No account found with that email.');
         }
 
+        // Check the request count for today
+        $cacheKey = "forgot_password_attempts_{$email}";
+        $attempts = Cache::get($cacheKey, 0);
+
+        if ($attempts >= 3) {
+            return back()->with('message', 'You have reached the daily limit for password reset requests.');
+        }
+
         // Generate a temporary token
         $token = Str::random(60);
         Cache::put("password_reset_{$token}", $account->email, now()->addMinutes(30));
+
+        // Increment the attempt count and set expiry at midnight
+        Cache::put($cacheKey, $attempts + 1, now()->endOfDay());
 
         // Send email
         $resetLink = url("/reset-password/$token");

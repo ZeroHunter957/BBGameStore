@@ -25,6 +25,8 @@
                 <div class="col-lg-6 align-self-center">
                     <h4>{{ $game->title }}</h4>
                     <span class="price">${{ $game->price }}</span>
+
+                    {{-- add to cart & wishlist --}}
                     <form id="qty" action="{{ route('cart.add') }}" method="post">
                         @csrf
                         <input type="hidden" name="id" value="{{ $game->id }}">
@@ -32,6 +34,14 @@
                         <input type="hidden" name="quantity" id="qty" value="1">
                         <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
                     </form>
+
+                    <form id="wishlist-form">
+                        <button type="button" class="btn btn-outline-primary wishlist-btn" data-id="{{ $game->id }}"
+                            data-type="game">
+                            <i class="fa fa-heart"></i> Add to Wishlist
+                        </button>
+                    </form>
+
                     <ul>
                         <li><span>Genre:</span>{{ $game->category->name }}</li>
 
@@ -125,4 +135,34 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // add to wishlist
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector(".wishlist-btn").addEventListener("click", function(event) {
+                event.preventDefault(); // Stop default behavior
+
+                let wishlistable_id = this.dataset.id;
+                let wishlistable_type = this.dataset.type;
+
+                fetch("{{ route('wishlist.add') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute("content"),
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            id: wishlistable_id,
+                            type: wishlistable_type
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                    })
+                    .catch(error => console.error("Error:", error));
+            });
+        });
+    </script>
 @endsection

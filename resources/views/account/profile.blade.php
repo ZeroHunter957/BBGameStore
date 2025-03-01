@@ -27,7 +27,7 @@
                     style="width: 130px; height: 130px; object-fit: cover; border: 4px solid white;">
 
                 <!-- User Name -->
-                <h3 id="user_fullname" class="mt-2 text-white">{{ $user->fullname }}</h3>
+                <h3 id="user_fullname" class="mt-2 text-black">{{ $user->fullname }}</h3>
 
                 <!-- Profile Edit Container (Ensures Position Consistency) -->
                 <div style="width: 220px; margin: auto; position: relative;">
@@ -106,7 +106,10 @@
         <!-- Filtering Buttons (Similar to the Game Shop Page) -->
         <ul class="trending-filter sorting-options">
             <li>
-                <a href="#" class="is_active" data-filter="owned-games">Owned Games</a>
+                <a href="#" class="is_active" data-filter="wishlist">Wishlist</a>
+            </li>
+            <li>
+                <a href="#" data-filter="owned-games">Owned Games</a>
             </li>
             <li>
                 <a href="#" data-filter="reviews-made">Reviews Made</a>
@@ -116,14 +119,27 @@
         <!-- Placeholder Sections -->
         <div id="game-container">
             <div class="row">
-                <div id="ownedGamesSection" class="filter-content">
+                <div id="wishlistedSection" class="filter-content">
+                    <h5>Wishlist</h5>
+
+                    @foreach ($wishlistItems as $item)
+                        <li>
+                            {{ $item->wishable->name }}
+                            <button class="remove-btn" data-id="{{ $item->wishable_id }}"
+                                data-type="{{ class_basename($item->wishable_type) == 'Game' ? 'game' : 'accessory' }}">Remove</button>
+                        </li>
+                    @endforeach
+                </div>
+
+
+                <div id="ownedGamesSection" class="filter-content" style="display: none;">
                     <h5>Owned Games</h5>
-                    <p>Content will be added here later.</p>
+                    <p>Games you own will be displayed here</p>
                 </div>
 
                 <div id="reviewsSection" class="filter-content" style="display: none;">
                     <h5>Reviews Made</h5>
-                    <p>Content will be added here later.</p>
+                    <p>Reviews you've made will be displayed here</p>
                 </div>
             </div>
         </div>
@@ -204,6 +220,70 @@
             if (event.key === "Enter") {
                 event.preventDefault();
             }
+        });
+
+        // Wishlist & Owned games & Reviews made
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".trending-filter a").forEach(button => {
+                button.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    // Remove active class from all buttons
+                    document.querySelector(".trending-filter .is_active")?.classList.remove(
+                        "is_active");
+                    this.classList.add("is_active");
+
+                    // Hide all sections
+                    document.querySelectorAll(".filter-content").forEach(section => {
+                        section.style.display = "none";
+                    });
+
+                    // Show the selected section
+                    let filterValue = this.getAttribute("data-filter");
+                    if (filterValue === "owned-games") {
+                        document.getElementById("ownedGamesSection").style.display = "block";
+                    } else if (filterValue === "reviews-made") {
+                        document.getElementById("reviewsSection").style.display = "block";
+                    } else if (filterValue === "wishlist") {
+                        document.getElementById("wishlistedSection").style.display = "block";
+                    }
+                });
+            });
+        });
+
+        // Wishlist
+        document.addEventListener("DOMContentLoaded", function() {
+            // Remove from wishlist
+            document.querySelectorAll(".remove-btn").forEach(button => {
+                button.addEventListener("click", function() {
+                    let wishlistable_id = this.dataset.id;
+                    let wishlistable_type = this.dataset.type;
+
+                    fetch("{{ route('wishlist.remove') }}", {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify({
+                                id: wishlistable_id,
+                                type: wishlistable_type
+                            })
+                        }).then(response => response.json())
+                        .then(data => location.reload());
+                });
+            });
+
+            // Clear wishlist
+            document.getElementById("clearWishlist").addEventListener("click", function() {
+                fetch("{{ route('wishlist.clear') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+                        }
+                    }).then(response => response.json())
+                    .then(data => location.reload());
+            });
         });
     </script>
 
