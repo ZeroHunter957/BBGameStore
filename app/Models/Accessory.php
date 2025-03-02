@@ -12,4 +12,9 @@ class Accessory extends Model
     {
         return $this->belongsTo(AccessoryCategory::class, "cat_id");
     }
+
+    public function wishlists()
+    {
+        return $this->morphMany(Wishlist::class, 'wishlistable');
+    }
 }

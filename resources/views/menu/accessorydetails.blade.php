@@ -6,9 +6,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>{{ $accessory->name }}</h3>
+                    <h3>{{ $accessory->name ?? 'Unknown Accessory' }}</h3>
                     <span class="breadcrumb"><a href="/">Home</a> > <a href="/accessoryshop">Accessories</a> >
-                        {{ $accessory->name }}</span>
+                        {{ $accessory->name ?? 'Unknown' }}</span>
                 </div>
             </div>
         </div>
@@ -19,31 +19,31 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="left-image">
-                        <img src="{{ $accessory->image }}" alt="{{ $accessory->name }}">
+                        <img src="{{ asset($accessory->image ?? 'default-image.jpg') }}"
+                            alt="{{ $accessory->name ?? 'No Image' }}">
                     </div>
                 </div>
                 <div class="col-lg-6 align-self-center">
-                    <h4>{{ $accessory->name }}</h4>
-                    <span class="price">${{ $accessory->price }}</span>
+                    <h4>{{ $accessory->name ?? 'Unknown' }}</h4>
+                    <span class="price">${{ number_format($accessory->price ?? 0, 2) }}</span>
 
-                    {{-- add to cart & wishlist --}}
-                    <form id="qty" action="{{ route('cart.add') }}" method="post">
+                    {{-- Add to Cart --}}
+                    <form action="{{ route('cart.add') }}" method="post">
                         @csrf
-                        <input type="hidden" name="id" value="{{ $accessory->id }}">
-                        <input type="hidden" name="quantity" id="qty" value="1">
+                        <input type="hidden" name="id" value="{{ $accessory->id ?? '' }}">
+                        <input type="hidden" name="quantity" id="quantity" value="1">
                         <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
                     </form>
 
-                    <form id="wishlist-form">
-                        <button type="submit" class="btn btn-outline-primary" data-id="{{ $accessory->id }}"
-                            data-type="accessory">
-                            <i class="fa fa-heart"></i>Add to
-                            Wishlist
-                        </button>
+                    {{-- Wishlist Button --}}
+                    <form action="{{ route('wishlist.add') }}" method="post">
+                        @csrf
+                        <input type="hidden" name="id" value="{{ $accessory->id }}">
+                        <button type="submit"><i class="fa fa-heart"></i> ADD TO WISHLIST</button>
                     </form>
 
                     <ul>
-                        <li><span>Type:</span>{{ $accessory->category->name }}</li>
+                        <li><span>Type:</span> {{ $accessory->category->name ?? 'Unknown' }}</li>
                     </ul>
                 </div>
                 <div class="col-lg-12">
@@ -59,7 +59,7 @@
                 <div class="col-lg-12">
                     <div class="tabs-content">
                         <div class="row">
-                            <div class="nav-wrapper ">
+                            <div class="nav-wrapper">
                                 <ul class="nav nav-tabs" role="tablist">
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link active" id="description-tab" data-bs-toggle="tab"
@@ -76,17 +76,10 @@
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="description" role="tabpanel"
                                     aria-labelledby="description-tab">
-                                    <p>{!! html_entity_decode($accessory->description) !!}</p>
-
+                                    <p>{!! nl2br(e($accessory->description ?? 'No description available.')) !!}</p>
                                 </div>
                                 <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                                    <p>Coloring book air plant shabby chic, crucifix normcore raclette cred swag artisan
-                                        activated charcoal. PBR&B fanny pack pok pok gentrify truffaut kitsch helvetica jean
-                                        shorts edison bulb poutine next level humblebrag la croix adaptogen. <br><br>Hashtag
-                                        poke literally locavore, beard marfa kogi bruh artisan succulents seitan tonx
-                                        waistcoat chambray taxidermy. Same cred meggings 3 wolf moon lomo irony cray hell of
-                                        bitters asymmetrical gluten-free art party raw denim chillwave tousled try-hard
-                                        succulents street art.</p>
+                                    <p>No reviews yet.</p>
                                 </div>
                             </div>
                         </div>
@@ -101,8 +94,8 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="section-heading">
-                        <h6>{{ $accessory->category->name }}</h6>
-                        <h2>Related accessoriess</h2>
+                        <h6>{{ $accessory->category->name ?? 'Category' }}</h6>
+                        <h2>Related Accessories</h2>
                     </div>
                 </div>
                 <div class="col-lg-6">
@@ -111,20 +104,20 @@
                     </div>
                 </div>
 
-                @foreach ($relatedAccessories as $item)
-                    <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
-                        <div class="item">
-                            <h4>{{ $item->name }}</h4>
-                            <div class="thumb">
-                                <a href="{{ route('menu.accessorydetails', $item->id) }}">
-                                    <img src="{{ $item->image }}" alt="{{ $item->title }}">
-                                </a>
+                @if (!empty($relatedAccessories) && count($relatedAccessories) > 0)
+                    @foreach ($relatedAccessories as $item)
+                        <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3">
+                            <div class="item">
+                                <h4>{{ $item->name }}</h4>
+                                <div class="thumb">
+                                    <a href="{{ route('menu.accessorydetails', $item->id) }}">
+                                        <img src="{{ asset($item->image) }}" alt="{{ $item->name }}">
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-
-                @if ($relatedAccessories->isEmpty())
+                    @endforeach
+                @else
                     <div class="col-lg-12">
                         <p>No related accessories found.</p>
                     </div>
@@ -133,29 +126,4 @@
         </div>
     </div>
 
-    <script>
-        // add to wishlist
-        document.addEventListener("DOMContentLoaded", function() {
-            document.querySelector("#wishlist-form button").addEventListener("click", function(event) {
-                event.preventDefault(); // Prevent form submission
-
-                let wishlistable_id = this.dataset.id;
-                let wishlistable_type = this.dataset.type;
-
-                fetch("{{ route('wishlist.add') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
-                                .getAttribute('content'),
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({
-                            id: wishlistable_id,
-                            type: wishlistable_type
-                        })
-                    }).then(response => response.json())
-                    .then(data => alert(data.message));
-            });
-        });
-    </script>
 @endsection

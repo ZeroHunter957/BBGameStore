@@ -116,29 +116,38 @@
             </li>
         </ul>
 
-        <!-- Placeholder Sections -->
-        <div id="game-container">
-            <div class="row">
-                <div id="wishlistedSection" class="filter-content">
-                    <h5>Wishlist</h5>
-
-                    @foreach ($wishlistItems as $item)
-                        <li>
-                            {{ $item->wishable->name }}
-                            <button class="remove-btn" data-id="{{ $item->wishable_id }}"
-                                data-type="{{ class_basename($item->wishable_type) == 'Game' ? 'game' : 'accessory' }}">Remove</button>
-                        </li>
-                    @endforeach
+        <!-- Sections -->
+        <div id="wishlistedSection" class="filter-content">
+            <h5>Wishlist</h5>
+            <div id="game-container">
+                <div class="row">
+                    @if ($wishlist->isEmpty())
+                        <p>No items in your wishlist.</p>
+                    @else
+                        <ul>
+                            @foreach ($wishlist as $item)
+                                <li>{{ $item->wishlistable->name ?? 'Unknown Item' }} -
+                                    {{ $item->wishlistable->price ?? 'N/A' }}</li>
+                            @endforeach
+                        </ul>
+                    @endif
                 </div>
+            </div>
+        </div>
 
-
-                <div id="ownedGamesSection" class="filter-content" style="display: none;">
-                    <h5>Owned Games</h5>
+        <div id="ownedGamesSection" class="filter-content" style="display: none;">
+            <h5>Owned Games</h5>
+            <div id="game-container">
+                <div class="row">
                     <p>Games you own will be displayed here</p>
                 </div>
+            </div>
+        </div>
 
-                <div id="reviewsSection" class="filter-content" style="display: none;">
-                    <h5>Reviews Made</h5>
+        <div id="reviewsSection" class="filter-content" style="display: none;">
+            <h5>Reviews Made</h5>
+            <div id="game-container">
+                <div class="row">
                     <p>Reviews you've made will be displayed here</p>
                 </div>
             </div>
@@ -253,38 +262,51 @@
 
         // Wishlist
         document.addEventListener("DOMContentLoaded", function() {
-            // Remove from wishlist
-            document.querySelectorAll(".remove-btn").forEach(button => {
-                button.addEventListener("click", function() {
-                    let wishlistable_id = this.dataset.id;
-                    let wishlistable_type = this.dataset.type;
+            fetch('/wishlist')
+                .then(response => response.json())
+                .then(data => {
+                    let wishlistContainer = document.getElementById('wishlist-items');
+                    wishlistContainer.innerHTML = '';
 
-                    fetch("{{ route('wishlist.remove') }}", {
-                            method: "POST",
-                            headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                                "Content-Type": "application/json"
-                            },
-                            body: JSON.stringify({
-                                id: wishlistable_id,
-                                type: wishlistable_type
-                            })
-                        }).then(response => response.json())
-                        .then(data => location.reload());
+                    if (data.length === 0) {
+                        wishlistContainer.innerHTML = '<li>No items in wishlist</li>';
+                        return;
+                    }
+
+                    data.forEach(item => {
+                        let listItem = document.createElement('li');
+                        listItem.textContent = `(${item.item_type}) Item ID: ${item.item_id}`;
+
+                        let removeBtn = document.createElement('button');
+                        removeBtn.textContent = 'Remove';
+                        removeBtn.onclick = function() {
+                            removeFromWishlist(item.item_id, item.item_type, listItem);
+                        };
+
+                        listItem.appendChild(removeBtn);
+                        wishlistContainer.appendChild(listItem);
+                    });
                 });
-            });
-
-            // Clear wishlist
-            document.getElementById("clearWishlist").addEventListener("click", function() {
-                fetch("{{ route('wishlist.clear') }}", {
-                        method: "POST",
-                        headers: {
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}"
-                        }
-                    }).then(response => response.json())
-                    .then(data => location.reload());
-            });
         });
+
+        function removeFromWishlist(itemId, itemType, listItem) {
+            fetch('/wishlist/remove', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        item_id: itemId,
+                        item_type: itemType
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.message) {
+                        listItem.remove();
+                    }
+                });
+        }
     </script>
 
 @endsection

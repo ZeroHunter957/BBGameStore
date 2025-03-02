@@ -6,6 +6,7 @@ use App\Models\Account;
 use App\Models\Wishlist;
 use Cache;
 use DB;
+use Gloudemans\Shoppingcart\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -207,13 +208,13 @@ class AccountController extends Controller
         }
 
         $user = Account::find($userId);
-        $wishlistItems = Wishlist::where('user_id', $userId)->with('wishable')->get();
-
         if (!$user) {
             return redirect('/login')->with('message', 'User not found');
         }
 
-        return view('account.profile', compact('user', 'wishlistItems'));
+        $wishlist = Wishlist::where('user_id', $userId)->with('wishlistable')->get();
+
+        return view('account.profile', compact('user', 'wishlist'));
     }
 
     public function updateProfile(Request $request)

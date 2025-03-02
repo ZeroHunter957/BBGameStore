@@ -12,4 +12,9 @@ class Game extends Model
     {
         return $this->belongsTo(GameCategory::class, "cat_id");
     }
+
+    public function wishlists()
+    {
+        return $this->morphMany(Wishlist::class, 'wishlistable');
+    }
 }
