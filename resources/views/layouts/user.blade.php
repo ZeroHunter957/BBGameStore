@@ -108,16 +108,16 @@
                             <!-- ***** Logo End ***** -->
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
-                                <li><a href="/" class="active">Home</a></li>
-                                <li><a href="/gameshop">Games</a></li>
-                                <li><a href="/blogusers">Blogs</a></li>
-                                <li><a href="/accessoryshop">Accessories</a></li>
-                                <li><a href="/contact">Contact Us</a></li>
+                                <li><a href="/"  class="{{ Request::is('/') ? 'active' : '' }}">Home</a></li>
+                                <li><a href="/gameshop" class="{{ Request::is('gameshop') ? 'active' : '' }}">Games</a></li>
+                                <li><a href="/blogusers" class="{{ Request::is('blogusers') ? 'active' : '' }}">Blogs</a></li>
+                                <li><a href="/accessoryshop"  class="{{ Request::is('accessoryshop') ? 'active' : '' }}">Accessories</a></li>
+                                <li><a href="/contact" class="{{ Request::is('contact') ? 'active' : '' }}">Contact Us</a></li>
 
                                 @if (session()->has('accountLogin'))
                                     <li class="onhover-dropdown wislist-dropdown">
                                         <div class="cart-media">
-                                            <a href="{{ route('cart.index') }}">
+                                            <a href="{{ route('cart.index') }}" class="{{ Route::is('cart.index') ? 'active' : '' }}">
                                                 <i data-feather="shopping-cart"></i>
                                                 <span id="cart-count" class="label label-theme rounded-pill">
                                                     {{ $cartCount }}
@@ -126,7 +126,7 @@
                                         </div>
                                     </li>
                                     <li class="profile-menu">
-                                        <a href="{{ route('account.profile') }}" class="profile-link">
+                                        <a href="{{ route('account.profile') }}" class="{{ Route::is('account.profile') ? 'active' : '' }}">
                                             @php
                                                 $user = \App\Models\Account::find(session('accountLogin'));
                                                 $profileImage = $user->profile_image ?? 'default.jpg';
