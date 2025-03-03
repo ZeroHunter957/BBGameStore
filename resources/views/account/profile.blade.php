@@ -118,7 +118,7 @@
         <div class="row">
             <div id="ownedGamesSection" class="filter-content">
                 <h5>Owned Games</h5>
-                <p>Content will be added here later.</p>
+                <p></p>
             </div>
 
             <div id="reviewsSection" class="filter-content" style="display: none;">

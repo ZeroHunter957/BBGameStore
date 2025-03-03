@@ -43,8 +43,8 @@ class PaymentController extends Controller
         $orderInfo = "Thanh toán qua ATM MoMo";
         $amount = $_POST['total_momo'];
         $orderId = time() . "";
-        $redirectUrl = "http://127.0.0.1:8000/payment/result";
-        $ipnUrl = "http://127.0.0.1:8000/payment/result";
+        $redirectUrl = "http://127.0.0.1:8000/user/payment/result";
+        $ipnUrl = "http://127.0.0.1:8000/user/payment/result";
         $extraData = "";
         $requestId = time() . "";
         $requestType = "payWithATM";
@@ -86,6 +86,15 @@ class PaymentController extends Controller
         // Kiểm tra nếu thanh toán thành công
         if ($errorCode == 0) {
             // Xóa giỏ hàng của user sau khi thanh toán thành công
+            Invoice::create([[
+                'account_id' => session()->get('accountLogin'),
+                'odder_code' => $orderId,
+                'payment_method' => '',
+                'transaction_id' => $transId,
+                'status' => 'success',
+                'games' => Cart::where('account_id', session('accountLogin'))->where('product_type', 'game'),
+                'accessories' => Cart::where('account_id', session('accountLogin'))->where('product_type', 'accessory'),
+            ]]);
             Cart::where('account_id', session()->get('accountLogin'))->delete();
 
             return view('invoice.payment-result', [
