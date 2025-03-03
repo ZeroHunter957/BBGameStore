@@ -309,7 +309,7 @@
   @foreach ($comments as $comment)
   <div class="comment">
     <div class="user-info">
-      <img src="https://static-00.iconduck.com/assets.00/avatar-default-symbolic-icon-479x512-n8sg74wg.png" alt="Avatar" class="avatar">
+      <img src="{{ url('profile_images/' . $comment->account->profile_image ) }}" alt="Avatar" class="avatar">
       <h5>{{ $comment->account->fullname }}</h5>
     </div>
     <p>{!! $comment->content !!}</p>
@@ -354,7 +354,7 @@
     @foreach ($comment->replies as $reply)
     <div class="comment ml-4">
       <div class="user-info">
-        <img src="https://static-00.iconduck.com/assets.00/avatar-default-symbolic-icon-479x512-n8sg74wg.png" alt="Avatar" class="avatar">
+        <img src="{{ url('profile_images/' . $reply->account->profile_image)}}" alt="Avatar" class="avatar">
         <h5>{{ $reply->account->fullname }}</h5>
       </div>
       <p>{!! $reply->content !!}</p>

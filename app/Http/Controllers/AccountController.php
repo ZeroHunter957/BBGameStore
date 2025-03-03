@@ -313,6 +313,8 @@ class AccountController extends Controller
         return view('account.reset_password', compact('token'));
     }
 
+    
+
     /**
      * Handle password reset
      */
