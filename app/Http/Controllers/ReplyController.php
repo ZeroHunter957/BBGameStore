@@ -16,7 +16,7 @@ class ReplyController extends Controller
         $reply = new Reply();
         $reply->content = $request->content;
         $reply->comment_id = $commentId;
-        $reply->user_id = auth()->id();
+        $reply->account_id = session()->get('accountLogin');
         $reply->save();
 
         return redirect()->back();

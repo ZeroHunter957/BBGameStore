@@ -42,7 +42,7 @@
                                         @endif
                                         {{ $comment->content }}
                                     </td>
-                                    <td>{{ $comment->user->name }}</td>
+                                    <td>{{ $comment->account->fullname }}</td>
                                     <td>{{ $comment->created_at->format('Y-m-d H:i:s') }}</td>
                                     <td>
                                         <a href="{{ route('blogusers.show', $comment->blog_id) }}" class="btn btn-info btn-sm" target="_blank">View Blog</a>

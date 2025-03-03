@@ -20,7 +20,7 @@ class CommentController extends Controller
 
     public function store(Request $request, $blog_id)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to post a comment.']);
         }
 
@@ -46,7 +46,7 @@ class CommentController extends Controller
         $comment = Comment::create([
             'blog_id' => $blog_id,
             'content' => $request->content,
-            'user_id' => Auth::id(),
+            'account_id' => session()->get('accountLogin'),
             'created_at' => $now,
             'updated_at' => $now,
         ]);
@@ -58,13 +58,13 @@ class CommentController extends Controller
 
     public function like($commentId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to like a comment.']);
         }
 
         $comment = Comment::findOrFail($commentId);
 
-        $like = \App\Models\Like::where('user_id', Auth::id())
+        $like = \App\Models\Like::where('account_id', session()->get('accountLogin'))
             ->where('comment_id', $comment->id)
             ->first();
 
@@ -72,7 +72,7 @@ class CommentController extends Controller
             $like->delete();
         } else {
             \App\Models\Like::create([
-                'user_id' => Auth::id(),
+                'account_id' => session()->get('accountLogin'),
                 'comment_id' => $comment->id,
             ]);
         }
@@ -83,13 +83,13 @@ class CommentController extends Controller
 
     public function likeReply($replyId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to like a reply.']);
         }
 
         $reply = Reply::findOrFail($replyId);
 
-        $like = \App\Models\Like::where('user_id', Auth::id())
+        $like = \App\Models\Like::where('account_id', session()->get('accountLogin'))
             ->where('reply_id', $reply->id)
             ->first();
 
@@ -97,7 +97,7 @@ class CommentController extends Controller
             $like->delete();
         } else {
             \App\Models\Like::create([
-                'user_id' => Auth::id(),
+                'account_id' => session()->get('accountLogin'),
                 'reply_id' => $reply->id,
             ]);
         }
@@ -108,7 +108,7 @@ class CommentController extends Controller
 
     public function reply(Request $request, $commentId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to reply.']);
         }
 
@@ -118,7 +118,7 @@ class CommentController extends Controller
 
         $reply = Reply::create([
             'content' => $request->content,
-            'user_id' => auth()->id(),
+            'account_id' => session()->get('accountLogin'),
             'comment_id' => $commentId,
             'created_at' => $now,
             'updated_at' => $now,
@@ -129,13 +129,13 @@ class CommentController extends Controller
 
     public function destroy($commentId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a comment.']);
         }
 
         $comment = Comment::findOrFail($commentId);
 
-        if ($comment->user_id !== Auth::id() && Auth::user()->role != 1) {
+        if ($comment->account_id !== session()->get('accountLogin') && session()->get('role') != 'ADMIN') {
             return redirect()->route('blogusers.show', $comment->blog_id)
                 ->withErrors(['comment' => 'You are not authorized to delete this comment.']);
         }
@@ -171,13 +171,13 @@ class CommentController extends Controller
 
     public function delete($commentId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a comment.']);
         }
 
         $comment = Comment::findOrFail($commentId);
 
-        if ($comment->user_id !== Auth::id()) {
+        if ($comment->account_id !== session()->get('accountLogin')) {
             return redirect()->route('blogusers.show', $comment->blog_id)
                 ->withErrors(['comment' => 'You are not authorized to delete this comment.']);
         }
@@ -191,13 +191,13 @@ class CommentController extends Controller
 
     public function deleteReply($replyId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a reply.']);
         }
 
         $reply = Reply::findOrFail($replyId);
 
-        if ($reply->user_id !== Auth::id()) {
+        if ($reply->account_id !== session()->get('accountLogin')) {
             return redirect()->route('blogusers.show', $reply->comment->blog_id)
                 ->withErrors(['comment' => 'You are not authorized to delete this reply.']);
         }
@@ -214,7 +214,7 @@ class CommentController extends Controller
 
     public function deleteReplyFromAdmin($replyId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a reply.']);
         }
 

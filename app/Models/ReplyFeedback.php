@@ -9,16 +9,16 @@ class ReplyFeedback extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content', 'feedback_id', 'user_id', 'created_at', 'updated_at'];
+    protected $fillable = ['content', 'feedback_id', 'account_id', 'created_at', 'updated_at'];
 
     public function feedback()
     {
         return $this->belongsTo(Feedback::class);
     }
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Account::class);
     }
 
     public function likeFeedbacks()

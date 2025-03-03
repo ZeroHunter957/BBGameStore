@@ -98,14 +98,19 @@
                                     <form action="{{ route('blogs.updateStatus', $blog->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
-                                        <select name="status" class="form-control form-control-sm" onchange="this.form.submit()">
-                                            <option value="0" {{ $blog->status == 0 ? 'selected' : '' }}>Pending insert</option>
+                                        <select name="status" class="form-control form-control-sm" onchange="this.form.submit()"
+                                            @if($blog->status == 1 || $blog->status == 2) disabled @endif>
+                                            <option value="0" {{ $blog->status == 0 ? 'selected' : '' }}>Pending</option>
                                             <option value="1" {{ $blog->status == 1 ? 'selected' : '' }}>Accepted</option>
-                                            <option value="2" {{ $blog->status == 2 ? 'selected' : '' }}>Pending update</option>
-                                            <option value="3" {{ $blog->status == 3 ? 'selected' : '' }}>Reject insert</option>
-                                            <option value="4" {{ $blog->status == 4 ? 'selected' : '' }}>Reject update</option>
+                                            <option value="2" {{ $blog->status == 2 ? 'selected' : '' }}>Reject</option>
                                         </select>
+
+                                        <div class="form-group mt-2">
+                                            <label for="note">Admin Note</label>
+                                            <textarea name="note" class="form-control" placeholder="Enter note" rows="3"></textarea>
+                                        </div>
                                     </form>
+
                                 </td>
                                 <td>
                                     <a href="{{ route('blogs.edit', $blog->id) }}" class="btn btn-warning btn-sm">Edit</a>
@@ -122,6 +127,34 @@
                         </tbody>
                     </table>
                 </div>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const statusSelect = document.getElementById('status');
+                        const noteModal = new bootstrap.Modal(document.getElementById('noteModal'));
+                        const noteForm = document.getElementById('noteForm');
+                        const noteTextarea = document.getElementById('note');
+                        const submitButton = document.getElementById('submitNoteButton');
+
+                        statusSelect.addEventListener('change', function() {
+                            const selectedStatus = statusSelect.value;
+
+                            if (selectedStatus == '1' || selectedStatus == '2') {
+                                noteModal.show();
+
+                                document.getElementById('statusInput').value = selectedStatus;
+                            }
+                        });
+
+                        submitButton.addEventListener('click', function() {
+                            if (noteTextarea.value.trim() === "") {
+                                alert("Please enter a note before submitting.");
+                                return;
+                            }
+
+                            noteForm.submit();
+                        });
+                    });
+                </script>
 
                 <!-- Pagination -->
                 <!-- Pagination -->

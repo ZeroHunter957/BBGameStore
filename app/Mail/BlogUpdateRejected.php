@@ -33,7 +33,7 @@ class BlogUpdateRejected extends Mailable
      */
     public function build()
     {
-        return $this->subject('Blog Update Rejected')
+        return $this->subject('Blog Update')
                     ->view('emails.blog_update_rejected') // Tạo view để gửi email
                     ->with([
                         'rejectMessage' => $this->rejectMessage,

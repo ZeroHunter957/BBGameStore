@@ -107,12 +107,6 @@
 						<span class="category text-muted">{{ $blog->category ?? 'General' }}</span>
 						<h4 class="mt-2">{{ $blog->title }}</h4>
 						<p class="text-muted">Created on {{ $blog->created_at->format('M d, Y') }}</p>
-
-						@if(Auth::check() && $blog->user_id == Auth::id())
-						<div class="mt-3">
-							<a href="{{ route('blogusers.edit', $blog->id) }}" class="btn btn-warning">Edit</a>
-						</div>
-						@endif
 					</div>
 				</div>
 			</div>

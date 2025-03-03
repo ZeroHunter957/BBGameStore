@@ -9,11 +9,11 @@ class Feedback extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['content', 'user_id', 'like_count',  'star', 'game_id', 'created_at', 'updated_at'];
+    protected $fillable = ['content', 'account_id', 'like_count',  'star', 'game_id', 'created_at', 'updated_at'];
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Account::class);
     }
 
 

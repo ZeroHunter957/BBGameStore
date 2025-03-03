@@ -16,29 +16,27 @@ class BlogUserController extends Controller
         $search = $request->input('search');
         $filter = $request->input('filter', 'all');
 
-        $latestBlogs = Blog::join('users as u', 'blogs.user_id', '=', 'u.id') // Perform INNER JOIN with users
+        $latestBlogs = Blog::join('accounts as u', 'blogs.account_id', '=', 'u.id') // Perform INNER JOIN with users
             ->when($search, function ($query, $search) {
                 return $query->where('blogs.title', 'like', "%{$search}%");
             })
             ->when($filter === 'my-blogs', function ($query) {
-                return $query->where('blogs.user_id', Auth::id());
+                return $query->where('blogs.account_id', session()->get('accountLogin'))
+                    ->where(function ($subQuery) {
+                        $subQuery->where('blogs.status', 0)
+                            ->orWhere('blogs.status', 1);
+                    });
             })
-            ->when(Auth::check(), function ($query) {
-                return $query->where(function ($query) {
-                    $query->where('blogs.status', 1)
-                        ->orWhere('blogs.status', 2)
-                        ->orWhere('blogs.user_id', Auth::id());  // Allow user to see their own blogs
-                });
-            }, function ($query) {
-                return $query->where('blogs.status', 1)
-                    ->orWhere('blogs.status', 2);  // If not authenticated, only show status 1
+            ->when(! $filter || $filter !== 'my-blogs', function ($query) {
+                return $query->where('blogs.status', 1);
             })
             ->orderBy('blogs.created_at', 'desc')
-            ->select('blogs.*', 'u.name as author_name')  // Optionally select additional fields from the user
+            ->select('blogs.*', 'u.fullname as author_name')
             ->paginate(4);
 
         return view('menu.blogs', compact('latestBlogs', 'search', 'filter'));
     }
+
 
 
 
@@ -60,7 +58,7 @@ class BlogUserController extends Controller
 
     public function create()
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
         }
         return view('blogusers.create');
@@ -68,7 +66,7 @@ class BlogUserController extends Controller
 
     public function store(Request $request)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in']);
         }
         try {
@@ -88,7 +86,7 @@ class BlogUserController extends Controller
                 'content' => $request->content,
                 'image' => $imagePath,
                 'status' => 0,
-                'user_id' => Auth::user()->id,
+                'account_id' => session()->get('accountLogin'),
             ]);
 
             return redirect()->route('blogusers.index')->with('success', 'Blog updated successfully.');
@@ -99,7 +97,7 @@ class BlogUserController extends Controller
     }
     public function edit($id)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
         }
         $blog = Blog::findOrFail($id);
@@ -107,66 +105,65 @@ class BlogUserController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    if (!Auth::check()) {
-        return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
-    }
-    try {
-        // Log the entire request data (excluding file content for security)
-        Log::info('Updating blog', [
-            'request_data' => $request->except(['image']),  // Avoid logging the image file content itself
-            'user_id' => Auth::id(),
-            'blog_id' => $id,
-        ]);
-
-        if ($request->hasFile('image')) {
-            $request->validate([
-                'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            ]);
+    {
+        if (!session()->get('accountLogin')) {
+            return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
         }
+        try {
+            // Log the entire request data (excluding file content for security)
+            Log::info('Updating blog', [
+                'request_data' => $request->except(['image']),  // Avoid logging the image file content itself
+                'account_id' => session()->get('accountLogin'),
+                'blog_id' => $id,
+            ]);
 
-        $blog = Blog::findOrFail($id);
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                ]);
+            }
 
-        $imagePath = $blog->image;
+            $blog = Blog::findOrFail($id);
 
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $imagePath = $request->file('image')->store('img', 'public');
-            // Log file upload information (excluding actual file data)
-            Log::info('Uploaded new image', [
-                'image_name' => $request->file('image')->getClientOriginalName(),
+            $imagePath = $blog->image;
+
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $imagePath = $request->file('image')->store('img', 'public');
+                // Log file upload information (excluding actual file data)
+                Log::info('Uploaded new image', [
+                    'image_name' => $request->file('image')->getClientOriginalName(),
+                    'image_path' => $imagePath,
+                ]);
+            }
+
+            // Log the update process
+            Log::info('Updating blog record', [
+                'blog_id' => $id,
+                'title' => $request->title,
+                'content' => $request->content,
                 'image_path' => $imagePath,
+                'status' => 2
             ]);
+
+            // Update the blog record
+            $blog->update([
+                'title_cache' => $request->title,
+                'content_cache' => $request->content,
+                'image_cache' => $imagePath,
+                'status' => 2
+            ]);
+
+            return redirect()->route('blogusers.index')->with('success', 'Blog updated successfully.');
+        } catch (\Exception $e) {
+            // Log the exception details
+            Log::error('Error updating blog: ' . $e->getMessage(), [
+                'stack' => $e->getTraceAsString(),
+                'request_data' => $request->all(),  // Log full request data, excluding files
+                'account_id' => session()->get('accountLogin'),
+                'blog_id' => $id,
+            ]);
+
+            return response()->json(['error' => 'An error occurred while updating the blog.'], 500);
         }
-
-        // Log the update process
-        Log::info('Updating blog record', [
-            'blog_id' => $id,
-            'title' => $request->title,
-            'content' => $request->content,
-            'image_path' => $imagePath,
-            'status' => 2
-        ]);
-
-        // Update the blog record
-        $blog->update([
-            'title_cache' => $request->title,
-            'content_cache' => $request->content,
-            'image_cache' => $imagePath,
-            'status' => 2
-        ]);
-
-        return redirect()->route('blogusers.index')->with('success', 'Blog updated successfully.');
-    } catch (\Exception $e) {
-        // Log the exception details
-        Log::error('Error updating blog: ' . $e->getMessage(), [
-            'stack' => $e->getTraceAsString(),
-            'request_data' => $request->all(),  // Log full request data, excluding files
-            'user_id' => Auth::id(),
-            'blog_id' => $id,
-        ]);
-
-        return response()->json(['error' => 'An error occurred while updating the blog.'], 500);
     }
-}
-
 }

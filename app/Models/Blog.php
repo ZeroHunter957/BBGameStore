@@ -9,11 +9,11 @@ class Blog extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'content', 'image', 'created_at', 'user_id', 'title_cache', 'content_cache', 'image_cache', 'status'];
+    protected $fillable = ['title', 'content', 'image', 'created_at', 'account_id', 'status'];
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Account::class);
     }
     
     public function comments()

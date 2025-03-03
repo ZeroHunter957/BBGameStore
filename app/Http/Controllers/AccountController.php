@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Account;
+use App\Models\Feedback;
 use Cache;
 use DB;
 use Illuminate\Http\Request;
@@ -36,8 +37,8 @@ class AccountController extends Controller
         $account = Account::where("email", $request->email)->first();
 
         if ($account && Hash::check($request->password, $account->password)) {
-            // Store user data in session manually
-            $request->session()->put('accountLogin', $account->id); // Store only the user ID
+            $request->session()->put('accountLogin', $account->id);
+            $request->session()->put('role', $account->role); 
             return $account->role === "ADMIN" ? redirect('/admin/dashboard') : redirect('/');
         }
 
@@ -233,7 +234,19 @@ class AccountController extends Controller
 
         return response()->json(['success' => true, 'profile_image' => $user->profile_image]);
     }
-
+    public function getFeedbacks(Request $request)
+    {
+        $userId = session('accountLogin');
+        
+        $feedbacks = Feedback::where('account_id', $userId)
+            ->with('game') 
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        // Return the feedbacks in a suitable format (e.g., JSON)
+        return response()->json(['feedbacks' => $feedbacks]);
+    }
+    
     public function updatePassword(Request $request)
     {
         $request->validate([

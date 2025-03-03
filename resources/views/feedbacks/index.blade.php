@@ -38,7 +38,7 @@
                                     <td>
                                         {{ $feedback->star }}
                                     </td>
-                                    <td>{{ $feedback->user->name }}</td>
+                                    <td>{{ $feedback->account->fullname }}</td>
                                     <td>{{ $feedback->created_at->format('Y-m-d H:i:s') }}</td>
                                     <td>
                                         <a href="{{ route('menu.gamedetails', $feedback->game->id) }}" class="btn btn-info btn-sm" target="_blank">View Game</a>

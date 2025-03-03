@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Accessory;
 use App\Models\AccessoryCategory;
 use App\Models\Account;
+use App\Models\Feedback;
 use App\Models\Game;
 use App\Models\BannedWord;
 use App\Models\GameCategory;
 use App\Models\Menu;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -86,7 +88,7 @@ class MenuController extends Controller
         $sortOption = request('sort', 'newest');
 
         $feedbacks = $game->feedbacks()
-            ->with('user')
+            ->with('account')
             ->withCount('likeFeedbacks');
 
         if ($sortOption == 'star_desc') {
@@ -100,13 +102,48 @@ class MenuController extends Controller
         }
 
         $averageRating = $game->feedbacks()->avg('star');
-
         $totalFeedbacks = $game->feedbacks()->count();
+
+        $starFeedbackCounts = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $starFeedbackCounts[$i] = $game->feedbacks()->where('star', $i)->count();
+        }
 
         $feedbacks = $feedbacks->paginate(5);
 
-        return view('menu.gamedetails', compact('game', 'relatedGames', 'feedbacks', 'bannedWords', 'averageRating', 'totalFeedbacks'));
+        $userId = session('accountLogin');
+        $canFeedback = false;
+
+        if ($userId) {
+            $existingFeedback = Feedback::where('game_id', $game->id)
+                ->where('account_id', $userId)
+                ->first();
+
+            $purchasedGame = OrderItem::where('product_id', $game->id)
+                ->whereHas('invoice', function ($query) use ($userId) {
+                    $query->where('account_id', $userId);
+                })
+                ->exists();
+
+            if (!$existingFeedback && $purchasedGame) {
+                $canFeedback = true;
+            }
+        }
+
+        return view('menu.gamedetails', compact(
+            'game',
+            'relatedGames',
+            'feedbacks',
+            'bannedWords',
+            'averageRating',
+            'totalFeedbacks',
+            'canFeedback',
+            'starFeedbackCounts'  
+        ));
     }
+
+
+
 
 
 

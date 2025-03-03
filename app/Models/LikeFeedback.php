@@ -9,11 +9,11 @@ class LikeFeedback extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'feedback_id', 'reply_feedback_id', 'game_id'];
+    protected $fillable = ['account_id', 'feedback_id', 'reply_feedback_id', 'game_id'];
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Account::class);
     }
 
     public function feedback()

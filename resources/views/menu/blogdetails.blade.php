@@ -271,7 +271,7 @@
       <div class="col-lg-12">
         <h3>{{ $blog->title }}</h3>
         <h6>Created at {{ $blog->created_at }}</h6>
-        <h6>Created by {{ $blog->user->name }}</h6>
+        <h6>Created by {{ $blog->account->fullname }}</h6>
       </div>
     </div>
   </div>
@@ -310,7 +310,7 @@
   <div class="comment">
     <div class="user-info">
       <img src="https://static-00.iconduck.com/assets.00/avatar-default-symbolic-icon-479x512-n8sg74wg.png" alt="Avatar" class="avatar">
-      <h5>{{ $comment->user->name }}</h5>
+      <h5>{{ $comment->account->fullname }}</h5>
     </div>
     <p>{!! $comment->content !!}</p>
     <small>{{ $comment->created_at->format('Y-m-d H:i') }}</small>
@@ -319,7 +319,7 @@
     <form action="{{ route('comment.like', $comment->id) }}" method="POST" style="display:inline;">
       @csrf
       <button type="submit" class="btn btn-link">
-        @if ($comment->likes->where('user_id', Auth::id())->count() > 0)
+        @if ($comment->likes->where('account_id', session()->get('accountLogin'))->count() > 0)
         Unlike
         @else
         Like
@@ -331,7 +331,7 @@
     <!-- Reply Button -->
     <button class="btn btn-link" onclick="showReplyForm({{ $comment->id }})">Reply</button>
 
-    @if (Auth::id() == $comment->user_id)
+    @if (session()->get('accountLogin') == $comment->account_id)
     <form action="{{ route('comment.delete', $comment->id) }}" method="POST" style="display:inline;">
       @csrf
       @method('DELETE')
@@ -355,7 +355,7 @@
     <div class="comment ml-4">
       <div class="user-info">
         <img src="https://static-00.iconduck.com/assets.00/avatar-default-symbolic-icon-479x512-n8sg74wg.png" alt="Avatar" class="avatar">
-        <h5>{{ $reply->user->name }}</h5>
+        <h5>{{ $reply->account->fullname }}</h5>
       </div>
       <p>{!! $reply->content !!}</p>
       <small>{{ $reply->created_at->format('Y-m-d H:i') }}</small>
@@ -364,7 +364,7 @@
       <form action="{{ route('comment.likeReply', $reply->id) }}" method="POST" style="display:inline;">
         @csrf
         <button type="submit" class="btn btn-link">
-          @if ($reply->likes->where('user_id', Auth::id())->count() > 0)
+          @if ($reply->likes->where('account_id', session()->get('accountLogin'))->count() > 0)
           Unlike
           @else
           Like
@@ -374,7 +374,7 @@
       <span>{{ $reply->likes->count() }} Likes</span>
 
       <!-- Delete Reply Button -->
-      @if (Auth::id() == $reply->user_id)
+      @if (session()->get('accountLogin') == $reply->account_id)
       <form action="{{ route('comment.deleteReply', $reply->id) }}" method="POST" style="display:inline;">
         @csrf
         @method('DELETE')
@@ -387,8 +387,7 @@
   @endforeach
 
   <!-- Comment Form -->
-  @if (Auth::check())
-  
+  @if (session()->get('accountLogin'))
   <form action="{{ route('comments.store', $blog->id) }}" method="POST">
     @csrf
     <div class="form-group">

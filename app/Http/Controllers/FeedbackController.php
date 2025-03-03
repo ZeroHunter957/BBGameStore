@@ -20,7 +20,7 @@ class FeedbackController extends Controller
 
     public function storeFeedback(Request $request, $game_id)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to post a feedback.']);
         }
 
@@ -47,7 +47,7 @@ class FeedbackController extends Controller
             'game_id' => $game_id,
             'content' => $request->content,
             'star' => $request->star,
-            'user_id' => Auth::id(),
+            'account_id' => session()->get('accountLogin'),
             'created_at' => $now,
             'updated_at' => $now,
         ]);
@@ -59,13 +59,13 @@ class FeedbackController extends Controller
 
     public function likeFeedback($feedbackId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to like a feedback.']);
         }
 
         $feedback = Feedback::findOrFail($feedbackId);
 
-        $like = \App\Models\LikeFeedback::where('user_id', Auth::id())
+        $like = \App\Models\LikeFeedback::where('account_id', session()->get('accountLogin'))
             ->where('feedback_id', $feedback->id)
             ->first();
 
@@ -73,7 +73,7 @@ class FeedbackController extends Controller
             $like->delete();
         } else {
             \App\Models\LikeFeedback::create([
-                'user_id' => Auth::id(),
+                'account_id' => session()->get('accountLogin'),
                 'feedback_id' => $feedback->id,
             ]);
         }
@@ -84,13 +84,13 @@ class FeedbackController extends Controller
 
     public function likeReplyFeedback($replyId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to like a reply.']);
         }
 
         $reply = ReplyFeedback::findOrFail($replyId);
 
-        $like = \App\Models\LikeFeedback::where('user_id', Auth::id())
+        $like = \App\Models\LikeFeedback::where('account_id', session()->get('accountLogin'))
             ->where('reply_feedback_id', $reply->id)
             ->first();
 
@@ -98,7 +98,7 @@ class FeedbackController extends Controller
             $like->delete();
         } else {
             \App\Models\LikeFeedback::create([
-                'user_id' => Auth::id(),
+                'account_id' => session()->get('accountLogin'),
                 'reply_feedback_id' => $reply->id,
                 'feedback_id' => $reply->feedback->id,
             ]);
@@ -109,7 +109,7 @@ class FeedbackController extends Controller
 
     public function replyFeedback(Request $request, $feedbackId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to reply.']);
         }
 
@@ -119,7 +119,7 @@ class FeedbackController extends Controller
 
         $reply = ReplyFeedback::create([
             'content' => $request->content,
-            'user_id' => Auth::id(),
+            'account_id' => session()->get('accountLogin'),
             'feedback_id' => $feedbackId,
             'created_at' => $now,
             'updated_at' => $now,
@@ -131,13 +131,13 @@ class FeedbackController extends Controller
 
     public function destroy($feedbackId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a feedback.']);
         }
 
         $feedback = Feedback::findOrFail($feedbackId);
 
-        if ($feedback->user_id !== Auth::id() && Auth::user()->role != 1) {
+        if ($feedback->account_id !== session()->get('accountLogin') && session()->get('role') != 'ADMIN') {
             return redirect()->route('menu.gamedetails', $feedback->game_id)
                 ->withErrors(['feedback' => 'You are not authorized to delete this feedback.']);
         }
@@ -173,13 +173,13 @@ class FeedbackController extends Controller
 
     public function deleteFeedback($feedbackId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a feedback.']);
         }
 
         $feedback = Feedback::findOrFail($feedbackId);
 
-        if ($feedback->user_id !== Auth::id()) {
+        if ($feedback->account_id !== session()->get('accountLogin')) {
             return redirect()->route('menu.gamedetails', $feedback->game_id)
                 ->withErrors(['feedback' => 'You are not authorized to delete this feedback.']);
         }
@@ -193,13 +193,13 @@ class FeedbackController extends Controller
 
     public function deleteReplyFeedback($replyId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a reply.']);
         }
 
         $reply = ReplyFeedback::findOrFail($replyId);
 
-        if ($reply->user_id !== Auth::id()) {
+        if ($reply->account_id !== session()->get('accountLogin')) {
             return redirect()->route('menu.gamedetails', $reply->feedback->game_id)
                 ->withErrors(['feedback' => 'You are not authorized to delete this reply.']);
         }
@@ -212,7 +212,7 @@ class FeedbackController extends Controller
 
     public function deleteReplyFeedbackFromAdmin($replyId)
     {
-        if (!Auth::check()) {
+        if (!session()->get('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in to delete a reply.']);
         }
 
