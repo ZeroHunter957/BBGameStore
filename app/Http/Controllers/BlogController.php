@@ -83,7 +83,7 @@ class BlogController extends Controller
                 'content' => $request->content,
                 'image' => $imagePath,
                 'status' => 1,
-                'account_id' => $request->session()->get('accountLogin')
+                'account_id' => session('accountLogin')
             ]);
 
             return response()->json(['message' => 'Blog created successfully.'], 200);

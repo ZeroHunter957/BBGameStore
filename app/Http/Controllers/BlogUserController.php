@@ -21,7 +21,7 @@ class BlogUserController extends Controller
                 return $query->where('blogs.title', 'like', "%{$search}%");
             })
             ->when($filter === 'my-blogs', function ($query) {
-                return $query->where('blogs.account_id', session()->get('accountLogin'))
+                return $query->where('blogs.account_id', session('accountLogin'))
                     ->where(function ($subQuery) {
                         $subQuery->where('blogs.status', 0)
                             ->orWhere('blogs.status', 1);
@@ -58,7 +58,7 @@ class BlogUserController extends Controller
 
     public function create()
     {
-        if (!session()->get('accountLogin')) {
+        if (!session('accountLogin')) {
             return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
         }
         return view('blogusers.create');
@@ -66,7 +66,7 @@ class BlogUserController extends Controller
 
     public function store(Request $request)
     {
-        if (!session()->get('accountLogin')) {
+        if (!session('accountLogin')) {
             return redirect()->route('login')->withErrors(['error' => 'You must be logged in']);
         }
         try {
@@ -86,7 +86,7 @@ class BlogUserController extends Controller
                 'content' => $request->content,
                 'image' => $imagePath,
                 'status' => 0,
-                'account_id' => session()->get('accountLogin'),
+                'account_id' => session('accountLogin'),
             ]);
 
             return redirect()->route('blogusers.index')->with('success', 'Blog updated successfully.');
@@ -97,7 +97,7 @@ class BlogUserController extends Controller
     }
     public function edit($id)
     {
-        if (!session()->get('accountLogin')) {
+        if (!session('accountLogin')) {
             return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
         }
         $blog = Blog::findOrFail($id);
@@ -106,14 +106,14 @@ class BlogUserController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!session()->get('accountLogin')) {
+        if (!session('accountLogin')) {
             return redirect()->route('account.login')->withErrors(['error' => 'You must be logged in']);
         }
         try {
             // Log the entire request data (excluding file content for security)
             Log::info('Updating blog', [
                 'request_data' => $request->except(['image']),  // Avoid logging the image file content itself
-                'account_id' => session()->get('accountLogin'),
+                'account_id' => session('accountLogin'),
                 'blog_id' => $id,
             ]);
 
@@ -159,7 +159,7 @@ class BlogUserController extends Controller
             Log::error('Error updating blog: ' . $e->getMessage(), [
                 'stack' => $e->getTraceAsString(),
                 'request_data' => $request->all(),  // Log full request data, excluding files
-                'account_id' => session()->get('accountLogin'),
+                'account_id' => session('accountLogin'),
                 'blog_id' => $id,
             ]);
 

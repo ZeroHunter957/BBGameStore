@@ -670,7 +670,7 @@
                             </div>
 
 
-                            @if (session()->get('accountLogin'))
+                            @if (session('accountLogin'))
                             @if ($canFeedback == true)
                             <form action="{{ route('feedback.storeFeedback', $game->id) }}" method="POST">
                                 @csrf
