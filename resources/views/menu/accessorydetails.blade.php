@@ -2,11 +2,49 @@
 @section('title', 'list page')
 
 @section('content')
+    <style>
+        #description a {
+            color: #007bff
+        }
+
+        /* tao gia tien va button canh ben*/
+        .price-and-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .game-price {
+            font-size: 25px;
+            font-weight: bold;
+            color: #66c2ff;
+        }
+
+        .library-btn {
+            margin-left:30px; 
+            background: linear-gradient(135deg, #66c2ff, #99d6ff);
+            /* Hiệu ứng gradient */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            justify-content: center;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
     <div class="page-heading header-text">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <h3>Modern Warfare® II</h3>
+                    <h3>{{ $accessory->name }}</h3>
                     <span class="breadcrumb"><a href="/menu">Home</a> > <a href="/accessoryshop">Shop</a> >
                         {{ $accessory->title }}</span>
                 </div>
@@ -24,15 +62,17 @@
                 </div>
                 <div class="col-lg-6 align-self-center">
                     <h4>{{ $accessory->name }}</h4>
-                    <span class="price">${{ $accessory->price }}</span>
-                    <form id="qty" action="{{route('cart.add')}}" method="post">
-                        @csrf
-                        <input type="hidden" name="id" value="{{$accessory->id}}">
-                        <input type="hidden" name="quantity" id="qty" value="1">
-                        <button type="submit"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
-                    </form>
+                    <div class="price-and-button">
+                        <span class="game-price ">${{ $accessory->price }}</span>
+                        <form id="qty" action="{{ route('cart.add') }}" method="post" >
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $accessory->id }}">
+                            <input type="hidden" name="quantity" id="qty" value="1">
+                            <button type="submit"  class="library-btn"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
+                        </form>
+                    </div>
                     <ul>
-                        <li><span>Type:</span>{{ $accessory->category->name }}</li>
+                        <li><span>Type:</span>{{ $accessory->category->name}}</li>
                     </ul>
                 </div>
                 <div class="col-lg-12">

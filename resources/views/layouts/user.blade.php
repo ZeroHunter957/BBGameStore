@@ -28,6 +28,18 @@
     <link id="color-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/demo4.css') }}">
     @stack('styles')
     <style>
+        .li_logout {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .li_logout form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .wislist-dropdown {
             position: relative;
             display: flex;
@@ -36,7 +48,13 @@
 
         .cart-media {
             position: relative;
-            display: inline-block;
+            align-items: center;
+        }
+
+        .cart-media a {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }
 
         .cart-media a {
@@ -96,6 +114,40 @@
 
     <div class="flex-wrapper">
         <!-- ***** Header Area Start ***** -->
+        @if (session('message'))
+            <div id="flash-message"
+                style="
+                position: fixed;
+                top: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 15px 30px;
+                border-radius: 8px;
+                z-index: 1000;
+                text-align: center;
+                font-size: 16px;
+                min-width: 300px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+            ">
+                {{ session('message') }}
+            </div>
+
+            <script>
+                setTimeout(function() {
+                    var flashMessage = document.getElementById('flash-message');
+                    if (flashMessage) {
+                        flashMessage.style.opacity = '0';
+                        setTimeout(() => flashMessage.style.display = 'none', 500);
+                    }
+                }, 3000); // Ẩn sau 3 giây với hiệu ứng mờ dần
+            </script>
+        @endif
+
+
         <header class="header-area header-sticky">
             <div class="container">
                 <div class="row">
@@ -108,16 +160,21 @@
                             <!-- ***** Logo End ***** -->
                             <!-- ***** Menu Start ***** -->
                             <ul class="nav">
-                                <li><a href="/"  class="{{ Request::is('/') ? 'active' : '' }}">Home</a></li>
-                                <li><a href="/gameshop" class="{{ Request::is('gameshop') ? 'active' : '' }}">Games</a></li>
-                                <li><a href="/blogusers" class="{{ Request::is('blogusers') ? 'active' : '' }}">Blogs</a></li>
-                                <li><a href="/accessoryshop"  class="{{ Request::is('accessoryshop') ? 'active' : '' }}">Accessories</a></li>
-                                <li><a href="/contact" class="{{ Request::is('contact') ? 'active' : '' }}">Contact Us</a></li>
+                                <li><a href="/" class="{{ Request::is('/') ? 'active' : '' }}">Home</a></li>
+                                <li><a href="/gameshop" class="{{ Request::is('gameshop') ? 'active' : '' }}">Games</a>
+                                </li>
+                                <li><a href="/blogusers"
+                                        class="{{ Request::is('blogusers') ? 'active' : '' }}">Blogs</a></li>
+                                <li><a href="/accessoryshop"
+                                        class="{{ Request::is('accessoryshop') ? 'active' : '' }}">Accessories</a></li>
+                                <li><a href="/contact" class="{{ Request::is('contact') ? 'active' : '' }}">Contact
+                                        Us</a></li>
 
                                 @if (session()->has('accountLogin'))
                                     <li class="onhover-dropdown wislist-dropdown">
-                                        <div class="cart-media">
-                                            <a href="{{ route('cart.index') }}" class="{{ Route::is('cart.index') ? 'active' : '' }}">
+                                        <div class="cart-media" style="align-items: center">
+                                            <a href="{{ route('cart.index') }}"
+                                                class="{{ Route::is('cart.index') ? 'active' : '' }}">
                                                 <i data-feather="shopping-cart"></i>
                                                 <span id="cart-count" class="label label-theme rounded-pill">
                                                     {{ $cartCount }}
@@ -126,7 +183,8 @@
                                         </div>
                                     </li>
                                     <li class="profile-menu">
-                                        <a href="{{ route('account.profile') }}" class="{{ Route::is('account.profile') ? 'active' : '' }}">
+                                        <a href="{{ route('account.profile') }}"
+                                            class="{{ Route::is('account.profile') ? 'active' : '' }}">
                                             @php
                                                 $user = \App\Models\Account::find(session('accountLogin'));
                                                 $profileImage = $user->profile_image ?? 'default.jpg';
@@ -136,9 +194,9 @@
                                             Profile
                                         </a>
                                     </li>
-                                    <li>
+                                    <li class="li_logout">
                                         <form action="{{ route('account.logout') }}" method="GET"
-                                            style="display:inline;">
+                                            style="display:inline; padding: 0%; margin: 0%;">
                                             @csrf
                                             <button type="submit" class="logout"
                                                 style="background:none; border:none; color:white; cursor:pointer;">
@@ -147,7 +205,7 @@
                                         </form>
                                     </li>
                                 @else
-                                    <li><a href="/login" class="login">Sign in</a></li>
+                                    <li class="login"><a href="/login" class="login">Sign in</a></li>
                                     <li><a href="/register" class="register">Register</a></li>
                                 @endif
                             </ul>
@@ -248,10 +306,10 @@
                                             <a href="{{ route('cart.index') }}">Your Orders</a>
                                         </li>
                                         <li>
-                                            @if(session('accountLogin'))
-                                            <a href="{{ route('account.profile') }}">Your Account</a>
+                                            @if (session('accountLogin'))
+                                                <a href="{{ route('account.profile') }}">Your Account</a>
                                             @else
-                                            <a href="{{ route('account.login') }}">Your Account</a>
+                                                <a href="{{ route('account.login') }}">Your Account</a>
                                             @endif
 
                                         </li>

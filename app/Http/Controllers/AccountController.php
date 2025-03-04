@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Account;
 use App\Models\Feedback;
+use App\Models\Game;
+use App\Models\Library;
 use Cache;
 use DB;
 use Illuminate\Http\Request;
@@ -38,7 +40,7 @@ class AccountController extends Controller
 
         if ($account && Hash::check($request->password, $account->password)) {
             $request->session()->put('accountLogin', $account->id);
-            $request->session()->put('role', $account->role); 
+            $request->session()->put('role', $account->role);
             return $account->role === "ADMIN" ? redirect('/admin/dashboard') : redirect('/');
         }
 
@@ -206,7 +208,19 @@ class AccountController extends Controller
             return redirect('/login')->with('message', 'User not found');
         }
 
-        return view('account.profile', compact('user'));
+        $userId = session()->get('accountLogin');
+
+        //library
+        $libraryEntries = Library::where('accounts_id', $userId)->get();
+        $gameIds = $libraryEntries->pluck('games_id');
+        $games = Game::whereIn('id', $gameIds)->get();
+        $games->map(function ($game) use ($libraryEntries) {
+            $libraryEntry = $libraryEntries->firstWhere('games_id', $game->id);
+            $game->library_created_at = $libraryEntry ? $libraryEntry->created_at->format('Y-m-d') : null;
+            return $game;
+        });
+        // Trả về view
+        return view('account.profile', compact('user', 'games'));
     }
 
     public function updateProfile(Request $request)
@@ -237,16 +251,16 @@ class AccountController extends Controller
     public function getFeedbacks(Request $request)
     {
         $userId = session('accountLogin');
-        
+
         $feedbacks = Feedback::where('account_id', $userId)
-            ->with('game') 
+            ->with('game')
             ->orderBy('created_at', 'desc')
             ->get();
-        
+
         // Return the feedbacks in a suitable format (e.g., JSON)
         return response()->json(['feedbacks' => $feedbacks]);
     }
-    
+
     public function updatePassword(Request $request)
     {
         $request->validate([
@@ -313,7 +327,7 @@ class AccountController extends Controller
         return view('account.reset_password', compact('token'));
     }
 
-    
+
 
     /**
      * Handle password reset

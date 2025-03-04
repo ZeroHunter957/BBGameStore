@@ -14,6 +14,7 @@ use App\Http\Controllers\BlogUserController;
 use App\Http\Controllers\BannedWordController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\VNPayController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -64,7 +65,7 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
 // the same is true for user | user tương tự yêu cầu login
 Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     // user
-    Route::get('/profile', [AccountController::class, 'profile'])->name('account.profile');
+    Route::get('/profile', [AccountController::class, 'profile',])->name('account.profile');
     Route::post('/profile/update', [AccountController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/update/password', [AccountController::class, 'updatePassword'])->name('password.update-password');
 
@@ -82,6 +83,9 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::post('/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
+
+    //libraries
+
 });
 
 // login & register
