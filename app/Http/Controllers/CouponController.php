@@ -77,12 +77,13 @@ class CouponController extends Controller
 
     // Chọn người nhận coupon
     public function selectRecipients($id)
-    {
-        $coupon = Coupon::findOrFail($id);
-        $users = User::all(); // Lấy danh sách tất cả người dùng
-    
-        return view('coupon.select_recipients', compact('coupon', 'users'));
-    }
+{
+    $coupon = Coupon::findOrFail($id);
+    $users = User::whereNotNull('email')->get(); // Chỉ lấy user có email hợp lệ
+
+    return view('coupon.select_recipients', compact('coupon', 'users'));
+}
+
 
     // Gửi mã giảm giá
     public function send($id)
@@ -101,4 +102,6 @@ class CouponController extends Controller
 
         return redirect()->back()->with('success', 'Coupon sent successfully!');
     }
+
+    
 }

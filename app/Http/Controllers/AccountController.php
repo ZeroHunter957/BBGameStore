@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use App\Models\Account;
 use App\Models\Feedback;
-use Cache;
+// use Cache;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-use Mail;
+// use Mail;
+use Illuminate\Support\Facades\Log;
+
 
 class AccountController extends Controller
 {
@@ -138,7 +141,7 @@ class AccountController extends Controller
             "isverify" => true,
         ]);
 
-        \Log::info('After OTP Verification:', ['profile_image' => $account->profile_image]);
+        Log::info('After OTP Verification:', ['profile_image' => $account->profile_image]);
 
         return redirect('/login')->with('success', 'OTP verified. You can now log in.');
     }

@@ -306,10 +306,21 @@ https://templatemo.com/tm-589-lugx-gaming
                         </a>
                     </li>
 
-                    <a class="sidebar-link" href="{{ route('account.logout') }}">
+                    {{-- <a class="sidebar-link" href="{{ route('account.logout') }}" method=>
                         <i class="align-middle" data-feather="check-square"></i>
                         <span class="align-middle">Logout</span>
-                    </a>
+                    </a> --}}
+                    <form id="logout-form" action="{{ route('account.logout') }}" method="POST">
+                        @csrf
+                    </form>
+                    
+                    
+                    <a href="#" class="sidebar-link" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        <i class="align-middle" data-feather="check-square"></i>
+                        <span class="align-middle">Logout</span>
+                    </a>S\
+                    
+                    
                 </ul>
             </div>
         </nav>

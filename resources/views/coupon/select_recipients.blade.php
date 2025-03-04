@@ -4,28 +4,27 @@
 <div class="container d-flex justify-content-center align-items-center min-vh-100">
     <div class="glass-card shadow-lg border-0 rounded-4 p-5">
         <h2 class="text-center text-light fw-bold mb-3">🎁 Chọn Người Nhận Coupon</h2>
-        <h4 class="text-center text-light mb-4">Mã Coupon: <strong class="text-warning">{{ $coupon->code }}</strong></h4>
 
-        <form action="{{ route('coupon.send', $coupon->id) }}" method="POST">
+        <form action="{{ route('coupons.send', $coupon->id) }}" method="POST">
             @csrf
-            <div class="row">
-                @foreach ($users as $user)
-                    <div class="col-md-6">
-                        <div class="custom-checkbox">
-                            <input type="checkbox" name="emails[]" value="{{ $user->email }}" id="user-{{ $user->id }}">
-                            <label for="user-{{ $user->id }}">
-                                <span class="checkbox-icon"></span>
-                                {{ $user->name }} <small class="text-muted">({{ $user->email }})</small>
-                            </label>
-                        </div>
+            <p><strong>Mã Coupon:</strong> {{ $coupon->code }}</p>
+        
+            <div class="user-list">
+                @foreach($users as $user)
+                    <div class="user-item">
+                        <input type="checkbox" name="users[]" value="{{ $user->id }}">
+                        <label for="user-{{ $user->id }}">{{ $user->name }} ({{ $user->email }})</label>
                     </div>
                 @endforeach
             </div>
-
-            <div class="text-center mt-4">
-                <button type="submit" class="btn-glow">🚀 Gửi Coupon</button>
-            </div>
+            
+        
+            <button type="submit" class="btn btn-glow">
+                🚀 Gửi Coupon
+            </button>
+            
         </form>
+        
     </div>
 </div>
 
@@ -97,6 +96,26 @@
         border-color: #ff758c;
         box-shadow: 0px 0px 8px rgba(255, 120, 150, 0.8);
     }
+    .user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.user-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.user-item:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
 
     /* Nút gửi coupon với hiệu ứng phát sáng */
     .btn-glow {
@@ -128,5 +147,42 @@
             transform: translateY(0);
         }
     }
+
+    /* Nút gửi coupon với hiệu ứng phát sáng đẹp mắt */
+.btn-glow {
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 30px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 6px 15px rgba(255, 120, 150, 0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* Hiệu ứng hover cho nút */
+.btn-glow:hover {
+    background: linear-gradient(135deg, #ff7eb3, #ff758c);
+    transform: scale(1.05);
+    box-shadow: 0px 8px 20px rgba(255, 120, 150, 0.8);
+}
+
+/* Hiệu ứng khi nhấn */
+.btn-glow:active {
+    transform: scale(0.98);
+    box-shadow: 0px 4px 10px rgba(255, 120, 150, 0.5);
+}
+
+/* Icon trong nút */
+.btn-glow i {
+    font-size: 22px;
+}
+
 </style>
 @endsection

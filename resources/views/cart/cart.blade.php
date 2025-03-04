@@ -172,7 +172,12 @@
                                                 <h6>Sub Total <span>{{$subtotal}}$</span></h6>
                                                 <h6>Tax <span>{{$tax}}$</span></h6>
 
-                                                <h6>Total <span>{{$total}}$</span></h6>
+                                                @if(session()->has('coupon'))
+                    <h6>Discount <span>-{{ number_format(session('coupon')['discount_amount'], 2) }}$</span></h6>
+                    <h6>Total <span>{{ number_format(session('coupon')['total'], 2) }}$</span></h6>
+                @else
+                    <h6>Total <span>{{ number_format($total, 2) }}$</span></h6>
+                @endif
                                             </div>
                                             <div class="bottom-details">
                                                 <form action="{{route('momo-payment')}}" method="post">

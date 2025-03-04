@@ -137,7 +137,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <form action="{{ route('account.logout') }}" method="GET"
+                                        <form action="{{ route('account.logout') }}" method="POST"
                                             style="display:inline;">
                                             @csrf
                                             <button type="submit" class="logout"

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Coupon;
 
 use App\Models\Accessory;
 use App\Models\Cart;
@@ -95,4 +96,37 @@ class AddToCartController extends Controller
         Cart::where('account_id', session()->get('accountLogin'))->delete();
         return redirect()->route('cart.index');
     }
+    public function applyCoupon(Request $request)
+{
+    $request->validate(['coupon_code' => 'required|string']);
+
+    // Tìm coupon trong database
+    $coupon = Coupon::where('code', $request->coupon_code)->first();
+
+    // Kiểm tra xem coupon có tồn tại và còn hiệu lực không
+    if (!$coupon || !$coupon->isValid()) {
+        return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ hoặc đã hết hạn.');
+    }
+
+    // Tính tổng giá trị đơn hàng hiện tại
+    $cartItems = Cart::where('account_id', session('accountLogin'))->get();
+    $subtotal = $cartItems->sum(fn($item) => $item->quantity * $item->price);
+
+    // Tính tiền giảm giá
+    $discount = ($subtotal * $coupon->discount_percent) / 100;
+    $total = $subtotal - $discount;
+
+    // Lưu mã giảm giá vào session
+    session([
+        'coupon' => [
+            'code' => $coupon->code,
+            'discount_percent' => $coupon->discount_percent,
+            'discount_amount' => $discount,
+            'total' => $total,
+        ]
+    ]);
+
+    return redirect()->back()->with('success', 'Mã giảm giá đã được áp dụng thành công!');
+}
+
 }

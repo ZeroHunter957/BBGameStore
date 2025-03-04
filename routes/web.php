@@ -25,27 +25,36 @@ Route::get('/accounts', [AccountController::class, 'index'])->name('account.inde
 Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
 
 
+
 // middleware
 // you have to login to access these pages | cần login để vào mấy trang này
+
+Route::get('/register', [AccountController::class, 'register'])->name('account.register');
+Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
+
+
 Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     // admin
     Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
-
+//coupon
     Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
     Route::prefix('admin')->group(function () {
         Route::get('/coupon/{id}/recipients', [CouponController::class, 'selectRecipients'])->name('coupon.selectRecipients');
     });
         Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
-
+        Route::post('/coupons/{id}/send', [CouponController::class, 'send'])->name('coupons.send');
+//OTP
+Route::post('/otp-register', [AccountController::class, 'OTPregister'])->name('account.OTPregister');
+Route::post('/account/verify-otp-register', [AccountController::class, 'verifyOTPRegister'])->name('account.verifyOTPRegister');
 
 
 Route::get('/forgot-password', [AccountController::class, 'showForgotPasswordForm'])->name('account.forgot-password');
 Route::post('/forgot-password', [AccountController::class, 'sendResetLink'])->name('account.send-reset-link');
 Route::get('/login', [AccountController::class, 'login'])->name('account.login');
 Route::post('/login', [AccountController::class, 'checkLogin'])->name('account.checkLogin');
-Route::get('/register', [AccountController::class, 'register'])->name('account.register');
-Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
-Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
+
+
+
 Route::get('/reset-password/{token}', [AccountController::class, 'showResetForm'])->name('account.reset-password');
 Route::post('/reset-password', [AccountController::class, 'resetPassword'])->name('account.update-password');
     // game routes
@@ -132,16 +141,14 @@ Route::get('/search', [MenuController::class, 'search'])->name('menu.search');
 Route::get('/blogusers/blogdetails/{id}', [BlogUserController::class, 'show'])->name('blogusers.show');
 Route::resource('blogusers', BlogUserController::class);
 
-
-/// COMMENTS
-Route::post('/blogs/{blog_id}/comments', [CommentController::class, 'store'])->name('comments.store');
-Route::post('comment/{comment}/like', [CommentController::class, 'like'])->name('comment.like');
-Route::post('comment/{comment}/reply', [CommentController::class, 'reply'])->name('comment.reply');
-
-Route::delete('/comment/{commentId}', [CommentController::class, 'delete'])->name('comment.delete');
-Route::delete('/comment/reply/{replyId}', [CommentController::class, 'deleteReply'])->name('comment.deleteReply');
-
-Route::post('/comment/reply/{replyId}/like', [CommentController::class, 'likeReply'])->name('comment.likeReply');
+// cart
+Route::get('/cart', [AddToCartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add', [AddToCartController::class, 'addToCart'])->name('cart.add');
+Route::put('/cart/update', [AddToCartController::class, 'updateCart'])->name('cart.update');
+Route::delete('/cart/remove', [AddToCartController::class, 'removeCart'])->name('cart.remove');
+Route::delete('/cart/clear', [AddToCartController::class, 'clearCart'])->name('cart.clear');
+Route::post('/cart/checkout', [AddToCartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/cart/apply-coupon', [AddToCartController::class, 'applyCoupon'])->name('cart.applyCoupon');
 
 Route::post('/comment/{commentId}/like', [CommentController::class, 'like'])->name('comment.like');
 Route::post('/reply/{replyId}/like', [CommentController::class, 'likeReply'])->name('comment.likeReply');
