@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Cart;
 use App\Models\Invoice;
-use App\Models\Library;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -44,8 +43,8 @@ class PaymentController extends Controller
         $orderInfo = "Thanh toán qua ATM MoMo";
         $amount = $_POST['total_momo'];
         $orderId = time() . "";
-        $redirectUrl = "http://127.0.0.1:8000/user/payment/result";
-        $ipnUrl = "http://127.0.0.1:8000/user/payment/result";
+        $redirectUrl = "http://127.0.0.1:8000/payment/result";
+        $ipnUrl = "http://127.0.0.1:8000/payment/result";
         $extraData = "";
         $requestId = time() . "";
         $requestType = "payWithATM";
@@ -68,8 +67,9 @@ class PaymentController extends Controller
             'signature' => $signature
         );
         $result = $this->execPostRequest($endpoint, json_encode($data));
-        $jsonResult = json_decode($result, true);
+        $jsonResult = json_decode($result, true);  // decode json
 
+        //Just a example, please check more in thereA
         dump($jsonResult);
         return redirect()->to($jsonResult['payUrl']);
     }
@@ -82,23 +82,15 @@ class PaymentController extends Controller
         $errorCode = $request->query('errorCode');
         $transId = $request->query('transId');
         $payType = $request->query('payType');
-        $userId = session()->get('accountLogin'); // Lấy ID người dùng
-    
+
+        // Kiểm tra nếu thanh toán thành công
         if ($errorCode == 0) {
-            $cartItems = Cart::where('account_id', $userId)->where('product_type', 'game')->get();
-    
-            foreach ($cartItems as $cartItem) {
-                Library::firstOrCreate([
-                    'accounts_id' => $userId,
-                    'games_id' => $cartItem->product_id,
-                ]);
-            }
-    
-            Cart::where('account_id', $userId)->delete();
-    
+            // Xóa giỏ hàng của user sau khi thanh toán thành công
+            Cart::where('account_id', session()->get('accountLogin'))->delete();
+
             return view('invoice.payment-result', [
                 'status' => 'success',
-                'message' => 'Thanh toán thành công! Game đã được thêm vào thư viện.',
+                'message' => 'Thanh toán thành công!',
                 'payType' => $payType,
                 'order_id' => $orderId,
                 'amount' => $amount,

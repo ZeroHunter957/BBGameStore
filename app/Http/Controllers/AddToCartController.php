@@ -31,50 +31,39 @@ class AddToCartController extends Controller
         return view('cart.cart', compact('cartItems', 'subtotal', 'tax', 'total'));
     }
 
-    public function addToCart(Request $request)
+    function addToCart(Request $request)
     {
-        $isGame = $request->developer;
-        $product = $isGame
+        $product = $request->developer
             ? Game::find($request->id)
             : Accessory::find($request->id);
 
-        if (!$product) {
-            return redirect()->back()->with('message', 'Product does not exist.');
-        }
-
-        $name = $product->name ?? $product->title;
+        $name = $product->name ? $product->name : $product->title;
 
         if (session('accountLogin')) {
             $cartItem = Cart::where('account_id', session()->get('accountLogin'))
                 ->where('product_id', $product->id)
-                ->where('product_type', $isGame ? 'game' : 'accessory')
+                ->where('product_type', $request->developer ? 'game' : 'accessory')
                 ->first();
 
             if ($cartItem) {
-                if ($isGame) {
-                    return redirect()->back()->with('message', 'This game is already in your cart.');
-                } else {
-                    $cartItem->quantity += $request->quantity;
-                    $cartItem->save();
-                    return redirect()->back()->with('message', 'The product has been updated in the cart..');
-                }
+                $cartItem->quantity += $request->quantity;
+                $cartItem->save();
             } else {
                 Cart::create([
                     'account_id' => session()->get('accountLogin'),
                     'product_id' => $product->id,
-                    'product_type' => $isGame ? 'game' : 'accessory',
+                    'product_type' => $request->developer ? 'game' : 'accessory',
                     'name' => $name,
-                    'quantity' => $isGame ? 1 : $request->quantity,
+                    'quantity' => $request->quantity,
                     'price' => $product->price,
                 ]);
-
-                return redirect()->back()->with('message', 'Product has been added to cart.');
             }
         } else {
-            return redirect()->back()->with('message', 'Please login to add to cart.');
+            return redirect()->back()->with('message', 'Please log in to add items to your cart.');
         }
-    }
 
+        return redirect()->back()->with('message', 'Success! Item has been added successfully.');
+    }
 
     public function updateCart(Request $request)
     {

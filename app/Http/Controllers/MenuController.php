@@ -9,7 +9,6 @@ use App\Models\Feedback;
 use App\Models\Game;
 use App\Models\BannedWord;
 use App\Models\GameCategory;
-use App\Models\Library;
 use App\Models\Menu;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
@@ -130,9 +129,7 @@ class MenuController extends Controller
                 $canFeedback = true;
             }
         }
-        $inLibrary = Library::where('accounts_id', $userId)
-        ->where('games_id', $game->id)
-        ->exists();
+
         return view('menu.gamedetails', compact(
             'game',
             'relatedGames',
@@ -141,8 +138,7 @@ class MenuController extends Controller
             'averageRating',
             'totalFeedbacks',
             'canFeedback',
-            'starFeedbackCounts',
-            'inLibrary'  
+            'starFeedbackCounts'  
         ));
     }
 

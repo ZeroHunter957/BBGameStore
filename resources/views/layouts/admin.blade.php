@@ -24,6 +24,132 @@
     <link id="rtl-link" rel="stylesheet" type="text/css" href="{{ asset('../css_cart/css/vendors/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('https://unpkg.com/swiper@7/swiper-bundle.min.css') }}" />
     <style>
+
+        /* Reset some default styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    color: white;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    background: rgba(0, 0, 50, 0.8);
+    box-shadow: 4px 0px 10px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+.sidebar a {
+    color: white;
+    transition: color 0.3s;
+}
+.sidebar a:hover {
+    color: #1e90ff;
+    transform: scale(1.05);
+}
+
+/* Dashboard Cards */
+.card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Buttons Styling */
+button {
+    background: #1e90ff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+    transition: background 0.3s ease;
+}
+/* Modern futuristic sidebar */
+.sidebar {
+    background: rgba(10, 25, 47, 0.8); /* Dark navy with transparency */
+    backdrop-filter: blur(10px); /* Glassmorphism effect */
+    border-right: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 15px; /* Reduced padding for a more compact look */
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px; /* Reduced font size */
+    display: flex;
+    align-items: center;
+    padding: 10px 15px; /* Adjusted padding for smaller text */
+    transition: all 0.3s ease-in-out;
+    border-radius: 8px; /* Slightly reduced border radius */
+}
+
+.sidebar a:hover {
+    background: rgba(0, 150, 255, 0.3);
+    color: #00aaff;
+    box-shadow: 0px 0px 10px rgba(0, 170, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.sidebar i {
+    margin-right: 10px; /* Slightly reduced margin */
+    color: rgba(0, 150, 255, 0.8);
+    transition: all 0.3s ease-in-out;
+}
+
+.sidebar a:hover i {
+    color: #00ccff;
+    transform: rotate(15deg);
+}
+
+.sidebar-header {
+    font-size: 12px; /* Reduced header font size */
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 15px;
+    padding-left: 15px;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background: #0077cc;
+}
+
+/* Chart Customization */
+.chart-container {
+    background: rgba(0, 0, 50, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Smooth animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-content {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
         .flex-wrapper {
             width: 100%;
             margin: 0;
@@ -127,9 +253,9 @@ https://templatemo.com/tm-589-lugx-gaming
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">
+                        <a class="sidebar-link" href="{{ route(name: 'coupon.index') }}">
                             <i class="align-middle" data-feather="check-square"></i>
-                            <span class="align-middle">Reviews</span>
+                            <span class="align-middle">Coupon</span>
                         </a>
                     </li>
                     <li class="sidebar-item">

@@ -25,18 +25,17 @@
         }
 
         .empty-cart-container .btn-warning {
-            background: linear-gradient(135deg, #66c2ff, #99d6ff);
+            background-color: #FF9800;
             color: white;
             font-size: 16px;
             padding: 10px 20px;
-            border-radius: 15px;
+            border-radius: 25px;
             transition: all 0.3s ease-in-out;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
         }
 
         .empty-cart-container .btn-warning:hover {
-            background: linear-gradient(135deg, #4da6ff, #80c1ff);
-            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+            background-color: #e68900;
             transform: scale(1.05);
         }
     </style>
@@ -105,15 +104,11 @@
                                         </td>
                                         <td>
                                             <div class="qty-box">
-                                                @if(($item->product_type) === 'accessory')
                                                 <div class="input-group">
                                                     <input type="number" name="quantity" data-rowid="{{ $item->id }}"
                                                         onchange="updateQuantity(this)" class="form-control input-number"
                                                         value="{{ $item->quantity }}">
                                                 </div>
-                                                @else
-                                                <h5>{{ $item->quantity }}</h5>
-                                                @endif
                                             </div>
                                         </td>
                                         <td>

@@ -3,51 +3,120 @@
 
 @section('content')
 <style>
+    /* Tùy chỉnh bảng */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: left;
+        transition: background 0.3s ease;
+    }
+
+    th {
+        background: linear-gradient(135deg, #1e90ff, #00bfff);
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    tr:hover {
+        background: rgba(30, 144, 255, 0.1);
+        transform: scale(1.01);
+    }
+
+    /* Hiệu ứng hover cho nút */
+    .btn {
+        transition: transform 0.2s, box-shadow 0.3s;
+        border-radius: 8px;
+        font-size: 16px;
+        padding: 10px 15px;
+    }
+
+    .btn-warning {
+        background-color: #ffcc00;
+        border-color: #ffcc00;
+    }
+
+    .btn-warning:hover {
+        background-color: #ffdb4d;
+        border-color: #ffdb4d;
+    }
+
+    .btn-danger {
+        background-color: #ff4444;
+        border-color: #ff4444;
+    }
+
+    .btn-danger:hover {
+        background-color: #ff6666;
+        border-color: #ff6666;
+    }
+
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Tùy chỉnh pagination */
     .custom-pagination {
-        list-style: none;
-        padding: 0;
-        margin: 20px 0;
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
     }
 
     .page-item {
-        display: inline-block;
-        margin: 0 5px;
-        padding: 10px 15px;
+        padding: 12px 18px;
         font-size: 14px;
-        font-weight: 500;
-        text-align: center;
-        color: #007bff;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        font-weight: 600;
+        border-radius: 8px;
+        background: white;
+        transition: all 0.3s;
         cursor: pointer;
+        margin: 0 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     }
 
     .page-item:hover {
-        background-color: #007bff;
-        color: #fff;
+        background: linear-gradient(135deg, #1e90ff, #00bfff);
+        color: white;
     }
 
     .page-item.active {
-        background-color: #007bff;
-        color: #fff;
-        border-color: #007bff;
+        background: #1e90ff;
+        color: white;
     }
 
-    .page-item.disabled {
-        color: #6c757d;
-        background-color: #e9ecef;
-        border-color: #ddd;
-        cursor: not-allowed;
+    /* Hiệu ứng cho ảnh */
+    td img {
+        width: 100px;
+        border-radius: 10px;
+        transition: transform 0.3s ease, box-shadow 0.3s;
     }
 
-    .page-item:first-child {
-        border-radius: 5px 0 0 5px;
+    td img:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
 
-    .page-item:last-child {
-        border-radius: 0 5px 5px 0;
+    /* Tùy chỉnh ô nhập */
+    input[type="text"] {
+        padding: 12px;
+        border: 2px solid #1e90ff;
+        border-radius: 8px;
+        transition: all 0.3s;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    input[type="text"]:focus {
+        border-color: #00bfff;
+        box-shadow: 0 0 12px rgba(0, 191, 255, 0.6);
     }
 </style>
 <div class="container-fluid mt-3">

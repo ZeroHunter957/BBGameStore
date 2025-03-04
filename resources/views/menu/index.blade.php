@@ -111,6 +111,8 @@
                             <div class="down-content">
                                 <span class="category">{{ $item->category->name }}</span>
                                 <h4>{{ $item->title }}</h4>
+                                <a href="{{ route('menu.gamedetails', $item->id) }}">
+                                    <i class="fa fa-shopping-bag"></i></a>
                             </div>
                         </div>
                     </div>
@@ -209,6 +211,7 @@
                             <div class="down-content">
                                 <span class="category">{{ $item->category->name }}</span>
                                 <h4>{{ $item->name }}</h4>
+                                <a href="accessorydetails"><i class="fa fa-shopping-bag"></i></a>
                             </div>
                         </div>
                     </div>

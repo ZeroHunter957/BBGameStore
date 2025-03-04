@@ -3,6 +3,74 @@
 
 @section('content')
     <main class="content">
+
+        <style>
+            /* Làm đẹp toàn bộ giao diện */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Bảng */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+}
+
+.table thead {
+    background-color: #343a40;
+    color: white;
+    font-weight: bold;
+}
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Ô input */
+.input-group input,
+.form-control {
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    transition: all 0.3s ease-in-out;
+}
+
+.input-group input:focus,
+.form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Nút bấm */
+.btn {
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #a71d2a;
+    transform: scale(1.05);
+}
+
+        </style>
         <div class="container-fluid p-0">
             <h1 class="h3 mb-3"><strong>Banned Words</strong> Management</h1>
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\AccessoryCategoryController;
 use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AddToCartController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InvoiceController;
@@ -14,10 +15,15 @@ use App\Http\Controllers\BlogUserController;
 use App\Http\Controllers\BannedWordController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedbackController;
-use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\VNPayController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
+
+
+
+Route::get('/accounts', [AccountController::class, 'index'])->name('account.index');
+Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
+
 
 // middleware
 // you have to login to access these pages | cần login để vào mấy trang này
@@ -25,6 +31,23 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     // admin
     Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
 
+    Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+    Route::prefix('admin')->group(function () {
+        Route::get('/coupon/{id}/recipients', [CouponController::class, 'selectRecipients'])->name('coupon.selectRecipients');
+    });
+        Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+
+
+
+Route::get('/forgot-password', [AccountController::class, 'showForgotPasswordForm'])->name('account.forgot-password');
+Route::post('/forgot-password', [AccountController::class, 'sendResetLink'])->name('account.send-reset-link');
+Route::get('/login', [AccountController::class, 'login'])->name('account.login');
+Route::post('/login', [AccountController::class, 'checkLogin'])->name('account.checkLogin');
+Route::get('/register', [AccountController::class, 'register'])->name('account.register');
+Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
+Route::post('/logout', [AccountController::class, 'logout'])->name('account.logout');
+Route::get('/reset-password/{token}', [AccountController::class, 'showResetForm'])->name('account.reset-password');
+Route::post('/reset-password', [AccountController::class, 'resetPassword'])->name('account.update-password');
     // game routes
     Route::get('/game', [GameController::class, 'index'])->name('game.index');
 
@@ -39,6 +62,9 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     Route::get('/gamecate', [GameCategoryController::class, 'index'])->name('gamecategory.index');
     Route::get('/gamecate/create', [GameCategoryController::class, 'create'])->name('gamecategory.create');
     Route::post('/gamecate/create', [GameCategoryController::class, 'store'])->name('gamecategory.store');
+Route::get('/gamecate/{id}/edit', [GameCategoryController::class, 'edit'])->name('gamecategory.edit');
+Route::put('/gamecate/{id}', [GameCategoryController::class, 'update'])->name('gamecategory.update');
+Route::delete('/gamecate/{id}', [GameCategoryController::class, 'destroy'])->name('gamecategory.destroy');
 
     // accessory routes
     Route::get('/accessory', [AccessoryController::class, 'index'])->name('accessory.index');
@@ -65,7 +91,7 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
 // the same is true for user | user tương tự yêu cầu login
 Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     // user
-    Route::get('/profile', [AccountController::class, 'profile',])->name('account.profile');
+    Route::get('/profile', [AccountController::class, 'profile'])->name('account.profile');
     Route::post('/profile/update', [AccountController::class, 'updateProfile'])->name('profile.update');
     Route::post('/profile/update/password', [AccountController::class, 'updatePassword'])->name('password.update-password');
 
@@ -83,29 +109,14 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::post('/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
-
-    //libraries
-
 });
 
 // login & register
 Route::get('/login', [AccountController::class, 'login'])->name('account.login');
 Route::post('/login', [AccountController::class, 'checkLogin'])->name('account.checkLogin');
-Route::get('/register', [AccountController::class, 'register'])->name('account.register');
-Route::post('/register', [AccountController::class, 'registerPost'])->name('account.registerPost');
-Route::get('/logout', [AccountController::class, 'logout'])->name('account.logout');
-
-Route::get('/account', [AccountController::class, 'index'])->name('account.index');
-//fogot password
-Route::get('/forgot-password', [AccountController::class, 'showForgotPasswordForm'])->name('account.forgot-password');
-Route::post('/forgot-password', [AccountController::class, 'sendResetLink'])->name('account.send-reset-link');
-Route::get('/reset-password/{token}', [AccountController::class, 'showResetForm'])->name('account.reset-password');
-Route::post('/reset-password', [AccountController::class, 'resetPassword'])->name('account.update-password');
-
-// otp register
-Route::get('/otp-register', [AccountController::class, 'viewOTPRegister'])->name('account.OTPregister');
-Route::post('/otp-register', [AccountController::class, 'verifyOTPRegister'])->name('account.verifyOTPRegister');
-Route::get('/resend-otp', [AccountController::class, 'resendOTP'])->name('account.resendOTP');
+Route::get('/accessorycate/{id}/edit', [AccessoryCategoryController::class, 'edit'])->name('accessorycategory.edit');
+Route::put('/accessorycate/{id}', [AccessoryCategoryController::class, 'update'])->name('accessorycategory.update');
+Route::delete('/accessorycate/{id}', [AccessoryCategoryController::class, 'destroy'])->name('accessorycategory.destroy');
 
 // menu routes
 Route::get('/', [MenuController::class, 'menu'])->name('menu.index');
@@ -138,10 +149,13 @@ Route::post('/reply/{replyId}/like', [CommentController::class, 'likeReply'])->n
 Route::get('/blog/{id}', [BlogController::class, 'show']);
 Route::delete('/comments/{commentId}/deleteByAdmin', [CommentController::class, 'deleteByAdmin'])->name('comments.deleteByAdmin');
 
-///////GAME
-Route::post('/games/{game_id}/feedbacks', [FeedbackController::class, 'storeFeedback'])->name('feedback.storeFeedback');
-Route::post('feedback/{feedback}/likeFeedback', [FeedbackController::class, 'likeFeedback'])->name('feedback.likeFeedback');
-Route::post('feedback/{feedback}/replyFeedback', [FeedbackController::class, 'replyFeedback'])->name('feedback.replyFeedback');
+//coupon
+Route::get('/coupon', [CouponController::class, 'index'])->name('coupon.index');
+Route::get('/coupon/create', [CouponController::class, 'create'])->name('coupon.create');
+Route::post('/coupon', [CouponController::class, 'store'])->name('coupon.store');
+Route::get('/coupon/{id}/edit', [CouponController::class, 'edit'])->name('coupon.edit');
+Route::put('/coupon/{id}', [CouponController::class, 'update'])->name('coupon.update');
+Route::delete('/coupon/{id}', [CouponController::class, 'destroy'])->name('coupon.destroy');
 
 Route::delete('/feedback/{feedbackId}', [FeedbackController::class, 'deleteFeedback'])->name('feedback.deleteFeedback');
 Route::delete('/feedback/replyFeedback/{replyFeedbackId}', [FeedbackController::class, 'deleteReplyFeedback'])->name('feedback.deleteReplyFeedback');
