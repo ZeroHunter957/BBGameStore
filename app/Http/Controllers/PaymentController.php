@@ -86,6 +86,18 @@ class PaymentController extends Controller
         // Kiểm tra nếu thanh toán thành công
         if ($errorCode == 0) {
             // Xóa giỏ hàng của user sau khi thanh toán thành công
+<<<<<<< HEAD
+=======
+            Invoice::create([[
+                'account_id' => session()->get('accountLogin'),
+                'odder_code' => $orderId,
+                'payment_method' => '',
+                'transaction_id' => $transId,
+                'status' => 'success',
+                'games' => Cart::where('account_id', session('accountLogin'))->where('product_type', 'game'),
+                'accessories' => Cart::where('account_id', session('accountLogin'))->where('product_type', 'accessory'),
+            ]]);
+>>>>>>> parent of 1d8e698c (fix layout, library)
             Cart::where('account_id', session()->get('accountLogin'))->delete();
 
             return view('invoice.payment-result', [

@@ -137,7 +137,11 @@
                                         </a>
                                     </li>
                                     <li>
+<<<<<<< HEAD
                                         <form action="{{ route('account.logout') }}" method="POST"
+=======
+                                        <form action="{{ route('account.logout') }}" method="GET"
+>>>>>>> parent of 1d8e698c (fix layout, library)
                                             style="display:inline;">
                                             @csrf
                                             <button type="submit" class="logout"

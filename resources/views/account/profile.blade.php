@@ -118,7 +118,11 @@
         <div class="row">
             <div id="ownedGamesSection" class="filter-content">
                 <h5>Owned Games</h5>
+<<<<<<< HEAD
                 <p>Content will be added here later.</p>
+=======
+                <p></p>
+>>>>>>> parent of 1d8e698c (fix layout, library)
             </div>
 
             <div id="reviewsSection" class="filter-content" style="display: none;">

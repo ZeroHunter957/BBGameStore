@@ -5,7 +5,11 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Account;
 use App\Models\Feedback;
+<<<<<<< HEAD
 // use Cache;
+=======
+use Cache;
+>>>>>>> parent of 1d8e698c (fix layout, library)
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
