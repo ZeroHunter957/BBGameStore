@@ -17,6 +17,7 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\VNPayController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -96,7 +97,10 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
 
-    //libraries
+    //wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add/{productId}', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
 
 });
 
