@@ -20,6 +20,55 @@
 	<link href="{{ asset('css/new.css') }}" rel="stylesheet">
 	<script src="https://cdn.ckeditor.com/ckeditor5/38.1.0/classic/ckeditor.js"></script>
 </head>
+<style>
+	body {
+		background: linear-gradient(135deg, #6a11cb, #2575fc);
+		color: #333;
+		font-family: 'Poppins', sans-serif;
+	}
+	.container {
+		max-width: 50%;
+		background: #fff;
+		padding: 30px;
+		border-radius: 15px;
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+		margin: auto;
+		transition: transform 0.3s;
+	}
+	.container:hover {
+		transform: scale(1.02);
+	}
+	label {
+		font-weight: 600;
+		color: #6a11cb;
+	}
+	.form-control, .form-select {
+		background: #fff;
+		color: #333;
+		border: 1px solid #ccc;
+		border-radius: 12px;
+		transition: all 0.3s;
+	}
+	.form-control:focus, .form-select:focus {
+		border-color: #6a11cb;
+		box-shadow: 0 0 10px rgba(106, 17, 203, 0.4);
+	}
+	.btn-primary {
+		background: #6a11cb;
+		border: none;
+		padding: 12px 20px;
+		border-radius: 12px;
+		font-weight: bold;
+		transition: 0.3s;
+	}
+	.btn-primary:hover {
+		background: #4e0ca4;
+		box-shadow: 0 0 15px rgba(106, 17, 203, 0.5);
+	}
+	.btn-primary:active {
+		background: #3c088a;
+	}
+</style>
 
 <body>
 	<div class="wrapper">

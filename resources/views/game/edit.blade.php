@@ -8,6 +8,53 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
+<style>
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            max-width: 66%; /* Adjusted to 2/3 of the screen */
+            background: #0f3460;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            margin: auto;
+        }
+        label {
+            font-weight: bold;
+        }
+        .form-control, .form-select {
+            background: #16213e;
+            color: #fff;
+            border: 1px solid #e94560;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #ff4757;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+        }
+        .btn-primary {
+            background: #e94560;
+            border: none;
+            transition: 0.3s;
+        }
+        .btn-primary:hover {
+            background: #ff4757;
+            box-shadow: 0 0 15px rgba(255, 71, 87, 0.7);
+        }
+        img {
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+        img:hover {
+            transform: scale(1.05);
+        }
+        .form-check-input:checked {
+            background-color: #e94560;
+            border-color: #e94560;
+        }
+    </style>
 
 <body>
     <div class="container mt-3">

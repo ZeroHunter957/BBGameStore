@@ -3,6 +3,46 @@
 
 @section('content')
 <style>
+
+
+body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: #fff;
+        font-family: 'Poppins', sans-serif;
+    }
+    .container-fluid {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+    }
+    .card {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 15px;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    }
+    .table thead {
+        background: #1e3c72;
+        color: #fff;
+    }
+    .table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+    .btn-primary {
+        background: #4ca1af;
+        border: none;
+    }
+    .btn-primary:hover {
+        background: #1e3c72;
+    }
+    .custom-pagination .page-item {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.2);
+    }
+    .custom-pagination .page-item:hover, .custom-pagination .page-item.active {
+        background: #4ca1af;
+    }
     .custom-pagination {
         list-style: none;
         padding: 0;

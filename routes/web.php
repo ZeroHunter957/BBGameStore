@@ -4,6 +4,7 @@ use App\Http\Controllers\AccessoryCategoryController;
 use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AddToCartController;
+use App\Http\Controllers\CouponController;
 use App\Http\Controllers\GameCategoryController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\InvoiceController;
@@ -24,6 +25,13 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     // admin
     Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
+//coupon
+    Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+    Route::prefix('admin')->group(function () {
+        Route::get('/coupon/{id}/recipients', [CouponController::class, 'selectRecipients'])->name('coupon.selectRecipients');
+    });
+        Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+        Route::post('/coupons/{id}/send', [CouponController::class, 'send'])->name('coupons.send');
 
     // game routes
     Route::get('/game', [GameController::class, 'index'])->name('game.index');
@@ -39,6 +47,8 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     Route::get('/gamecate', [GameCategoryController::class, 'index'])->name('gamecategory.index');
     Route::get('/gamecate/create', [GameCategoryController::class, 'create'])->name('gamecategory.create');
     Route::post('/gamecate/create', [GameCategoryController::class, 'store'])->name('gamecategory.store');
+Route::get('/gamecate/{id}/edit', [GameCategoryController::class, 'edit'])->name('gamecategory.edit');
+Route::put('/gamecate/{id}', [GameCategoryController::class, 'update'])->name('gamecategory.update');
 
     // accessory routes
     Route::get('/accessory', [AccessoryController::class, 'index'])->name('accessory.index');
@@ -56,6 +66,8 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     // accessory category routes
     Route::get('/accessorycate', [AccessoryCategoryController::class, 'index'])->name('accessorycategory.index');
     Route::get('/accessorycate/create', [AccessoryCategoryController::class, 'create'])->name('accessorycategory.create');
+    Route::get('/accessorycategory/{id}/edit', [AccessoryCategoryController::class, 'edit'])->name('accessorycategory.edit');
+
     Route::post('/accessorycate/create', [AccessoryCategoryController::class, 'store'])->name('accessorycategory.store');
 
     Route::get('/feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
@@ -137,7 +149,12 @@ Route::post('/reply/{replyId}/like', [CommentController::class, 'likeReply'])->n
 
 Route::get('/blog/{id}', [BlogController::class, 'show']);
 Route::delete('/comments/{commentId}/deleteByAdmin', [CommentController::class, 'deleteByAdmin'])->name('comments.deleteByAdmin');
-
+Route::get('/coupon', [CouponController::class, 'index'])->name('coupon.index');
+Route::get('/coupon/create', [CouponController::class, 'create'])->name('coupon.create');
+Route::post('/coupon', [CouponController::class, 'store'])->name('coupon.store');
+Route::get('/coupon/{id}/edit', [CouponController::class, 'edit'])->name('coupon.edit');
+Route::put('/coupon/{id}', [CouponController::class, 'update'])->name('coupon.update');
+Route::delete('/coupon/{id}', [CouponController::class, 'destroy'])->name('coupon.destroy');
 ///////GAME
 Route::post('/games/{game_id}/feedbacks', [FeedbackController::class, 'storeFeedback'])->name('feedback.storeFeedback');
 Route::post('feedback/{feedback}/likeFeedback', [FeedbackController::class, 'likeFeedback'])->name('feedback.likeFeedback');

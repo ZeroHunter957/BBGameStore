@@ -26,4 +26,9 @@ class AccessoryCategoryController extends Controller
         $cate->delete();
         return redirect()->route("accessorycategory.index")->with("message","Category deleted");
     }
+    public function edit($id)
+    {
+        $accessorycategory = AccessoryCategory::findOrFail($id);
+        return view('accessorycategory.edit', compact('accessorycategory'));
+    }
 }

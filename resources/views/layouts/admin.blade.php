@@ -126,6 +126,13 @@ https://templatemo.com/tm-589-lugx-gaming
                             <span class="align-middle">Accounts</span>
                         </a>
                     </li>
+		    
+		    <li class="sidebar-item">
+                        <a class="sidebar-link" href="{{ route(name: 'coupon.index') }}">
+                            <i class="align-middle" data-feather="check-square"></i>
+                            <span class="align-middle">Coupon</span>
+                        </a>
+                    </li>
                     <li class="sidebar-item">
                         <a class="sidebar-link" href="#">
                             <i class="align-middle" data-feather="check-square"></i>
