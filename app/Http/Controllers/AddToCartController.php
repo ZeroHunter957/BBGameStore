@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Accessory;
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Game;
 use Auth;
 use Illuminate\Http\Request;
@@ -25,10 +26,17 @@ class AddToCartController extends Controller
         $subtotal = $cartItems->sum(function ($item) {
             return $item->quantity * $item->price;
         });
-
+        $coupon = null;
+        $discount = 0;
+        if (session()->has('coupon')) {
+            $coupon = Coupon::find(session('coupon'));
+            if ($coupon && $coupon->isValid()) {
+                $discount = ($subtotal * $coupon->discount_percent) / 100;
+            }
+        }
         $tax = $subtotal * 0.1;
-        $total = $subtotal + $tax;
-        return view('cart.cart', compact('cartItems', 'subtotal', 'tax', 'total'));
+        $total = $subtotal + $tax - $discount;
+        return view('cart.cart', compact('cartItems', 'subtotal', 'tax', 'total','discount'));
     }
 
     public function addToCart(Request $request)

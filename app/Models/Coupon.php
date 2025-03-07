@@ -21,6 +21,12 @@ class Coupon extends Model
             (!$this->valid_to || now()->lessThanOrEqualTo($this->valid_to));
     }
 
+    // giam 1 moi lan dung coupon
+    public function useCoupon() {
+        if ($this->is_active > 0) {
+            $this->decrement('is_active');
+        }
+    }
     
 
 public static function generateUniqueCode()

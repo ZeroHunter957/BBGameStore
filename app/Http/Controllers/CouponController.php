@@ -103,5 +103,16 @@ class CouponController extends Controller
         return redirect()->back()->with('success', 'Coupon sent successfully!');
     }
 
-    
+    // apply coupon
+    public function applyCoupon(Request $request) {
+        $coupon = Coupon::where('code', $request->coupon_code)->first();
+
+        if (!$coupon || !$coupon->isValid()) {
+            return redirect()->back()->with('message', 'Invalid or expired coupon code.');
+        }
+
+        session(['coupon' => $coupon->id]);// truyen vao session roi lay qua payment
+        
+        return redirect()->back()->with('message', 'Coupon code has been applied.');
+    }
 }

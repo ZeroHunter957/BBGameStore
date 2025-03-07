@@ -102,7 +102,9 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::post('/wishlist/add/{productId}', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
     Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
 
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
 });
+//apply coupon
 
 // login & register
 Route::get('/login', [AccountController::class, 'login'])->name('account.login');

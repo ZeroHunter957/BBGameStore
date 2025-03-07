@@ -151,15 +151,15 @@
                     <div class="cart-checkout-section">
                         <div class="row g-4">
                             <div class="col-lg-4 col-sm-6">
-                                <div class="promo-section">
-                                    <form class="row g-3">
+                                <div class="promo-section" >
+                                    <form action="{{ route('apply.coupon') }}" method="POST" class="row g-3">
+                                        @csrf
                                         <div class="col-7">
-                                            <input type="text" class="form-control" id="number"
-                                                placeholder="Coupon Code">
-                                        </div>
-                                        <div class="col-5">
-                                            <button class="btn btn-solid-default rounded btn">Apply Coupon</button>
-                                        </div>
+                                        <input type="text" name="coupon_code" required  class="form-control" placeholder="Coupon Code">
+                                    </div>
+                                    <div class="col-5">
+                                        <button type="submit" class="btn btn-solid-default rounded btn">Apply Coupon</button>
+                                    </div>
                                     </form>
                                 </div>
                             </div>
@@ -175,8 +175,8 @@
                                             <div class="top-details">
                                                 <h3>Cart Totals</h3>
                                                 <h6>Sub Total <span>{{$subtotal}}$</span></h6>
+                                                <h6>Discount <span>{{$discount}}$</span></h6>
                                                 <h6>Tax <span>{{$tax}}$</span></h6>
-
                                                 <h6>Total <span>{{$total}}$</span></h6>
                                             </div>
                                             <div class="bottom-details">
