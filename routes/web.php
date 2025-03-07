@@ -16,7 +16,10 @@ use App\Http\Controllers\BannedWordController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\OrderController;
+
 use App\Http\Controllers\VNPayController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AuthMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -83,6 +86,14 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
 
     Route::get('/profile/feedbacks', [AccountController::class, 'getFeedbacks'])->name('profile.feedbacks');
 
+    //oder
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    });
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+
+    
 
     // cart
     Route::get('/cart', [AddToCartController::class, 'index'])->name('cart.index');
@@ -96,9 +107,14 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
 
-    //libraries
+    //wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/add/{productId}', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
+    Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
 
+    Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
 });
+//apply coupon
 
 // login & register
 Route::get('/login', [AccountController::class, 'login'])->name('account.login');

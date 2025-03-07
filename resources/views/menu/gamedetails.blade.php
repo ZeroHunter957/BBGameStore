@@ -504,7 +504,7 @@
                                 <input type="hidden" name="quantity" id="qty" value="1">
                                 <button type="submit" class="library-btn"><i class="fa fa-shopping-bag"></i> ADD TO CART</button>
                             </form>
-                            <form action="" method="post"  style="padding: 0%; margin: 0%;">
+                            <form action="{{route('wishlist.add',$game->id)}}" method="post"  style="padding: 0%; margin: 0%;">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $game->id }}">
                                 <button type="submit" class="wishlist-btn"><i class="fa fa-heart"></i> ADD TO WISHLIST</button>

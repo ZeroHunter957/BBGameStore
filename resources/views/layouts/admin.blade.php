@@ -140,7 +140,7 @@ https://templatemo.com/tm-589-lugx-gaming
                         </a>
                     </li>
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">
+                        <a class="sidebar-link" href="{{ route('orders.index') }}">
                             <i class="align-middle" data-feather="check-square"></i>
                             <span class="align-middle">Orders</span>
                         </a>

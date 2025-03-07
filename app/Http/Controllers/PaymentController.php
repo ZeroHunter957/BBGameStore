@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Coupon;
 use App\Models\Invoice;
 use App\Models\Library;
 use Illuminate\Http\Request;
@@ -93,8 +94,16 @@ class PaymentController extends Controller
                     'games_id' => $cartItem->product_id,
                 ]);
             }
-    
+            if (session()->has('coupon')) {
+                $coupon = Coupon::find(session('coupon'));
+                if ($coupon) {
+                    $coupon->decrement('is_active');
+                }
+            }
+            session()->forget('coupon');
+
             Cart::where('account_id', $userId)->delete();
+
     
             return view('invoice.payment-result', [
                 'status' => 'success',

@@ -120,19 +120,19 @@ class MenuController extends Controller
                 ->where('account_id', $userId)
                 ->first();
 
-            $purchasedGame = OrderItem::where('product_id', $game->id)
-                ->whereHas('invoice', function ($query) use ($userId) {
-                    $query->where('account_id', $userId);
-                })
+            $purchasedGame = Library::where('games_id', $game->id)
+                ->where('accounts_id', $userId)
                 ->exists();
 
             if (!$existingFeedback && $purchasedGame) {
                 $canFeedback = true;
+            } else {
+                $canFeedback = false;
             }
         }
         $inLibrary = Library::where('accounts_id', $userId)
-        ->where('games_id', $game->id)
-        ->exists();
+            ->where('games_id', $game->id)
+            ->exists();
         return view('menu.gamedetails', compact(
             'game',
             'relatedGames',
@@ -142,7 +142,7 @@ class MenuController extends Controller
             'totalFeedbacks',
             'canFeedback',
             'starFeedbackCounts',
-            'inLibrary'  
+            'inLibrary'
         ));
     }
 

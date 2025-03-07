@@ -143,7 +143,7 @@
                         flashMessage.style.opacity = '0';
                         setTimeout(() => flashMessage.style.display = 'none', 500);
                     }
-                }, 3000); // Ẩn sau 3 giây với hiệu ứng mờ dần
+                }, 3000);
             </script>
         @endif
 
@@ -182,6 +182,11 @@
                                             </a>
                                         </div>
                                     </li>
+                                    <li class="onhover-dropdown wislist-dropdown">
+                                        <div class="cart-media" style="align-items: center">
+                                            <a href="{{ route('wishlist.index') }}">Wishlist</a>
+                                        </div>
+                                    </li>
                                     <li class="profile-menu">
                                         <a href="{{ route('account.profile') }}"
                                             class="{{ Route::is('account.profile') ? 'active' : '' }}">
@@ -191,7 +196,6 @@
                                             @endphp
                                             <img src="{{ asset('profile_images/' . $profileImage) }}" alt="Profile"
                                                 class="profile-img">
-                                            Profile
                                         </a>
                                     </li>
                                     <li class="li_logout">
