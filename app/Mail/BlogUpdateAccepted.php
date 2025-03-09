@@ -6,23 +6,22 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class BlogUpdateRejected extends Mailable
+class BlogUpdateAccepted extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $rejectMessage;
-    public $rejectType;
     public $blog;
+    public $messageContent;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($rejectMessage, Blog $blog)
+    public function __construct(Blog $blog, $messageContent = null)
     {
-        $this->rejectMessage = $rejectMessage;
         $this->blog = $blog;
+        $this->messageContent = $messageContent ?? 'Your blog has been accepted!';
     }
 
     /**
@@ -32,11 +31,11 @@ class BlogUpdateRejected extends Mailable
      */
     public function build()
     {
-        return $this->subject('Blog Update')
-                    ->view('emails.blog_update_rejected') // Tạo view để gửi email
+        return $this->subject('Blog Accepted')
+                    ->view('emails.blog_update_accepted')
                     ->with([
-                        'rejectMessage' => $this->rejectMessage,
                         'blog' => $this->blog,
+                        'messageContent' => $this->messageContent,
                     ]);
     }
 }

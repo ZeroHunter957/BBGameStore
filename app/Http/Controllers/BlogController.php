@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Mail\BlogUpdateAccepted;
 use App\Models\Blog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -49,12 +50,12 @@ class BlogController extends Controller
 
         $note = $request->note;
 
-        if ($request->status == 1 && $blog->status == 0) { 
-            Mail::to($blog->account->email)->send(new BlogUpdateRejected($note, 'accepted', $blog));
-        }
-
-        if ($request->status == 2 && $blog->status == 0) { 
-            Mail::to($blog->account->email)->send(new BlogUpdateRejected($note, 'rejected', $blog));
+        if ($blog->status == 0) {
+            if ($request->status == 1) {
+                Mail::to($blog->account->email)->send(new BlogUpdateAccepted($blog, $note));
+            } elseif ($request->status == 2) {
+                Mail::to($blog->account->email)->send(new BlogUpdateRejected($note,  $blog));
+            }
         }
 
         $blog->status = $request->status;
@@ -62,6 +63,7 @@ class BlogController extends Controller
 
         return redirect()->route('blogs.index')->with('success', 'Blog status updated successfully.');
     }
+
 
 
     public function store(Request $request)

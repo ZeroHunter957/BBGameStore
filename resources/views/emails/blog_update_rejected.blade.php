@@ -6,10 +6,10 @@
     <title>Blog Rejected</title>
 </head>
 <body>
-    <h1>Blog Update Rejected</h1>
+    <h1>Blog Rejected</h1>
     <p>Dear {{ $blog->account->fullname }},</p>
 
-    <p>We regret to inform you that your request to {{ $rejectType }} the blog titled <strong>{{ $blog->title }}</strong> has been rejected by the admin.</p>
+    <p>We regret to inform you that your request to create the blog titled <strong>{{ $blog->title }}</strong> has been rejected by the admin.</p>
 
     <p>Reason: {{ $rejectMessage }}</p>
 

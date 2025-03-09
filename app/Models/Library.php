@@ -11,13 +11,13 @@ class Library extends Model
 
     protected $fillable = ['accounts_id', 'games_id'];
 
-    public function user()
+    public function account()
     {
-        return $this->belongsTo(Account::class);
+        return $this->belongsTo(Account::class, 'accounts_id');
     }
 
     public function game()
     {
-        return $this->belongsTo(Game::class);
+        return $this->belongsTo(Game::class, 'games_id');
     }
 }
