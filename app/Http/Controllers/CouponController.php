@@ -2,9 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
-use App\Models\User;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class CouponController extends Controller
 {
@@ -79,29 +80,36 @@ class CouponController extends Controller
     public function selectRecipients($id)
 {
     $coupon = Coupon::findOrFail($id);
-    $users = User::whereNotNull('email')->get(); // Chỉ lấy user có email hợp lệ
+
+    // Lấy danh sách user từ bảng accounts (loại bỏ admin)
+    $users = Account::where('role', 'USER')->whereNotNull('email')->get();
 
     return view('coupon.select_recipients', compact('coupon', 'users'));
 }
 
 
+
     // Gửi mã giảm giá
-    public function send($id)
-    {
-        $coupon = Coupon::findOrFail($id);
-        
-        // Lấy danh sách khách hàng có email
-        $users = User::whereNotNull('email')->get();
+    public function send(Request $request, $id)
+{
+    $coupon = Coupon::findOrFail($id);
+    
+    // Lấy danh sách email từ request
+    $emails = $request->input('emails');
 
-        foreach ($users as $user) {
-            Mail::raw("You have received a discount coupon: {$coupon->code}", function ($message) use ($user) {
-                $message->to($user->email)
-                        ->subject('Your Discount Coupon');
-            });
-        }
-
-        return redirect()->back()->with('success', 'Coupon sent successfully!');
+    if (!$emails || count($emails) === 0) {
+        return redirect()->back()->with('error', 'No recipients selected!');
     }
+
+    foreach ($emails as $email) {
+        Mail::raw("You have received a discount coupon: {$coupon->code}", function ($message) use ($email) {
+            $message->to($email)
+                    ->subject('Your Discount Coupon');
+        });
+    }
+
+    return redirect()->back()->with('success', 'Coupon sent successfully!');
+}
 
     // apply coupon
     public function applyCoupon(Request $request) {

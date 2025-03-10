@@ -29,13 +29,12 @@ Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     // admin
     Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
 //coupon
-    Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
     Route::prefix('admin')->group(function () {
         Route::get('/coupon/{id}/recipients', [CouponController::class, 'selectRecipients'])->name('coupon.selectRecipients');
     });
         Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
-        Route::post('/coupons/{id}/send', [CouponController::class, 'send'])->name('coupons.send');
-
+    
     // game routes
     Route::get('/game', [GameController::class, 'index'])->name('game.index');
 
@@ -171,6 +170,9 @@ Route::post('/coupon', [CouponController::class, 'store'])->name('coupon.store')
 Route::get('/coupon/{id}/edit', [CouponController::class, 'edit'])->name('coupon.edit');
 Route::put('/coupon/{id}', [CouponController::class, 'update'])->name('coupon.update');
 Route::delete('/coupon/{id}', [CouponController::class, 'destroy'])->name('coupon.destroy');
+//thêm routes
+Route::get('/coupons/{id}/select-recipients', [CouponController::class, 'selectRecipients'])->name('coupons.select_recipients');
+Route::post('/coupons/{id}/send', [CouponController::class, 'send'])->name('coupons.send');
 ///////GAME
 Route::post('/games/{game_id}/feedbacks', [FeedbackController::class, 'storeFeedback'])->name('feedback.storeFeedback');
 Route::post('feedback/{feedback}/likeFeedback', [FeedbackController::class, 'likeFeedback'])->name('feedback.likeFeedback');

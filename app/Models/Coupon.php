@@ -45,7 +45,14 @@ public function getStatusAttribute()
     }
     return $this->is_active ? 'Active' : 'Inactive';
 }
-
+public function users()
+{
+    return $this->belongsTo(User::class);
+}
+    public function accounts()
+    {
+        return $this->belongsToMany(Account::class);
+    }
 
 
 }
