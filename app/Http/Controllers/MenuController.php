@@ -12,19 +12,62 @@ use App\Models\GameCategory;
 use App\Models\Library;
 use App\Models\Menu;
 use App\Models\OrderItem;
+use DB;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
     public function dashboard()
     {
+        // Fetching all necessary data
         $games = Game::all();
-        $gamecates = GameCategory::all();
-        $accessories = Accessory::all();
-        $accessorycates = AccessoryCategory::all();
-        $account = Account::all();
+        $gamecates = GameCategory::withCount('games')->get()->pluck('games_count', 'name')->toArray();
 
-        return view("menu.dashboard", compact("games", "gamecates"));
+        $accessories = Accessory::all();
+        $accounts = Account::all();
+
+        // Calculating additional statistics
+        $totalUsers = Account::count();
+        $recentUsers = Account::where('expireotp', '>=', now()->subMonth())->count(); // Assuming expireotp is creation time
+        $recentPurchases = DB::table('invoices')->where('created_at', '>=', now()->subWeek())->count();
+
+        // Fetching Monthly Sales Data
+        $monthlySales = DB::table('invoices')
+            ->selectRaw('MONTH(created_at) as month, COUNT(id) as total_sales, SUM(total_amount) as total_revenue')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get()
+            ->keyBy('month');
+
+        // Formatting monthly sales data for JavaScript
+        $salesData = [];
+        $revenueData = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $salesData[] = $monthlySales[$i]->total_sales ?? 0;
+            $revenueData[] = $monthlySales[$i]->total_revenue ?? 0;
+        }
+
+        // Total Revenue
+        $totalRevenue = DB::table('invoices')->sum('total_amount');
+
+        // Monthly Revenue (for display)
+        $currentMonthRevenue = DB::table('invoices')
+            ->whereYear('created_at', now()->year)
+            ->whereMonth('created_at', now()->month)
+            ->sum('total_amount');
+
+        // Passing all variables to the view
+        return view('menu.dashboard', [
+            'totalUsers' => $totalUsers,
+            'recentUsers' => $recentUsers,
+            'recentPurchases' => $recentPurchases,
+            'gamecates' => $gamecates,
+            'totalRevenue' => $totalRevenue,
+            'currentMonthRevenue' => $currentMonthRevenue,
+            'salesData' => json_encode($salesData), // Convert array to JSON for JavaScript
+            'revenueData' => json_encode($revenueData), // Convert array to JSON for JavaScript
+        ]);
     }
 
     public function menu()

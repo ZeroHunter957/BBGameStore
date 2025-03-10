@@ -203,7 +203,8 @@
                     <div class="col-lg-3 col-md-6">
                         <div class="item">
                             <div class="thumb">
-                                <a href="accessorydetails"><img src="{{ $item->image }}" alt=""></a>
+                                <a href="{{ route('menu.accessorydetails', $item->id) }}"><img src="{{ $item->image }}"
+                                        alt=""></a>
                                 <span class="price">${{ $item->price }}</span>
                             </div>
                             <div class="down-content">

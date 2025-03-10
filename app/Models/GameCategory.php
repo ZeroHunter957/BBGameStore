@@ -23,4 +23,9 @@ class GameCategory extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function games()
+    {
+        return $this->hasMany(Game::class, 'cat_id'); // 'cat_id' is the foreign key in the games table
+    }
 }
