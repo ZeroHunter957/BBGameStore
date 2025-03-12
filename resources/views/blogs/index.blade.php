@@ -89,6 +89,32 @@ body {
     .page-item:last-child {
         border-radius: 0 5px 5px 0;
     }
+
+
+    .custom-pagination .page-item {
+    background-color: #007bff; /* Màu xanh */
+    color: white;
+    padding: 8px 15px;
+    margin: 0 5px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.custom-pagination .page-item:hover {
+    background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+}
+
+.custom-pagination .page-item.active {
+    background-color: #28a745; /* Màu xanh lá cho trang hiện tại */
+    font-weight: bold;
+}
+
+.custom-pagination .page-item.disabled {
+    background-color: #6c757d; /* Màu xám */
+    cursor: not-allowed;
+}
+
 </style>
 <div class="container-fluid mt-3">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -117,6 +143,7 @@ body {
                                 <th>ID</th>
                                 <th>Image</th>
                                 <th>Title</th>
+                                <th>Content</th>
                                 <th class="d-none d-xl-table-cell">Created At</th>
                                 <th>Status</th>
                                 <th>Edit</th>
@@ -132,6 +159,9 @@ body {
                                 </td>
                                 <td>
                                     {{ $blog->status == 2 ? $blog->title_cache : $blog->title }}
+                                </td>
+                                <td>
+                                    <a href="{{ route('blogs.detail', $blog->id) }}" class="btn btn-warning btn-sm">View</a>
                                 </td>
                                 <td class="d-none d-xl-table-cell">{{ $blog->created_at->format('d/m/Y') }}</td>
                                 <td>
@@ -196,7 +226,6 @@ body {
                     });
                 </script>
 
-                <!-- Pagination -->
                 <!-- Pagination -->
                 <div class="custom-pagination d-flex justify-content-center">
                     @if ($blogs->onFirstPage())

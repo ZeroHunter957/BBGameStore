@@ -64,6 +64,83 @@
 			padding: 8px 12px;
 		}
 	}
+
+	.trending-items .item {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		height: 100%;
+		padding: 15px;
+		background: rgba(255, 255, 255, 0.2);
+		border-radius: 10px;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+		transition: transform 0.3s ease-in-out;
+	}
+
+	.trending-items .item:hover {
+		transform: scale(1.05);
+	}
+
+	.trending-items .thumb img.fixed-image {
+		width: 100%;
+		height: 200px;
+		/* Đặt chiều cao cố định cho ảnh */
+		object-fit: cover;
+		/* Giữ tỷ lệ ảnh mà không bị méo */
+		border-radius: 10px;
+	}
+
+	.trending-items .down-content {
+		flex-grow: 1;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		text-align: center;
+	}
+
+	.trending-items h4 {
+		min-height: 50px;
+		/* Đảm bảo tiêu đề không làm thay đổi kích thước */
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		/* Giới hạn số dòng hiển thị */
+		-webkit-box-orient: vertical;
+	}
+
+	.trending-items p {
+		font-size: 14px;
+		color: #ddd;
+	}
+
+	.custom-pagination .page-item {
+		background-color: #007bff;
+		/* Màu xanh */
+		color: white;
+		padding: 8px 15px;
+		margin: 0 5px;
+		border-radius: 5px;
+		text-decoration: none;
+		transition: background 0.3s ease;
+	}
+
+	.custom-pagination .page-item:hover {
+		background-color: #0056b3;
+		/* Màu xanh đậm hơn khi hover */
+	}
+
+	.custom-pagination .page-item.active {
+		background-color: #28a745;
+		/* Màu xanh lá cho trang hiện tại */
+		font-weight: bold;
+	}
+
+	.custom-pagination .page-item.disabled {
+		background-color: #6c757d;
+		/* Màu xám */
+		cursor: not-allowed;
+	}
 </style>
 <div class="page-heading header-text">
 	<div class="container">

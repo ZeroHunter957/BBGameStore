@@ -3,267 +3,280 @@
 
 @section('content')
 <style>
-    /* Chỉnh sửa giao diện trang bài viết */
-    .page-heading {
-      background-color: #f8f9fa;
-      padding: 40px 0;
-      text-align: center;
-    }
+  /* Chỉnh sửa giao diện trang bài viết */
+  .page-heading {
+    background-color: #f8f9fa;
+    padding: 40px 0;
+    text-align: center;
+  }
 
-    .page-heading h3 {
-      font-size: 36px;
-      color: #333;
-      font-weight: 700;
-    }
+  .page-heading h3 {
+    font-size: 36px;
+    color: #333;
+    font-weight: 700;
+  }
 
-    /* Chỉnh sửa giao diện phần chi tiết sản phẩm/bài viết */
-    .single-product .container {
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
+  /* Chỉnh sửa giao diện phần chi tiết sản phẩm/bài viết */
+  .single-product .container {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
 
-    .single-product .left-image img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
+  .single-product .left-image img {
+    max-width: 100%;
+    border-radius: 8px;
+  }
 
-    .single-product .align-self-center h1 {
-      font-size: 30px;
-      color: #333;
-      font-weight: 600;
-    }
+  .single-product .align-self-center h1 {
+    font-size: 30px;
+    color: #333;
+    font-weight: 600;
+  }
 
-    .single-product .align-self-center p {
-      font-size: 16px;
-      color: #666;
-      line-height: 1.6;
-      margin-top: 15px;
-    }
+  .single-product .align-self-center p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.6;
+    margin-top: 15px;
+  }
 
-    /* Đổi màu cho các bình luận */
-    .comment {
-      background-color: #f1f1f1;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
+  /* Đổi màu cho các bình luận */
+  .comment {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
 
-    .comment h5 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #007bff;
-      margin-bottom: 10px;
-    }
+  .comment h5 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #007bff;
+    margin-bottom: 10px;
+  }
 
-    .comment p {
-      font-size: 16px;
-      color: #444;
-      line-height: 1.6;
-    }
+  .comment p {
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+  }
 
-    /* Form bình luận */
-    .form-group {
-      margin-bottom: 20px;
-    }
+  /* Form bình luận */
+  .form-group {
+    margin-bottom: 20px;
+  }
 
-    .form-group input,
-    .form-group textarea {
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 16px;
-      width: 100%;
-      border: 1px solid #ccc;
-    }
+  .form-group input,
+  .form-group textarea {
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 16px;
+    width: 100%;
+    border: 1px solid #ccc;
+  }
 
-    .form-group textarea {
-      resize: vertical;
-    }
+  .form-group textarea {
+    resize: vertical;
+  }
 
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-      padding: 10px 20px;
-      color: white;
-      font-size: 16px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-    }
+  .btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    padding: 10px 20px;
+    color: white;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
+  }
 
-    .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
-    }
+  .btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+  }
 
-    .alert-danger {
-      color: #dc3545;
-      background-color: #f8d7da;
-      padding: 15px;
-      border-radius: 8px;
-      margin-bottom: 20px;
-    }
+  .alert-danger {
+    color: #dc3545;
+    background-color: #f8d7da;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
 
-    .sep {
-      border-top: 2px solid #ccc;
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
-  </style>
+  .sep {
+    border-top: 2px solid #ccc;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+</style>
 
-  <style>
-    .comment {
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      padding: 15px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
+<style>
+  .comment {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
 
-    .comment-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
-    }
+  .comment-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
 
-    .comment-header .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 15px;
-      object-fit: cover;
-    }
+  .comment-header .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+  }
 
-    .comment-info h5 {
-      font-size: 18px;
-      font-weight: bold;
-      color: #007bff;
-    }
+  .comment-info h5 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #007bff;
+  }
 
-    .comment-info small {
-      color: #888;
-      font-size: 12px;
-    }
+  .comment-info small {
+    color: #888;
+    font-size: 12px;
+  }
 
-    /* Comment Content */
-    .comment p {
-      font-size: 16px;
-      color: #444;
-      line-height: 1.6;
-      margin-bottom: 10px;
-    }
+  /* Comment Content */
+  .comment p {
+    font-size: 16px;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
 
-    /* Comment Action Buttons (Like, Reply) */
-    .comment-actions {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+  /* Comment Action Buttons (Like, Reply) */
+  .comment-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
 
-    .comment-actions button {
-      font-size: 14px;
-      color: #007bff;
-      background-color: transparent;
-      border: none;
-      cursor: pointer;
-    }
+  .comment-actions button {
+    font-size: 14px;
+    color: #007bff;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
 
-    .comment-actions button:hover {
-      text-decoration: underline;
-    }
+  .comment-actions button:hover {
+    text-decoration: underline;
+  }
 
-    .comment-actions span {
-      font-size: 14px;
-      color: #555;
-    }
+  .comment-actions span {
+    font-size: 14px;
+    color: #555;
+  }
 
-    /* Reply Section */
-    .comment.ml-4 {
-      margin-left: 40px;
-    }
+  /* Reply Section */
+  .comment.ml-4 {
+    margin-left: 40px;
+  }
 
-    #reply-form- {
-        {
-        $comment->id
-      }
-    }
-
+  #reply-form- {
       {
-      margin-top: 15px;
+      $comment->id
     }
+  }
 
-    #reply-form- {
-        {
-        $comment->id
-      }
-    }
+    {
+    margin-top: 15px;
+  }
 
-    textarea {
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 14px;
-      width: 100%;
-      border: 1px solid #ccc;
+  #reply-form- {
+      {
+      $comment->id
     }
+  }
 
-    #reply-form- {
-        {
-        $comment->id
-      }
-    }
+  textarea {
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+    border: 1px solid #ccc;
+  }
 
-    .btn-primary {
-      margin-top: 10px;
+  #reply-form- {
+      {
+      $comment->id
     }
+  }
 
-    /* Adjust the spacing between comments */
-    .comment+.comment {
-      margin-top: 10px;
-    }
-  </style>
+  .btn-primary {
+    margin-top: 10px;
+  }
 
-  <style>
-    /* Avatar style */
-    .user-info {
-      display: flex;
-      align-items: center;
-    }
+  /* Adjust the spacing between comments */
+  .comment+.comment {
+    margin-top: 10px;
+  }
+</style>
 
-    .user-info img.avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
+<style>
+  /* Avatar style */
+  .user-info {
+    display: flex;
+    align-items: center;
+  }
 
-    /* Optional: Style the user name and time */
-    .user-info h5 {
-      font-size: 16px;
-      margin: 0;
-    }
+  .user-info img.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
 
-    .comment {
-      margin-bottom: 20px;
-    }
+  /* Optional: Style the user name and time */
+  .user-info h5 {
+    font-size: 16px;
+    margin: 0;
+  }
 
-    .comment p {
-      margin-top: 10px;
-    }
+  .comment {
+    margin-bottom: 20px;
+  }
 
-    .comment .btn-link {
-      text-decoration: none;
-      font-size: 14px;
-    }
+  .comment p {
+    margin-top: 10px;
+  }
 
-    /* Reply form styling */
-    textarea.form-control {
-      width: 100%;
-      max-width: 400px;
-    }
+  .comment .btn-link {
+    text-decoration: none;
+    font-size: 14px;
+  }
 
-    /* Adjusting reply button style */
-    .comment .btn-primary {
-      margin-top: 10px;
-    }
-  </style>
+  /* Reply form styling */
+  textarea.form-control {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* Adjusting reply button style */
+  .comment .btn-primary {
+    margin-top: 10px;
+  }
+
+  .left-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.left-image {
+    position: sticky;
+    top: 20px; /* Khoảng cách từ trên xuống */
+}
+
+
+</style>
 
 <div class="page-heading header-text">
   <div class="container">
@@ -344,7 +357,7 @@
       <form action="{{ route('comment.reply', $comment->id) }}" method="POST" onsubmit="handleReplySubmit(event, {{ $comment->id }})">
         @csrf
         <textarea id="reply-textarea-{{ $comment->id }}" name="content" class="form-control" placeholder="Your Reply" rows="3" required></textarea>
-        <div id="reply-preview-{{ $comment->id }}" class="comment-preview"></div>
+        <div id="reply-preview-{{ $comment->id }}" class="comment-preview text-danger font-weight-bold" style="display:none;"></div>
         <button type="submit" class="btn btn-primary mt-2">Post Reply</button>
         <button type="button" class="btn btn-danger mt-2" onclick="closeReplyForm({{ $comment->id }})">Close</button>
       </form>
@@ -420,66 +433,71 @@
 <script src="{{ asset('assets/js/counter.js') }}"></script>
 <script src="{{ asset('assets/js/custom.js') }}"></script>
 <script>
-    document.querySelector('form').addEventListener('submit', function(event) {
-        const bannedWords = @json($bannedWords).map(word => word.toLowerCase()); // Convert all banned words to lowercase
-        const commentContent = document.querySelector('textarea[name="content"]').value.toLowerCase(); // Convert content to lowercase
+  document.querySelector('form').addEventListener('submit', function(event) {
+    const bannedWords = @json($bannedWords).map(word => word.toLowerCase()); // Convert all banned words to lowercase
+    const commentContent = document.querySelector('textarea[name="content"]').value.toLowerCase(); // Convert content to lowercase
 
-        let foundBannedWords = [];
-        let highlightedContent = commentContent;
+    let foundBannedWords = [];
+    let highlightedContent = commentContent;
 
-        bannedWords.forEach(function(word) {
-            if (commentContent.includes(word)) {
-                foundBannedWords.push(word);
-                const regex = new RegExp(`(${word})`, 'gi');
-                highlightedContent = highlightedContent.replace(regex, '<span class="highlight">$1</span>');
-            }
-        });
-
-        if (foundBannedWords.length > 0) {
-            document.querySelector('.comment-preview').innerHTML = highlightedContent;
-            event.preventDefault();
-        }
+    bannedWords.forEach(function(word) {
+      if (commentContent.includes(word)) {
+        foundBannedWords.push(word);
+        const regex = new RegExp(`(${word})`, 'gi');
+        highlightedContent = highlightedContent.replace(regex, '<span class="highlight">$1</span>');
+      }
     });
 
-    function checkBannedWordsForReply(event, commentId) {
-        const bannedWords = @json($bannedWords).map(word => word.toLowerCase()); // Convert all banned words to lowercase
-        const replyContent = document.getElementById(`reply-textarea-${commentId}`).value.toLowerCase(); // Convert reply content to lowercase
-
-        let foundBannedWords = [];
-        let highlightedContent = replyContent;
-
-        bannedWords.forEach(function(word) {
-            if (replyContent.includes(word)) {
-                foundBannedWords.push(word);
-                const regex = new RegExp(`(${word})`, 'gi');
-                highlightedContent = highlightedContent.replace(regex, '<span class="highlight">Your reply contains a banned word: $1</span>');
-            }
-        });
-
-        if (foundBannedWords.length > 0) {
-            document.querySelector('.comment-preview').innerHTML = highlightedContent;
-            event.preventDefault();
-        }
+    if (foundBannedWords.length > 0) {
+      document.querySelector('.comment-preview').innerHTML = highlightedContent;
+      event.preventDefault();
     }
+  });
 
-    function handleReplySubmit(event, commentId) {
-        checkBannedWordsForReply(event, commentId);
+  function checkBannedWordsForReply(event, commentId) {
+    const bannedWords = @json($bannedWords).map(word => word.toLowerCase()); // Convert all banned words to lowercase
+    const replyTextarea = document.getElementById(`reply-textarea-${commentId}`);
+    const replyPreview = document.getElementById(`reply-preview-${commentId}`);
+    const replyContent = replyTextarea.value.toLowerCase(); // Convert reply content to lowercase
+
+    let foundBannedWords = [];
+    let highlightedContent = replyContent;
+
+    bannedWords.forEach(function(word) {
+      if (replyContent.includes(word)) {
+        foundBannedWords.push(word);
+        const regex = new RegExp(`(${word})`, 'gi');
+        highlightedContent = highlightedContent.replace(regex, '<span class="text-danger font-weight-bold">$1</span>');
+      }
+    });
+
+    if (foundBannedWords.length > 0) {
+      replyPreview.innerHTML = `Your reply contains banned words: <br> ${highlightedContent}`;
+      replyPreview.style.display = "block"; // Hiển thị nội dung bị chặn
+      event.preventDefault();
+    } else {
+      replyPreview.style.display = "none";
     }
+  }
+
+  function handleReplySubmit(event, commentId) {
+    checkBannedWordsForReply(event, commentId);
+  }
 </script>
 
 <script>
-    function showReplyForm(commentId) {
-        const replyForm = document.getElementById(`reply-form-${commentId}`);
+  function showReplyForm(commentId) {
+    const replyForm = document.getElementById(`reply-form-${commentId}`);
 
-        if (replyForm.style.display === "none" || replyForm.style.display === "") {
-            replyForm.style.display = "block";
-        }
+    if (replyForm.style.display === "none" || replyForm.style.display === "") {
+      replyForm.style.display = "block";
     }
+  }
 
-    function closeReplyForm(commentId) {
-        const replyForm = document.getElementById(`reply-form-${commentId}`);
-        replyForm.style.display = "none";
-    }
+  function closeReplyForm(commentId) {
+    const replyForm = document.getElementById(`reply-form-${commentId}`);
+    replyForm.style.display = "none";
+  }
 </script>
 
 @endsection
