@@ -31,13 +31,54 @@
             padding: 10px 20px;
             border-radius: 15px;
             transition: all 0.3s ease-in-out;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .empty-cart-container .btn-warning:hover {
             background: linear-gradient(135deg, #4da6ff, #80c1ff);
             box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
             transform: scale(1.05);
+        }
+
+        .bottom-details {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .bottom-details form {
+            flex: 1;
+        }
+
+        .bottom-details button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bottom-details button[name="redirect"] {
+            background-color: #d82d8b;
+            /* Màu hồng của Momo */
+        }
+
+        .bottom-details button[name="redirect"]:hover {
+            background-color: #c02479;
+        }
+
+        .bottom-details button[name="pay"] {
+            background-color: #0074cc;
+            /* Màu xanh của VNPAY */
+        }
+
+        .bottom-details button[name="pay"]:hover {
+            background-color: #005ea6;
         }
     </style>
 @endpush
@@ -72,13 +113,15 @@
                                 @foreach ($cartItems as $item)
                                     <tr>
                                         <td>
-                                            <a href="{{$item->product_type == 'game' ? '/gamedetails' : '/accessorydetails'}}/{{$item->product_id}}">
-                                                <img src="{{$item -> image}}" class="blur-up lazyloaded"
-                                                    alt="">
+                                            <a
+                                                href="{{ $item->product_type == 'game' ? '/gamedetails' : '/accessorydetails' }}/{{ $item->product_id }}">
+                                                <img src="{{ $item->image }}" class="blur-up lazyloaded" alt="">
                                             </a>
                                         </td>
                                         <td>
-                                            <a href="{{ $item->product_type == 'game' ? '/gamedetails' : '/accessorydetails'}}/{{$item->product_id}}"  > {{$item->name}}</a>
+                                            <a
+                                                href="{{ $item->product_type == 'game' ? '/gamedetails' : '/accessorydetails' }}/{{ $item->product_id }}">
+                                                {{ $item->name }}</a>
                                             <div class="mobile-cart-content row">
                                                 <div class="col">
                                                     <div class="qty-box">
@@ -89,7 +132,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col">
-                                                    <h2>{{$item->name}}</h2>
+                                                    <h2>{{ $item->name }}</h2>
                                                 </div>
                                                 <div class="col">
                                                     <h2 class="td-color">
@@ -101,18 +144,18 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h2>{{$item->price}}$</h2>
+                                            <h2>{{ $item->price }}$</h2>
                                         </td>
                                         <td>
                                             <div class="qty-box">
-                                                @if(($item->product_type) === 'accessory')
-                                                <div class="input-group">
-                                                    <input type="number" name="quantity" data-rowid="{{ $item->id }}"
-                                                        onchange="updateQuantity(this)" class="form-control input-number"
-                                                        value="{{ $item->quantity }}">
-                                                </div>
+                                                @if ($item->product_type === 'accessory')
+                                                    <div class="input-group">
+                                                        <input type="number" name="quantity"
+                                                            data-rowid="{{ $item->id }}" onchange="updateQuantity(this)"
+                                                            class="form-control input-number" value="{{ $item->quantity }}">
+                                                    </div>
                                                 @else
-                                                <h5>{{ $item->quantity }}</h5>
+                                                    <h5>{{ $item->quantity }}</h5>
                                                 @endif
                                             </div>
                                         </td>
@@ -141,7 +184,8 @@
                             </div>
                             <div class="col-sm-5 col-7">
                                 <div class="left-side-button float-start">
-                                    <a href="{{ route('menu.gameshop') }}" class="btn btn-solid-default btn fw-bold mb-0 ms-0">
+                                    <a href="{{ route('menu.gameshop') }}"
+                                        class="btn btn-solid-default btn fw-bold mb-0 ms-0">
                                         <i class="fas fa-arrow-left"></i> Continue Shopping</a>
                                 </div>
                             </div>
@@ -151,21 +195,23 @@
                     <div class="cart-checkout-section">
                         <div class="row g-4">
                             <div class="col-lg-4 col-sm-6">
-                                <div class="promo-section" >
+                                <div class="promo-section">
                                     <form action="{{ route('apply.coupon') }}" method="POST" class="row g-3">
                                         @csrf
                                         <div class="col-7">
-                                        <input type="text" name="coupon_code" required  class="form-control" placeholder="Coupon Code">
-                                    </div>
-                                    <div class="col-5">
-                                        <button type="submit" class="btn btn-solid-default rounded btn">Apply Coupon</button>
-                                    </div>
+                                            <input type="text" name="coupon_code" required class="form-control"
+                                                placeholder="Coupon Code">
+                                        </div>
+                                        <div class="col-5">
+                                            <button type="submit" class="btn btn-solid-default rounded btn">Apply
+                                                Coupon</button>
+                                        </div>
                                     </form>
                                 </div>
                             </div>
 
                             <div class="col-lg-4 col-sm-6 ">
-                        
+
                             </div>
 
                             <div class="col-lg-4">
@@ -174,22 +220,28 @@
                                         <div class="total-details">
                                             <div class="top-details">
                                                 <h3>Cart Totals</h3>
-                                                <h6>Sub Total <span>{{$subtotal}}$</span></h6>
-                                                <h6>Discount <span>{{$discount}}$</span></h6>
-                                                <h6>Tax <span>{{$tax}}$</span></h6>
-                                                <h6>Total <span>{{$total}}$</span></h6>
+                                                <h6>Sub Total <span>{{ $subtotal }}$</span></h6>
+                                                <h6>Discount <span>{{ $discount }}$</span></h6>
+                                                <h6>Tax <span>{{ $tax }}$</span></h6>
+                                                <h6>Total <span>{{ $total }}$</span></h6>
                                             </div>
-                                            <div class="bottom-details">
-                                                <form action="{{route('momo-payment')}}" method="post">
+                                            <div class="bottom-details">                             
+                                                <form action="{{ route('momo-payment') }}" method="post">
                                                     @csrf
-                                                    <input type="hidden" name="total_momo" value="{{$total*25000}}">
-                                                    <button type="submit" class="btn btn-primary" name="payUrl">Process Checkout</button>
+                                                    <input type="hidden" name="total" value="{{ $total * 25000 }}">
+                                                    <button type="submit" class="btn btn-primary" name="redirect">Momo</button>
+                                                </form>
+                                                <form action="{{ route('vn-payment') }}" method="post">
+                                                    @csrf
+                                                    <input type="hidden" name="total" value="{{ $total * 25000 }}">
+                                                    <button type="submit" class="btn btn-primary" name="pay">VNPAY</button>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -219,7 +271,7 @@
         @csrf
         @method('delete')
     </form>
-    
+
 @endsection
 @push('scripts')
     <script>
