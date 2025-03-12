@@ -255,7 +255,9 @@
                             <h3>{{ $libraryGame->title }}</h3>
                             <p>{{ $libraryGame->library_created_at }} Achievements</p>
                         </a>
-                        <button>Install</button>
+                        <form action="{{route('enterDownloadCode',$libraryGame->id)}}">                       
+                            <button type="submit">Install</button>
+                        </form>
                     </div>
                     @endforeach
                     @endif
