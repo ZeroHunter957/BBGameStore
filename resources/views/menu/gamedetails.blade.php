@@ -479,7 +479,6 @@
             </div>
         </div>
     </div>
-    {{ dump($game->file) }}
     <div class="single-product section">
         <div class="container">
             <div class="row">

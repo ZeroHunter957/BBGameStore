@@ -16,9 +16,13 @@ class PaymentController extends Controller
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
                 'Content-Type: application/json',
-                'Content-Length: ' . strlen($data))
+                'Content-Length: ' . strlen($data)
+            )
         );
         curl_setopt($ch, CURLOPT_TIMEOUT, 5);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
@@ -30,13 +34,13 @@ class PaymentController extends Controller
     }
     public function vnPay(Request $request)
     {
-        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";    
+        $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
         $vnp_Returnurl = "http://127.0.0.1:8000/user/payment/result";
-        $vnp_TmnCode = "VDPUUXQV";//Mã website tại VNPAY 
+        $vnp_TmnCode = "VDPUUXQV"; //Mã website tại VNPAY 
         $vnp_HashSecret = "OUDHU0M7RQQ9M5NNBC3G3CJZM7O1WW34"; //Chuỗi bí mật
-        
-        $vnp_TxnRef = rand(00,9999); //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này 
-        $vnp_OrderInfo = 'Noi dung thanh toan';
+
+        $vnp_TxnRef = rand(00, 9999); //Mã đơn hàng. Trong thực tế Merchant cần insert đơn hàng vào DB và gửi mã này 
+        $vnp_OrderInfo = 'Game payment';
         $vnp_OrderType = 'pillpayment';
         $vnp_Amount = $_POST['total'] * 100;
         $vnp_Locale = 'vn';
@@ -79,7 +83,7 @@ class PaymentController extends Controller
             "vnp_ReturnUrl" => $vnp_Returnurl,
             "vnp_TxnRef" => $vnp_TxnRef
             // "vnp_ExpireDate"=>$vnp_ExpireDate
-            
+
             // "vnp_Bill_Mobile"=>$vnp_Bill_Mobile,
             // "vnp_Bill_Email"=>$vnp_Bill_Email,
             // "vnp_Bill_FirstName"=>$vnp_Bill_FirstName,
@@ -95,14 +99,14 @@ class PaymentController extends Controller
             // "vnp_Inv_Taxcode"=>$vnp_Inv_Taxcode,
             // "vnp_Inv_Type"=>$vnp_Inv_Type
         );
-        
+
         if (isset($vnp_BankCode) && $vnp_BankCode != "") {
             $inputData['vnp_BankCode'] = $vnp_BankCode;
         }
         // if (isset($vnp_Bill_State) && $vnp_Bill_State != "") {
         //     $inputData['vnp_Bill_State'] = $vnp_Bill_State;
         // }
-        
+
         //var_dump($inputData);
         ksort($inputData);
         $query = "";
@@ -117,17 +121,19 @@ class PaymentController extends Controller
             }
             $query .= urlencode($key) . "=" . urlencode($value) . '&';
         }
-        
+
         $vnp_Url = $vnp_Url . "?" . $query;
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret);//  
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
-        $returnData = array('code' => '00'
-            , 'message' => 'success'
-            , 'data' => $vnp_Url);
-        return redirect($vnp_Url);  
-            // vui lòng tham khảo thêm tại code demo
+        $returnData = array(
+            'code' => '00',
+            'message' => 'success',
+            'data' => $vnp_Url
+        );
+        return redirect($vnp_Url);
+        // vui lòng tham khảo thêm tại code demo
     }
     public function momoPayment(Request $request)
     {
@@ -171,8 +177,8 @@ class PaymentController extends Controller
 
     public function handlePaymentResult(Request $request)
     {
-        $orderId = $request->query('orderId');
-        $amount = $request->query('amount');
+        $orderId = $request->query('vnp_TxnRef');
+        $amount = $request->query('vnp_Amount') / 100;
         $message = $request->query('message');
         $errorCode = $request->query('errorCode');
         $transId = $request->query('transId');
@@ -200,7 +206,7 @@ class PaymentController extends Controller
 
             return view('invoice.payment-result', [
                 'status' => 'success',
-                'message' => 'Thanh toán thành công! Game đã được thêm vào thư viện.',
+                'message' => 'Payment successful! Game has been added to library.',
                 'payType' => $payType,
                 'order_id' => $orderId,
                 'amount' => $amount,
@@ -208,7 +214,7 @@ class PaymentController extends Controller
         } else {
             return view('invoice.payment-result', [
                 'status' => 'error',
-                'message' => 'Thanh toán thất bại. Vui lòng thử lại!',
+                'message' => 'Payment failed. Please try again.!',
                 'order_id' => $orderId,
                 'amount' => $amount,
             ]);

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kết quả thanh toán</title>
+    <title>Payment results</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
 <style>
@@ -19,7 +19,7 @@
             <p>{{ $message }}</p>
             <p><strong>Order code:</strong> {{ $order_id }}</p>
             <p><strong>Amount:</strong> {{ number_format($amount) }} VNĐ</p>
-            <a href="" class="btn btn-success mt-3">View invoice</a>
+            <a href="{{ route('account.profile') }}" class="btn btn-success mt-3">View Library</a>
             <a href="http://127.0.0.1:8000/" class="btn btn-success mt-3">Continue shopping</a>
         @else
             <h1 class="text-danger">❌Payment failed!</h1>
