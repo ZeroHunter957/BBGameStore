@@ -14,6 +14,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BlogUserController;
 use App\Http\Controllers\BannedWordController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DownloadCodeController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\OrderController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VNPayController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Middleware\AuthMiddleware;
+use App\Models\Game;
 use Illuminate\Support\Facades\Route;
 
 // middleware
@@ -28,13 +30,13 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("/admin")->middleware(AuthMiddleware::class)->group(function () {
     // admin
     Route::get('/dashboard', [MenuController::class, 'dashboard'])->name('menu.dashboard');
-//coupon
-Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+    //coupon
+    Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
     Route::prefix('admin')->group(function () {
         Route::get('/coupon/{id}/recipients', [CouponController::class, 'selectRecipients'])->name('coupon.selectRecipients');
     });
-        Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
-    
+    Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupon.send');
+
     // game routes
     Route::get('/game', [GameController::class, 'index'])->name('game.index');
 
@@ -49,8 +51,8 @@ Route::post('/coupon/{id}/send', [CouponController::class, 'send'])->name('coupo
     Route::get('/gamecate', [GameCategoryController::class, 'index'])->name('gamecategory.index');
     Route::get('/gamecate/create', [GameCategoryController::class, 'create'])->name('gamecategory.create');
     Route::post('/gamecate/create', [GameCategoryController::class, 'store'])->name('gamecategory.store');
-Route::get('/gamecate/{id}/edit', [GameCategoryController::class, 'edit'])->name('gamecategory.edit');
-Route::put('/gamecate/{id}', [GameCategoryController::class, 'update'])->name('gamecategory.update');
+    Route::get('/gamecate/{id}/edit', [GameCategoryController::class, 'edit'])->name('gamecategory.edit');
+    Route::put('/gamecate/{id}', [GameCategoryController::class, 'update'])->name('gamecategory.update');
 
     // accessory routes
     Route::get('/accessory', [AccessoryController::class, 'index'])->name('accessory.index');
@@ -93,7 +95,7 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     });
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 
-    
+
 
     // cart
     Route::get('/cart', [AddToCartController::class, 'index'])->name('cart.index');
@@ -113,6 +115,15 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
     Route::delete('/wishlist/remove/{id}', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
 
     Route::post('/apply-coupon', [CouponController::class, 'applyCoupon'])->name('apply.coupon');
+    //download
+    Route::post('/send-download-code/{gameId}', [DownloadCodeController::class, 'sendDownloadCode'])->name('sendDownloadCode');
+    Route::get('/download-game/{gameId}', [DownloadCodeController::class, 'downloadGame'])->name('downloadGame');
+    Route::get('/enter-download-code/{gameId}', function ($gameId) {
+        $gameName = Game::where('id', $gameId)->first()->title;
+        return view('game.download_form', compact('gameId', 'gameName'));
+    })->name('enterDownloadCode');
+
+    Route::post('/verify-download-code/{gameId}', [DownloadCodeController::class, 'verifyDownloadCode'])->name('verifyDownloadCode');
 });
 //apply coupon
 
