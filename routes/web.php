@@ -106,6 +106,7 @@ Route::prefix("/user")->middleware(AuthMiddleware::class)->group(function () {
 
     //payment
     Route::post('/momo_payment', [PaymentController::class, 'momoPayment'])->name('momo-payment');
+    Route::post('/vn_payment', [PaymentController::class, 'vnPay'])->name('vn-payment');
     Route::get('/invoices', [InvoiceController::class, 'index'])->name('user.invoices');
     Route::get('/payment/result', [PaymentController::class, 'handlePaymentResult'])->name('payment.result');
 
