@@ -158,7 +158,7 @@ body {
                                     <img src="{{ asset('storage/' . $blog->image) }}" alt="{{ $blog->title }}" style="width: 100px; height: auto;">
                                 </td>
                                 <td>
-                                    {{ $blog->title }}
+                                    {{ $blog->status == 2 ? $blog->title_cache : $blog->title }}
                                 </td>
                                 <td>
                                     <a href="{{ route('blogs.detail', $blog->id) }}" class="btn btn-warning btn-sm">View</a>
